@@ -1,2 +1,2 @@
-# UploadNFT
-User-friendly interface for uploading NFTs
+# NFTify
+User-friendly interface for uploading NFT series
