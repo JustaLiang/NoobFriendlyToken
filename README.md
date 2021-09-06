@@ -1,2 +1,2 @@
-# NFTify
-User-friendly interface for uploading NFT series
+# NFTicket
+Ticket and membership system based on NFT
