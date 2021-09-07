@@ -25,6 +25,7 @@ export const Greeter: React.FC<Props> = () => {
             console.log("setGreeting tx", tx)
             await tx.wait()
             console.log("New greeting mined, result: ", await greeter.instance.greet())
+            setMessage(await greeter.instance.greet())
         }
     }
     return (

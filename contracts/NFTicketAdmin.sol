@@ -35,4 +35,8 @@ contract NFTicketAdmin is Ownable, PaymentSplitter {
 
         userTemplates[_msgSender()].push(TemplateInterface(generator.genNFTicketContract(_msgSender(), baseSettings, settings)));
     }
+
+    function getClientList() external view returns (TemplateInterface[] memory) {
+        return userTemplates[_msgSender()];
+    }
 }
