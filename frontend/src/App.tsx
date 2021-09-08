@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import { Symfoni } from "./hardhat/SymfoniContext";
-// import { Greeter } from './components/Greeter';
 import { NFTicketAdmin } from './components/NFTicketAdmin';
 
 function App() {

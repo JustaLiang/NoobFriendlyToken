@@ -19,7 +19,7 @@ struct Settings {
 }
 
 interface GeneratorInterface {
-    function slottingFee() external returns (uint);
+    function slottingFee() external view returns (uint);
     function genNFTicketContract(address,
                                  BaseSettings calldata,
                                  Settings calldata) external returns (address);

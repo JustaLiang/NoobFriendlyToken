@@ -39,4 +39,10 @@ contract NFTicketAdmin is Ownable, PaymentSplitter {
     function getClientList() external view returns (TemplateInterface[] memory) {
         return userTemplates[_msgSender()];
     }
+
+    function slottingFee(uint32 generatorType) external view returns (uint) {
+        GeneratorInterface generator = typeToGenerator[generatorType];
+        require(address(generator) != address(0));
+        return generator.slottingFee();
+    }
 }
