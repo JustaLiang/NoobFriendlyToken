@@ -31,7 +31,7 @@ export const NFTicketTemplateCard: React.FC<Props> = (props) => {
             }
             else if (provider[0]) {
                 setTemplate(NFTicketTemplate__factory.connect(props.templateAddress, provider[0]))
-                console.log("connect contract by signer")
+                console.log("connect contract by provider")
             }
             else {
                 console.log("no signer or provider")
