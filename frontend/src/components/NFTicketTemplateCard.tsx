@@ -34,7 +34,8 @@ export const NFTicketTemplateCard: React.FC<Props> = (props) => {
     const classes = useStyles();
     const signer = useContext(SignerContext);
     const provider = useContext(ProviderContext);
-    const [imageURI, setImageURI] = useState<string>("loading");
+    const [imageURI, setImageURI] = useState<string>("fetching");
+    const [imgLoaded, setImgLoaded] = useState<Boolean>(false);
     const [template, setTemplate] = useState<NFTicketTemplate>();
     const [templateInfo, setTemplateInfo] = useState<TemplateInfo>({
         name: "name",
@@ -43,6 +44,7 @@ export const NFTicketTemplateCard: React.FC<Props> = (props) => {
         maxSupply: 0,
     });
     const { templateAddress } = props;
+
     useEffect(() => {
         if (signer[0]) {
             setTemplate(NFTicketTemplate__factory.connect(templateAddress, signer[0]))
@@ -70,12 +72,25 @@ export const NFTicketTemplateCard: React.FC<Props> = (props) => {
                     console.log(randomNum)
                 })
                 .catch((err) => {
-                    console.log(err)
                     setImageURI("")
+                    console.log(err)
                 })
         }
         updateImageURI()
-    }, [imageURI, templateAddress])
+    }, [templateAddress])
+
+    useEffect(() => {
+        if (imageURI) {
+            fetch(imageURI)
+            .then((res) => {
+                if (res.status !== 404)
+                    setImgLoaded(true)
+            })
+        }
+        else {
+            setImgLoaded(true)
+        }
+    }, [imageURI])
 
     useEffect(() => {
         const reloadTemplate = async () => {
@@ -94,12 +109,12 @@ export const NFTicketTemplateCard: React.FC<Props> = (props) => {
                     title={templateInfo.name}
                     subheader={templateInfo.symbol}
                 />
-                {imageURI !== "loading"? (
+                {imageURI !== "fetching" && imgLoaded? (
                     <CardMedia
                         className={classes.media}
                         component="img"
                         image={imageURI}
-                        alt="Not initialize"
+                        alt="Not initialized"
                     />
                 ):(
                     <Box className={classes.media} style={{ textAlign: 'center'}} >

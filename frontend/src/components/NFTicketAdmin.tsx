@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 10,
         marginRight: 10,
         marginBottom: 30,
-        width: 940,
+        width: 950,
         gap: 20,
         overflowX: "scroll",
         border: '0.5px solid rgba(0, 0, 0, 0.125)',
@@ -91,19 +91,19 @@ export const NFTicketAdmin: React.FC<Props> = () => {
                 className={classes.root}
                 autoComplete="off"
             >
-                <TextField label="name" className={classes.filled} onChange={(e) =>
+                <TextField label="name" variant="filled" className={classes.filled} onChange={(e) =>
                     { setBaseSettings({ ...baseSettings, name: e.target.value }) }}
                 />
-                <TextField label="symbol" className={classes.filled} onChange={(e) =>
+                <TextField label="symbol" variant="filled" className={classes.filled} onChange={(e) =>
                     { setBaseSettings({ ...baseSettings, symbol: e.target.value }) }}
                 />
-                <TextField label="ticket type" className={classes.filled} onChange={(e) =>
+                <TextField label="ticket type" variant="filled" className={classes.filled} onChange={(e) =>
                     { setBaseSettings({ ...baseSettings, ticketType: parseInt(e.target.value) }) }}
                 />
-                <TextField label="max supply" className={classes.filled} onChange={(e) =>
+                <TextField label="max supply" variant="filled" className={classes.filled} onChange={(e) =>
                     { setBaseSettings({ ...baseSettings, maxSupply: parseInt(e.target.value) }) }}
                 />
-                <Button variant="contained" type="submit">create container</Button>
+                <Button variant="contained" type="submit">create album</Button>
             </form>
             </Box>
             <Box display="flex" flexDirection="row" className={classes.tmpList}>
