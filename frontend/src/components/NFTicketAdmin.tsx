@@ -2,19 +2,26 @@ import { isBigNumberish } from '@ethersproject/bignumber/lib/bignumber';
 import React, { useContext, useEffect, useState } from 'react';
 import { CurrentAddressContext, NFTicketAdminContext } from "../hardhat/SymfoniContext";
 import { NFTicketTemplateCard } from "./NFTicketTemplateCard";
-import { TextField, Button, Box } from "@material-ui/core";
+import { TextField, Button, Box, InputLabel, Select, MenuItem, FormControl } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { ticketTypeArray } from "./TicketTypeArray";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
         flexDirection: 'row',
-        maxHeight: 580,
+        maxHeight: 500,
     },
     filled: {
         background: '#FFF1E6',
         borderRadius: 5,
         marginRight: theme.spacing(1),
+        width: 190,
+        height: 50,
+        paddingBottom: 10,
+    },
+    button: {
+        width: 190,
     },
     tmpList: {
         paddingLeft: 10,
@@ -73,7 +80,7 @@ export const NFTicketAdmin: React.FC<Props> = () => {
             if (isBigNumberish(fee)) {
                 const totalFee = fee.mul(baseSettings.maxSupply)
                 const tx = await admin.instance.addNFTicket(baseSettings, { value: totalFee })
-                console.log("[NFTicketAdmin.addNFTicket]: ", tx)
+                console.log("NFTicketAdmin.addNFTicket: ", tx)
                 await tx.wait()
                 setTemplateList(await admin.instance.getTemplateList())
             }
@@ -83,28 +90,37 @@ export const NFTicketAdmin: React.FC<Props> = () => {
     return (
         <div>
             <Box>
-            <form
-                onSubmit={(e: React.SyntheticEvent) => {
-                    e.preventDefault()
-                    addNFTicket()
-                }}
-                className={classes.root}
-                autoComplete="off"
-            >
-                <TextField label="name" variant="filled" className={classes.filled} onChange={(e) =>
-                    { setBaseSettings({ ...baseSettings, name: e.target.value }) }}
-                />
-                <TextField label="symbol" variant="filled" className={classes.filled} onChange={(e) =>
-                    { setBaseSettings({ ...baseSettings, symbol: e.target.value }) }}
-                />
-                <TextField label="ticket type" variant="filled" className={classes.filled} onChange={(e) =>
-                    { setBaseSettings({ ...baseSettings, ticketType: parseInt(e.target.value) }) }}
-                />
-                <TextField label="max supply" variant="filled" className={classes.filled} onChange={(e) =>
-                    { setBaseSettings({ ...baseSettings, maxSupply: parseInt(e.target.value) }) }}
-                />
-                <Button variant="contained" type="submit">create album</Button>
-            </form>
+                <form
+                    onSubmit={(e: React.SyntheticEvent) => {
+                        e.preventDefault()
+                        addNFTicket()
+                    }}
+                    className={classes.root}
+                    autoComplete="off"
+                >
+                    <TextField label="name" className={classes.filled} inputProps={{style: { textAlign: 'center' }}}
+                        onChange={(e) => { setBaseSettings({ ...baseSettings, name: e.target.value }) }}
+                    />
+                    <TextField label="symbol" className={classes.filled} inputProps={{style: { textAlign: 'center' }}}
+                        onChange={(e) => { setBaseSettings({ ...baseSettings, symbol: e.target.value }) }}
+                    />
+                    <FormControl className={classes.filled}>
+                        <InputLabel id="ticket-type-label">ticket type</InputLabel>
+                        <Select
+                            labelId="ticket-type-label"
+                            id="ticket-type"
+                            onChange={(e) => { setBaseSettings({ ...baseSettings, ticketType: e.target.value as number }) }}
+                        >
+                            {ticketTypeArray.map((typeName, idx)=>
+                                <MenuItem value={idx}>{typeName}</MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
+                    <TextField label="max supply" className={classes.filled} inputProps={{style: { textAlign: 'center' }}}
+                        onChange={(e) => { setBaseSettings({ ...baseSettings, maxSupply: parseInt(e.target.value) }) }}
+                    />
+                    <Button variant="contained" className={classes.button} type="submit">create album</Button>
+                </form>
             </Box>
             <Box display="flex" flexDirection="row" className={classes.tmpList}>
                 {templateList.map((addr) => {

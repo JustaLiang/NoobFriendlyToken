@@ -4,6 +4,7 @@ import { NFTicketTemplate__factory } from "../hardhat/typechain/factories/NFTick
 import { NFTicketTemplate } from "../hardhat/typechain/NFTicketTemplate";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardHeader, CardMedia, CardContent, Typography, Box, CircularProgress } from "@material-ui/core";
+import { ticketTypeArray } from "./TicketTypeArray";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -11,9 +12,6 @@ const useStyles = makeStyles((theme) => ({
     },
     media: {
         height: 300,
-    },
-    info: {
-        fontWeight: 'bold',
     },
 }))
 
@@ -123,10 +121,10 @@ export const NFTicketTemplateCard: React.FC<Props> = (props) => {
                 )}
 
                 <CardContent>
-                    <Typography variant='h6' className={classes.info}>
-                        Ticket Type: {templateInfo.ticketType}
+                    <Typography variant='h6' align='left'>
+                        Ticket Type: {ticketTypeArray[templateInfo.ticketType]}
                     </Typography>
-                    <Typography variant='h6' className={classes.info}>
+                    <Typography variant='h6' align='left'>
                         Max Supply: {templateInfo.maxSupply}
                     </Typography>
                 </CardContent>
