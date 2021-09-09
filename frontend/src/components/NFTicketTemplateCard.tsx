@@ -2,6 +2,20 @@ import React, { useContext, useEffect, useState } from 'react';
 import { SignerContext, ProviderContext } from "../hardhat/SymfoniContext";
 import { NFTicketTemplate__factory } from "../hardhat/typechain/factories/NFTicketTemplate__factory";
 import { NFTicketTemplate } from "../hardhat/typechain/NFTicketTemplate";
+import { makeStyles } from "@material-ui/core/styles";
+import { Card, CardHeader, CardMedia, CardContent, Typography } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        width: 300,
+    },
+    media: {
+        height: 300,
+    },
+    info: {
+        fontWeight: 'bold',
+    },
+}))
 
 interface Props {
     templateAddress: string
@@ -15,39 +29,36 @@ interface TemplateInfo {
 }
 
 export const NFTicketTemplateCard: React.FC<Props> = (props) => {
-    const signer = useContext(SignerContext)
-    const provider = useContext(ProviderContext)
-    const [template, setTemplate] = useState<NFTicketTemplate>()
+    const classes = useStyles();
+    const signer = useContext(SignerContext);
+    const provider = useContext(ProviderContext);
+    const [template, setTemplate] = useState<NFTicketTemplate>();
     const [templateInfo, setTemplateInfo] = useState<TemplateInfo>({
         name: "name",
         symbol: "symbol",
         ticketType: 0,
         maxSupply: 0,
-    })
+    });
+    const { templateAddress } = props;
     useEffect(() => {
             if (signer[0]) {
-                setTemplate(NFTicketTemplate__factory.connect(props.templateAddress, signer[0]))
+                setTemplate(NFTicketTemplate__factory.connect(templateAddress, signer[0]))
                 console.log("connect contract by signer")
             }
             else if (provider[0]) {
-                setTemplate(NFTicketTemplate__factory.connect(props.templateAddress, provider[0]))
+                setTemplate(NFTicketTemplate__factory.connect(templateAddress, provider[0]))
                 console.log("connect contract by provider")
             }
             else {
                 console.log("no signer or provider")
             }
-    }, [signer, provider, props])
+    }, [signer, provider, templateAddress])
 
     useEffect(() => {
         const reloadTemplate = async () => {
             if (template) {
-                const settings = await template.settings()
-                setTemplateInfo({
-                    name: await template.name(),
-                    symbol: await template.symbol(),
-                    ticketType: settings.ticketType,
-                    maxSupply: settings.maxSupply,
-                })
+                const templateInfo = await template.getBaseSettings()
+                setTemplateInfo(templateInfo)
             }
         }
         reloadTemplate()
@@ -55,7 +66,26 @@ export const NFTicketTemplateCard: React.FC<Props> = (props) => {
 
     return (
         <div>
-            {templateInfo.name} | {templateInfo.symbol} | {templateInfo.ticketType} | {templateInfo.maxSupply}
+            <Card className={classes.root} style={{ borderRadius: 20 }} elevation={10} >
+                <CardHeader
+                    title={templateInfo.name}
+                    subheader={templateInfo.symbol}
+                />
+                <CardMedia
+                    className={classes.media}
+                    component="img"
+                    image="https://bafybeibnzhc7vp4hnfcocw7s2jej2tj5xqpwseyz3ifylismh47cr45rhm.ipfs.dweb.link/"
+                    alt="Not initialize"
+                />
+                <CardContent>
+                    <Typography variant='h6' className={classes.info}>
+                        Ticket Type: {templateInfo.ticketType}
+                    </Typography>
+                    <Typography variant='h6' className={classes.info}>
+                        Max Supply: {templateInfo.maxSupply}
+                    </Typography>
+                </CardContent>
+            </Card>
         </div>
     )
 }

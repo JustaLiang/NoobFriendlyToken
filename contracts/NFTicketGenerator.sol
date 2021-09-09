@@ -5,44 +5,49 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 struct BaseSettings {
     string name;
     string symbol;
     address[] payees;
     uint[] shares;
+    uint32 ticketType;
+    uint32 maxSupply;
 }
 
-struct Settings {
-    uint16 ticketType;
-    uint48 maxSupply;
+struct BaseSettingsInfo {
+    string name;
+    string symbol;
+    uint32 ticketType;
+    uint32 maxSupply;    
 }
 
 interface GeneratorInterface {
     function slottingFee() external view returns (uint);
-    function genNFTicketContract(address,
-                                 BaseSettings calldata,
-                                 Settings calldata) external returns (address);
+    function genNFTicketContract(address, BaseSettings calldata) external returns (address);
 }
 
-interface TemplateInterface {
+interface TemplateInterface is IERC721 {
+    function owner() external view returns (address);
     function transferOwnership(address newOwner) external;
-    function getSettings() external returns (uint16, uint48);
 }
 
 abstract contract NFTicketTemplate is Ownable, PaymentSplitter, ERC721Enumerable {
 
-    Settings public settings;
+    uint32 public ticketType;
+    uint32 public maxSupply;
 
-    constructor(Settings memory settings_) {
-        settings = settings_;
+    constructor(uint32 ticketType_, uint32 maxSupply_) {
+        ticketType = ticketType_;
+        maxSupply = maxSupply_;
     }
 
-    function _validToken(uint tokenId) internal view returns (bool) {
-        return tokenId < settings.maxSupply;
+    function _validTokenId(uint tokenId) internal view returns (bool) {
+        return tokenId < maxSupply;
     }
 
-    function getSettings() public view returns (uint16, uint48) {
-        return (settings.ticketType, settings.maxSupply);
+    function getBaseSettings() external view returns (BaseSettingsInfo memory) {
+        return BaseSettingsInfo(name(), symbol(), ticketType, maxSupply);
     }
 }

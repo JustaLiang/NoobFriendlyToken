@@ -17,23 +17,31 @@ contract NFTicketAdmin is Ownable, PaymentSplitter {
                 PaymentSplitter(payees, shares) {
     }
 
-    function updateTemplateType(uint8 ticketType, address generatorAddr) external onlyOwner {
+    function updateTemplateType(uint32 ticketType, address generatorAddr) external onlyOwner {
         typeToGenerator[ticketType] = GeneratorInterface(generatorAddr);
+        console.log("NFTicketAdmin:", ticketType, "=>", generatorAddr);
     }
 
-    function addNFTicket(BaseSettings calldata baseSettings,
-                         Settings calldata settings) external payable {
-        GeneratorInterface generator = typeToGenerator[settings.ticketType];
+    function addNFTicket(BaseSettings calldata baseSettings) external payable {
+        console.log("baseSettings");
+        console.log("  name:", baseSettings.name);
+        console.log("  symbol:", baseSettings.symbol);
+        for (uint i = 0; i < baseSettings.payees.length; i++) {
+            console.log("    ", baseSettings.payees[i], baseSettings.shares[i]);
+        }
+        console.log("  ticketType:", baseSettings.ticketType);
+        console.log("  maxSupply:", baseSettings.maxSupply);
+        GeneratorInterface generator = typeToGenerator[baseSettings.ticketType];
         require(
             address(generator) != address(0),
-            "Invalid ticket type"
+            "NFTicketAdmin: Invalid ticket type"
         );
         require(
-            msg.value >= generator.slottingFee()*settings.maxSupply,
-            "Slotting fee error"
+            msg.value >= generator.slottingFee()*baseSettings.maxSupply,
+            "NFTicketAdmin: Slotting fee error"
         );
 
-        userTemplates[_msgSender()].push(TemplateInterface(generator.genNFTicketContract(_msgSender(), baseSettings, settings)));
+        userTemplates[_msgSender()].push(TemplateInterface(generator.genNFTicketContract(_msgSender(), baseSettings)));
     }
 
     function getTemplateList() external view returns (TemplateInterface[] memory) {
@@ -42,7 +50,10 @@ contract NFTicketAdmin is Ownable, PaymentSplitter {
 
     function slottingFee(uint32 generatorType) external view returns (uint) {
         GeneratorInterface generator = typeToGenerator[generatorType];
-        require(address(generator) != address(0));
+        require(
+            address(generator) != address(0),
+            "NFTicketAdmin: generator not exists"
+        );
         return generator.slottingFee();
     }
 }

@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Symfoni autoInit={true} >
+        <Symfoni autoInit={true} loadingComponent={<h1>Loading...</h1>}>
           <NFTicketAdmin/>
         </Symfoni>
       </header>
