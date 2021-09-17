@@ -37,6 +37,7 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
 
     uint32 public typeOfNFT;
     uint32 public maxSupply;
+    uint public slottingFee;
 
     constructor(uint32 typeOfNFT_, uint32 maxSupply_) {
         typeOfNFT = typeOfNFT_;
@@ -49,5 +50,10 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
 
     function getBaseSettings() external view returns (BaseSettingsInfo memory) {
         return BaseSettingsInfo(name(), symbol(), typeOfNFT, maxSupply);
+    }
+
+    function changeSlottingFee(uint newSlottingFee) external onlyOwner {
+        console.log("slotting fee change from", slottingFee, " to", newSlottingFee);
+        slottingFee = newSlottingFee;
     }
 }
