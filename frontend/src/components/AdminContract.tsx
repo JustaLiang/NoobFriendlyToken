@@ -48,7 +48,7 @@ interface BaseSettings {
     maxSupply: number,
 }
 
-export const NFTicketAdmin: React.FC<Props> = () => {
+export const AdminContract: React.FC<Props> = () => {
     const classes = useStyles();
     const admin = useContext(NoobFriendlyTokenAdminContext);
     const account = useContext(CurrentAddressContext);
@@ -64,7 +64,7 @@ export const NFTicketAdmin: React.FC<Props> = () => {
     useEffect(() => {
         const checkAdminContract = async () => {
             if (!admin.instance) return
-            console.log("NFTicketAdmin is deployed at ", admin.instance.address)
+            console.log("AdminContract is deployed at ", admin.instance.address)
             setContractList(await admin.instance.getContractList())
         };
         checkAdminContract();
@@ -80,7 +80,6 @@ export const NFTicketAdmin: React.FC<Props> = () => {
                 const totalFee = fee.mul(baseSettings.maxSupply)
                 const tx = await admin.instance.genNFTContract(baseSettings, { value: totalFee })
                 await tx.wait();
-                console.log("NFTicketAdmin.genNFTContract: ", tx);
                 setContractList(await admin.instance.getContractList())
             }
         }

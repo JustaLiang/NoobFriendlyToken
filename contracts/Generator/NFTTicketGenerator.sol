@@ -100,9 +100,9 @@ contract NFTTicketGenerator is Ownable, GeneratorInterface {
     function genNFTContract(address client, BaseSettings calldata baseSettings) external override returns (address) {
         require(_msgSender() == adminAddr);
         address contractAddr =  address(new NFTTicket(baseSettings));
-        TemplateInterface nfticket = TemplateInterface(contractAddr);
-        nfticket.transferOwnership(client);
-        console.log("NFTicketContract at:", address(nfticket), " Owner:", nfticket.owner());
+        TemplateInterface nftTicket = TemplateInterface(contractAddr);
+        nftTicket.transferOwnership(client);
+        console.log("NFTTicket at:", address(nftTicket), " Owner:", nftTicket.owner());
         return contractAddr;
     }
 

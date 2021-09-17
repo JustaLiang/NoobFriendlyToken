@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { Symfoni } from "./hardhat/SymfoniContext";
-import { NFTicketAdmin } from './components/AdminContract';
+import { AdminContract } from './components/AdminContract';
 
 function App() {
 
@@ -9,7 +9,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <Symfoni autoInit={true} loadingComponent={<h1>Loading...</h1>}>
-          <NFTicketAdmin/>
+          <AdminContract/>
         </Symfoni>
       </header>
     </div>
