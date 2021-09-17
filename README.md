@@ -1,5 +1,5 @@
-# NFTicket
-Ticket and membership system based on NFT.
+# NoobFriendlyToken
+Noob-friendly interface for uploading and managing NFT contracts.
 
 ## Get Start
 1. Clone the repo and cd into it
