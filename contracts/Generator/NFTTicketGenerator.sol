@@ -106,8 +106,5 @@ contract NFTTicketGenerator is Ownable, GeneratorInterface {
         return contractAddr;
     }
 
-    function changeSlottingFee(uint newSlottingFee) external onlyOwner {
-        console.log("slotting fee change from", slottingFee, " to", newSlottingFee);
-        slottingFee = newSlottingFee;
-    }
+    
 }
