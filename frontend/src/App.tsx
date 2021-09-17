@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { Symfoni } from "./hardhat/SymfoniContext";
-import { NFTicketAdmin } from './components/NFTicketAdmin';
+import { NFTicketAdmin } from './components/AdminContract';
 
 function App() {
 

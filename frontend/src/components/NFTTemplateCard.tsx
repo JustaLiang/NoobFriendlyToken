@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SignerContext, ProviderContext } from "../hardhat/SymfoniContext";
-import { NFTicketTemplate__factory } from "../hardhat/typechain/factories/NFTicketTemplate__factory";
-import { NFTicketTemplate } from "../hardhat/typechain/NFTicketTemplate";
+import { NoobFriendlyTokenTemplate__factory } from "../hardhat/typechain/factories/NoobFriendlyTokenTemplate__factory";
+import { NoobFriendlyTokenTemplate } from "../hardhat/typechain/NoobFriendlyTokenTemplate";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardHeader, CardMedia, CardContent, Typography, Box, CircularProgress } from "@material-ui/core";
-import { ticketTypeArray } from "./TicketTypeArray";
+import { NFTTypeArray } from "./NFTTypeArray";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -22,34 +22,34 @@ interface Props {
 interface TemplateInfo {
     name: string,
     symbol: string,
-    ticketType: number,
+    typeOfNFT: number,
     maxSupply: number,
 }
 
 const baycURI = "https://bafybeihpjhkeuiq3k6nqa3fkgeigeri7iebtrsuyuey5y6vy36n345xmbi.ipfs.dweb.link/";
 
-export const NFTicketTemplateCard: React.FC<Props> = (props) => {
+export const NFTTemplateCard: React.FC<Props> = (props) => {
     const classes = useStyles();
     const signer = useContext(SignerContext);
     const provider = useContext(ProviderContext);
     const [imageURI, setImageURI] = useState<string>("fetching");
     const [imgLoaded, setImgLoaded] = useState<Boolean>(false);
-    const [template, setTemplate] = useState<NFTicketTemplate>();
+    const [template, setTemplate] = useState<NoobFriendlyTokenTemplate>();
     const [templateInfo, setTemplateInfo] = useState<TemplateInfo>({
         name: "name",
         symbol: "symbol",
-        ticketType: 0,
+        typeOfNFT: 0,
         maxSupply: 0,
     });
     const { templateAddress } = props;
 
     useEffect(() => {
         if (signer[0]) {
-            setTemplate(NFTicketTemplate__factory.connect(templateAddress, signer[0]))
+            setTemplate(NoobFriendlyTokenTemplate__factory.connect(templateAddress, signer[0]))
             console.log("connect contract by signer")
         }
         else if (provider[0]) {
-            setTemplate(NFTicketTemplate__factory.connect(templateAddress, provider[0]))
+            setTemplate(NoobFriendlyTokenTemplate__factory.connect(templateAddress, provider[0]))
             console.log("connect contract by provider")
         }
         else {
@@ -122,7 +122,7 @@ export const NFTicketTemplateCard: React.FC<Props> = (props) => {
 
                 <CardContent>
                     <Typography variant='h6' align='left'>
-                        Ticket Type: {ticketTypeArray[templateInfo.ticketType]}
+                        Ticket Type: {NFTTypeArray[templateInfo.typeOfNFT]}
                     </Typography>
                     <Typography variant='h6' align='left'>
                         Max Supply: {templateInfo.maxSupply}

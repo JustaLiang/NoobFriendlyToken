@@ -4,11 +4,11 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
-import "./NFTicketGenerator.sol";
+import "./NoobFriendlyTokenTemplate.sol";
 
-contract NFTicketAdmin is Ownable, PaymentSplitter {
+contract NoobFriendlyTokenAdmin is Ownable, PaymentSplitter {
 
-    mapping (address => TemplateInterface[]) public userTemplates;
+    mapping (address => TemplateInterface[]) public userContracts;
 
     mapping (uint32 => GeneratorInterface) public typeToGenerator;
 
@@ -17,42 +17,43 @@ contract NFTicketAdmin is Ownable, PaymentSplitter {
                 PaymentSplitter(payees, shares) {
     }
 
-    function updateTemplateType(uint32 ticketType, address generatorAddr) external onlyOwner {
-        typeToGenerator[ticketType] = GeneratorInterface(generatorAddr);
-        console.log("NFTicketAdmin:", ticketType, "=>", generatorAddr);
+    function updateGenerator(uint32 typeOfNFT, address generatorAddr) external onlyOwner {
+        typeToGenerator[typeOfNFT] = GeneratorInterface(generatorAddr);
+        console.log("NoobFriendlyTokenAdmin:", typeOfNFT, "=>", generatorAddr);
     }
 
-    function addNFTicket(BaseSettings calldata baseSettings) external payable {
+    function genNFTContract(BaseSettings calldata baseSettings) external payable {
         console.log("baseSettings");
         console.log("  name:", baseSettings.name);
         console.log("  symbol:", baseSettings.symbol);
         for (uint i = 0; i < baseSettings.payees.length; i++) {
             console.log("    ", baseSettings.payees[i], baseSettings.shares[i]);
         }
-        console.log("  ticketType:", baseSettings.ticketType);
+        console.log("  typeOfNFT:", baseSettings.typeOfNFT);
         console.log("  maxSupply:", baseSettings.maxSupply);
-        GeneratorInterface generator = typeToGenerator[baseSettings.ticketType];
+        GeneratorInterface generator = typeToGenerator[baseSettings.typeOfNFT];
         require(
             address(generator) != address(0),
-            "NFTicketAdmin: Invalid ticket type"
+            "NoobFriendlyTokenAdmin: Invalid ticket type"
         );
         require(
             msg.value >= generator.slottingFee()*baseSettings.maxSupply,
-            "NFTicketAdmin: Slotting fee error"
+            "NoobFriendlyTokenAdmin: Slotting fee error"
         );
+        TemplateInterface nftContract = TemplateInterface(generator.genNFTContract(_msgSender(), baseSettings));
 
-        userTemplates[_msgSender()].push(TemplateInterface(generator.genNFTicketContract(_msgSender(), baseSettings)));
+        userContracts[_msgSender()].push(nftContract);
     }
 
-    function getTemplateList() external view returns (TemplateInterface[] memory) {
-        return userTemplates[_msgSender()];
+    function getContractList() external view returns (TemplateInterface[] memory) {
+        return userContracts[_msgSender()];
     }
 
     function slottingFee(uint32 generatorType) external view returns (uint) {
         GeneratorInterface generator = typeToGenerator[generatorType];
         require(
             address(generator) != address(0),
-            "NFTicketAdmin: generator not exists"
+            "NoobFriendlyTokenAdmin: generator not exists"
         );
         return generator.slottingFee();
     }

@@ -12,42 +12,42 @@ struct BaseSettings {
     string symbol;
     address[] payees;
     uint[] shares;
-    uint32 ticketType;
+    uint32 typeOfNFT;
     uint32 maxSupply;
 }
 
 struct BaseSettingsInfo {
     string name;
     string symbol;
-    uint32 ticketType;
+    uint32 typeOfNFT;
     uint32 maxSupply;    
 }
 
 interface GeneratorInterface {
     function slottingFee() external view returns (uint);
-    function genNFTicketContract(address, BaseSettings calldata) external returns (address);
+    function genNFTContract(address, BaseSettings calldata) external returns (address);
 }
 
-interface TemplateInterface is IERC721 {
-    function owner() external view returns (address);
+interface TemplateInterface {
+    function owner() external returns (address);
     function transferOwnership(address newOwner) external;
 }
 
-abstract contract NFTicketTemplate is Ownable, PaymentSplitter, ERC721Enumerable {
+abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721Enumerable {
 
-    uint32 public ticketType;
+    uint32 public typeOfNFT;
     uint32 public maxSupply;
 
-    constructor(uint32 ticketType_, uint32 maxSupply_) {
-        ticketType = ticketType_;
+    constructor(uint32 typeOfNFT_, uint32 maxSupply_) {
+        typeOfNFT = typeOfNFT_;
         maxSupply = maxSupply_;
     }
 
-    function _validTokenId(uint tokenId) internal view returns (bool) {
+    function _underSupply(uint tokenId) internal view returns (bool) {
         return tokenId < maxSupply;
     }
 
     function getBaseSettings() external view returns (BaseSettingsInfo memory) {
-        return BaseSettingsInfo(name(), symbol(), ticketType, maxSupply);
+        return BaseSettingsInfo(name(), symbol(), typeOfNFT, maxSupply);
     }
 }

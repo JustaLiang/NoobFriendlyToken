@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "../NFTicketGenerator.sol";
+import "../NoobFriendlyTokenTemplate.sol";
 
-contract NFTicketDuplicate is NFTicketTemplate {
+contract NFTTicket is NoobFriendlyTokenTemplate {
 
     using Strings for uint8;
 
@@ -22,7 +22,7 @@ contract NFTicketDuplicate is NFTicketTemplate {
     constructor(BaseSettings memory baseSettings)
         ERC721(baseSettings.name, baseSettings.symbol)
         PaymentSplitter(baseSettings.payees, baseSettings.shares)
-        NFTicketTemplate(baseSettings.ticketType, baseSettings.maxSupply) {
+        NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply) {
         notInit = true;
     }
 
@@ -38,7 +38,7 @@ contract NFTicketDuplicate is NFTicketTemplate {
         uint length = ticketAmounts_.length;
         require(
             length == ticketPrices_.length && length > 0 && length <= 256,
-            "NFTicketDuplicate: level error"
+            "NFTTicket: level error"
         );
         uint48 cumulation = 0;
         for (uint8 lv = 0; lv < length; lv++) {
@@ -50,7 +50,7 @@ contract NFTicketDuplicate is NFTicketTemplate {
         }
         require(
             cumulation == maxSupply,
-            "NFTicketDuplicate: sum of supply of each level not match"
+            "NFTTicket: sum of supply of each level not match"
         );
         baseURI = baseURI_;
     }
@@ -58,16 +58,16 @@ contract NFTicketDuplicate is NFTicketTemplate {
     function mintToken(uint8 level) external payable {
         require(
             level < _ticketState.prices.length,
-            "NFTicketDuplicate: no such level"
+            "NFTTicket: no such level"
         );
         uint48 newTicketId = _ticketState.current[level];
         require(
             newTicketId < _ticketState.soldout[level],
-            "NFTicketDuplicate: sold out at this level"  
+            "NFTTicket: sold out at this level"  
         );
         require(
             msg.value >= _ticketState.prices[level],
-            "NFTicketDuplicate: not enough for ticket price"    
+            "NFTTicket: not enough for ticket price"    
         );
 
         _safeMint(_msgSender(), uint(newTicketId));
@@ -76,7 +76,7 @@ contract NFTicketDuplicate is NFTicketTemplate {
     function tokenURI(uint ticketId) public override view returns (string memory uri) {
         require(
             _exists(ticketId),
-            "NFTicketDuplicate: query for non-existing ticket"
+            "NFTTicket: query for non-existing ticket"
         );
         uint length = _ticketState.soldout.length;
         for (uint8 lv = 0; lv < length; lv++) {
@@ -87,7 +87,7 @@ contract NFTicketDuplicate is NFTicketTemplate {
     }
 }
 
-contract NFTicketDuplicateGenerator is Ownable, GeneratorInterface {
+contract NFTTicketGenerator is Ownable, GeneratorInterface {
 
     address public adminAddr;
     uint public override slottingFee;
@@ -97,9 +97,9 @@ contract NFTicketDuplicateGenerator is Ownable, GeneratorInterface {
         slottingFee = slottingFee_;
     }
     
-    function genNFTicketContract(address client, BaseSettings calldata baseSettings) external override returns (address) {
+    function genNFTContract(address client, BaseSettings calldata baseSettings) external override returns (address) {
         require(_msgSender() == adminAddr);
-        address contractAddr =  address(new NFTicketDuplicate(baseSettings));
+        address contractAddr =  address(new NFTTicket(baseSettings));
         TemplateInterface nfticket = TemplateInterface(contractAddr);
         nfticket.transferOwnership(client);
         console.log("NFTicketContract at:", address(nfticket), " Owner:", nfticket.owner());
