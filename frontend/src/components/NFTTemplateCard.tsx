@@ -3,8 +3,9 @@ import { SignerContext, ProviderContext } from "../hardhat/SymfoniContext";
 import { NoobFriendlyTokenTemplate__factory } from "../hardhat/typechain/factories/NoobFriendlyTokenTemplate__factory";
 import { NoobFriendlyTokenTemplate } from "../hardhat/typechain/NoobFriendlyTokenTemplate";
 import { makeStyles } from "@material-ui/core/styles";
-import { Card, CardHeader, CardMedia, CardContent, Typography, Box, CircularProgress } from "@material-ui/core";
+import { Card, CardHeader, CardMedia, CardContent, Typography, Box, CircularProgress, CardActionArea } from "@material-ui/core";
 import { NFTTypeArray } from "./NFTTypeArray";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -80,10 +81,10 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
     useEffect(() => {
         if (imageURI) {
             fetch(imageURI)
-            .then((res) => {
-                if (res.status !== 404)
-                    setImgLoaded(true)
-            })
+                .then((res) => {
+                    if (res.status !== 404)
+                        setImgLoaded(true)
+                })
         }
         else {
             setImgLoaded(true)
@@ -103,31 +104,33 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
     return (
         <div>
             <Card className={classes.root} style={{ borderRadius: 20 }} elevation={10} >
-                <CardHeader
-                    title={templateInfo.name}
-                    subheader={templateInfo.symbol}
-                />
-                {imageURI !== "fetching" && imgLoaded? (
-                    <CardMedia
-                        className={classes.media}
-                        component="img"
-                        image={imageURI}
-                        alt="Not initialized"
+                <CardActionArea component={Link} to={`/${NFTTypeArray[templateInfo.typeOfNFT].toLowerCase()}`}>
+                    <CardHeader
+                        title={templateInfo.name}
+                        subheader={templateInfo.symbol}
                     />
-                ):(
-                    <Box className={classes.media} style={{ textAlign: 'center'}} >
-                        <CircularProgress />
-                    </Box>
-                )}
+                    {imageURI !== "fetching" && imgLoaded ? (
+                        <CardMedia
+                            className={classes.media}
+                            component="img"
+                            image={imageURI}
+                            alt="Not initialized"
+                        />
+                    ) : (
+                        <Box className={classes.media} style={{ textAlign: 'center' }} >
+                            <CircularProgress />
+                        </Box>
+                    )}
 
-                <CardContent>
-                    <Typography variant='h6' align='left'>
-                        Ticket Type: {NFTTypeArray[templateInfo.typeOfNFT]}
-                    </Typography>
-                    <Typography variant='h6' align='left'>
-                        Max Supply: {templateInfo.maxSupply}
-                    </Typography>
-                </CardContent>
+                    <CardContent>
+                        <Typography variant='h6' align='left'>
+                            NFT Type: {NFTTypeArray[templateInfo.typeOfNFT]}
+                        </Typography>
+                        <Typography variant='h6' align='left'>
+                            Max Supply: {templateInfo.maxSupply}
+                        </Typography>
+                    </CardContent>
+                </CardActionArea>
             </Card>
         </div>
     )

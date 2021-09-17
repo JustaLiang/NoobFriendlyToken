@@ -1,16 +1,24 @@
 import React from 'react';
 import './App.css';
 import { Symfoni } from "./hardhat/SymfoniContext";
-import { AdminContract } from './components/AdminContract';
+import  AdminPage from './pages/AdminPage';
+import  TicketPage from './pages/TicketPage';
+
+import { Route, Switch, BrowserRouter as Router, } from 'react-router-dom';
 
 function App() {
 
   return (
     <div className="App">
       <header className="App-header">
-        <Symfoni autoInit={true} loadingComponent={<h1>Loading...</h1>}>
-          <AdminContract/>
-        </Symfoni>
+        <Router>
+          <Switch>
+            <Symfoni autoInit={true} loadingComponent={<h1>Loading...</h1>}>
+            <Route exact path='/' component={AdminPage}/>
+            <Route exact path='/ticket' component={TicketPage}/>
+            </Symfoni>
+          </Switch>
+        </Router>
       </header>
     </div>
   );
