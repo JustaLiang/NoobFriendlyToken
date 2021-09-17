@@ -119,7 +119,7 @@ export const AdminContract: React.FC<Props> = () => {
                     <TextField label="max supply" className={classes.filled} onChange={(e) => {
                         setBaseSettings({ ...baseSettings, maxSupply: parseInt(e.target.value) }) }}
                     />
-                    <Button variant="contained" className={classes.button} type="submit">create tickets</Button>
+                    <Button variant="contained" className={classes.button} type="submit">create</Button>
                 </form>
             </Box>
             <Box display="flex" flexDirection="row" className={classes.tmpList}>
