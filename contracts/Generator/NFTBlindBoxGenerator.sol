@@ -7,18 +7,18 @@ import "../NoobFriendlyTokenTemplate.sol";
 
 contract NFTBlindBox is NoobFriendlyTokenTemplate {
 
-    using Strings for uint8;
+    using Strings for uint256;
+    using SafeMath for uint256;
 
     bool public notInit;
+    bool public saleIsActive = false;
     string public baseURI;
+    uint256 public maxPurchase;
+    uint256 public tokenPrice;
+    uint256 public REVEAL_TIMESTAMP;
+    uint256 public startingIndex;
+    uint256 private startingIndexBlock;
 
-    struct TicketState {
-        uint48[] current;
-        uint48[] soldout;
-        uint160[] prices;
-    }
-
-    TicketState private _ticketState;
 
     constructor(BaseSettings memory baseSettings)
         ERC721(baseSettings.name, baseSettings.symbol)
@@ -34,79 +34,89 @@ contract NFTBlindBox is NoobFriendlyTokenTemplate {
     }
 
     function initialize(string calldata baseURI_,
-                        uint48[] calldata ticketAmounts_,
-                        uint160[] calldata ticketPrices_) external onlyOwner onlyOnce {
-        uint length = ticketAmounts_.length;
-        require(
-            length == ticketPrices_.length && length > 0 && length <= 256,
-            "NFTTicket: level error"
-        );
-        uint48 cumulation = 0;
-        for (uint8 lv = 0; lv < length; lv++) {
-            _ticketState.current.push(cumulation);
-            cumulation += ticketAmounts_[lv];
-            _ticketState.soldout.push(cumulation);
-            _ticketState.prices.push(ticketPrices_[lv]);
-            console.log(lv, _ticketState.current[lv], _ticketState.soldout[lv], _ticketState.prices[lv]);
-        }
-        require(
-            cumulation == maxSupply,
-            "NFTTicket: sum of supply of each level not match"
-        );
+                        uint16 maxPurchase_,
+                        uint120 tokenPrice_,
+                        uint256 saleStart
+                       ) external onlyOwner onlyOnce {
+
+        maxPurchase = maxPurchase_;
+        tokenPrice = tokenPrice_;
+        REVEAL_TIMESTAMP = saleStart + (86400 * 9);
         baseURI = baseURI_;
     }
 
-    function mintToken(uint8 level) external payable {
-        require(
-            level < _ticketState.prices.length,
-            "NFTTicket: no such level"
-        );
-        uint48 newTicketId = _ticketState.current[level];
-        require(
-            newTicketId < _ticketState.soldout[level],
-            "NFTTicket: sold out at this level"  
-        );
-        require(
-            msg.value >= _ticketState.prices[level],
-            "NFTTicket: not enough for ticket price"    
-        );
-
-        _safeMint(_msgSender(), uint(newTicketId));
+    function flipSaleState() public onlyOwner {
+        saleIsActive = !saleIsActive;
     }
 
-    function tokenURI(uint ticketId) public override view returns (string memory uri) {
-        require(
-            _exists(ticketId),
-            "NFTTicket: query for non-existing ticket"
-        );
-        uint length = _ticketState.soldout.length;
-        for (uint8 lv = 0; lv < length; lv++) {
-            if (ticketId < _ticketState.soldout[lv]) {
-                return string(abi.encodePacked(baseURI, lv.toString()));
-            }
+    function reserveNFT() public onlyOwner {        
+        uint supply = totalSupply();
+        uint i;
+        for (i = 0; i < 30; i++) {
+            _safeMint(msg.sender, supply + i);
         }
     }
 
-    /**
-     * @dev See {IERC721Metadata-tokenURI}.
-    */
-    // function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-    //     require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+    function setRevealTimestamp(uint256 revealTimeStamp) public onlyOwner {
+        REVEAL_TIMESTAMP = revealTimeStamp;
+    }
 
-    //     string memory _tokenURI = _tokenURIs[tokenId];
-    //     string memory base = baseURI();
+    function setBaseURI(string memory baseURI_) public onlyOwner {
+        baseURI = baseURI_;
+    }
 
-    //     // If there is no base URI, return the token URI.
-    //     if (bytes(base).length == 0) {
-    //         return _tokenURI;
-    //     }
-    //     // If both are set, concatenate the baseURI and tokenURI (via abi.encodePacked).
-    //     if (bytes(_tokenURI).length > 0) {
-    //         return string(abi.encodePacked(base, _tokenURI));
-    //     }
-    //     // If there is a baseURI but no tokenURI, concatenate the tokenID to the baseURI.
-    //     return string(abi.encodePacked(base, tokenId.toString()));
-    // }
+
+    function mintToken(uint numberOfTokens) external payable {
+
+        require(saleIsActive, "Sale must be active to mint Ape");
+        require(numberOfTokens <= maxPurchase, "Can only mint 20 tokens at a time");
+        require(totalSupply().add(numberOfTokens) <= maxSupply, "Purchase would exceed max supply of Apes");
+        require(tokenPrice.mul(numberOfTokens) <= msg.value, "Ether value sent is not correct");
+
+        for(uint i = 0; i < numberOfTokens; i++) {
+            uint mintIndex = totalSupply();
+            if (totalSupply() < maxSupply) {
+                _safeMint(msg.sender, mintIndex);
+                startingIndexBlock.add(block.number);
+            }
+        }
+
+        // If we haven't set the starting index and this is either 1) the last saleable token or 2) the first token to be sold after
+        // the end of pre-sale, set the starting index block
+        // if (startingIndexBlock == 0 && (totalSupply() == maxSupply || block.timestamp >= REVEAL_TIMESTAMP)) {
+        //     startingIndexBlock = block.number;
+        // }
+    }
+
+    function setStartingIndex() public {
+        require(startingIndex == 0, "Starting index is already set");
+        // require(startingIndexBlock != 0, "Starting index block must be set");
+        
+        startingIndex = uint(blockhash(startingIndexBlock)) % maxSupply;
+        // Just a sanity case in the worst case if this function is called late (EVM only stores last 256 block hashes)
+        if (block.number.sub(startingIndexBlock) > 255) {
+            startingIndex = uint(blockhash(block.number - 1)) % maxSupply;
+        }
+        // Prevent default sequence
+        if (startingIndex == 0) {
+            startingIndex = startingIndex.add(1);
+        }
+    }
+
+    function tokenURI(uint tokenId) public override view returns (string memory) {
+        require(
+            _exists(tokenId),
+             "ERC721Metadata: URI query for nonexistent token"
+        );
+        
+
+        if (startingIndex != 0){
+            uint tokenIndex = (startingIndex + tokenId) % maxSupply;
+            return string(abi.encodePacked(baseURI, tokenIndex));
+        }
+        return string(abi.encodePacked(baseURI, tokenId.toString()));
+    }
+        
 }
 
 contract NFTBlindBoxGenerator is Ownable, GeneratorInterface {
@@ -122,9 +132,9 @@ contract NFTBlindBoxGenerator is Ownable, GeneratorInterface {
     function genNFTContract(address client, BaseSettings calldata baseSettings) external override returns (address) {
         require(_msgSender() == adminAddr);
         address contractAddr =  address(new NFTBlindBox(baseSettings));
-        TemplateInterface nftTicket = TemplateInterface(contractAddr);
-        nftTicket.transferOwnership(client);
-        console.log("NFTTicket at:", address(nftTicket), " Owner:", nftTicket.owner());
+        TemplateInterface nftBlindBox = TemplateInterface(contractAddr);
+        nftBlindBox.transferOwnership(client);
+        console.log("NFTBlindBox at:", address(nftBlindBox), " Owner:", nftBlindBox.owner());
         return contractAddr;
     }
 
