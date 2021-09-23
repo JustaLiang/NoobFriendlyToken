@@ -5,13 +5,12 @@ import "hardhat/console.sol";
 import "../NoobFriendlyTokenTemplate.sol";
 
 
-contract NFTBlindBox is NoobFriendlyTokenTemplate {
+contract NFTBlindbox is NoobFriendlyTokenTemplate {
 
     using Strings for uint256;
     using SafeMath for uint256;
 
-    bool public notInit;
-    bool public saleIsActive = false;
+    bool public saleIsActive;
     string public baseURI;
     uint256 public maxPurchase;
     uint256 public tokenPrice;
@@ -19,18 +18,11 @@ contract NFTBlindBox is NoobFriendlyTokenTemplate {
     uint256 public startingIndex;
     uint256 private startingIndexBlock;
 
-
     constructor(BaseSettings memory baseSettings)
         ERC721(baseSettings.name, baseSettings.symbol)
         PaymentSplitter(baseSettings.payees, baseSettings.shares)
         NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply) {
-        notInit = true;
-    }
-
-    modifier onlyOnce() {
-        require(notInit);
-        notInit = false;
-        _;
+        saleIsActive = false;
     }
 
     function initialize(string calldata baseURI_,
@@ -38,7 +30,6 @@ contract NFTBlindBox is NoobFriendlyTokenTemplate {
                         uint120 tokenPrice_,
                         uint256 saleStart
                        ) external onlyOwner onlyOnce {
-
         maxPurchase = maxPurchase_;
         tokenPrice = tokenPrice_;
         REVEAL_TIMESTAMP = saleStart + (86400 * 9);
@@ -65,7 +56,6 @@ contract NFTBlindBox is NoobFriendlyTokenTemplate {
         baseURI = baseURI_;
     }
 
-
     function mintToken(uint numberOfTokens) external payable {
 
         require(saleIsActive, "Sale must be active to mint Ape");
@@ -80,18 +70,13 @@ contract NFTBlindBox is NoobFriendlyTokenTemplate {
                 startingIndexBlock.add(block.number);
             }
         }
-
-        // If we haven't set the starting index and this is either 1) the last saleable token or 2) the first token to be sold after
-        // the end of pre-sale, set the starting index block
-        // if (startingIndexBlock == 0 && (totalSupply() == maxSupply || block.timestamp >= REVEAL_TIMESTAMP)) {
-        //     startingIndexBlock = block.number;
-        // }
     }
 
     function setStartingIndex() public {
         require(startingIndex == 0, "Starting index is already set");
-        // require(startingIndexBlock != 0, "Starting index block must be set");
-        
+        require(totalSupply() == maxSupply || block.timestamp >= REVEAL_TIMESTAMP,
+                "");
+
         startingIndex = uint(blockhash(startingIndexBlock)) % maxSupply;
         // Just a sanity case in the worst case if this function is called late (EVM only stores last 256 block hashes)
         if (block.number.sub(startingIndexBlock) > 255) {
@@ -109,17 +94,15 @@ contract NFTBlindBox is NoobFriendlyTokenTemplate {
              "ERC721Metadata: URI query for nonexistent token"
         );
         
-
         if (startingIndex != 0){
             uint tokenIndex = (startingIndex + tokenId) % maxSupply;
             return string(abi.encodePacked(baseURI, tokenIndex));
         }
         return string(abi.encodePacked(baseURI, tokenId.toString()));
     }
-        
 }
 
-contract NFTBlindBoxGenerator is Ownable, GeneratorInterface {
+contract NFTBlindboxGenerator is Ownable, GeneratorInterface {
 
     address public adminAddr;
     uint public override slottingFee;
@@ -131,12 +114,10 @@ contract NFTBlindBoxGenerator is Ownable, GeneratorInterface {
     
     function genNFTContract(address client, BaseSettings calldata baseSettings) external override returns (address) {
         require(_msgSender() == adminAddr);
-        address contractAddr =  address(new NFTBlindBox(baseSettings));
-        TemplateInterface nftBlindBox = TemplateInterface(contractAddr);
-        nftBlindBox.transferOwnership(client);
-        console.log("NFTBlindBox at:", address(nftBlindBox), " Owner:", nftBlindBox.owner());
+        address contractAddr =  address(new NFTBlindbox(baseSettings));
+        TemplateInterface nftBlindbox = TemplateInterface(contractAddr);
+        nftBlindbox.transferOwnership(client);
+        console.log("NFTBlindbox at:", address(nftBlindbox), " Owner:", nftBlindbox.owner());
         return contractAddr;
     }
-
-    
 }

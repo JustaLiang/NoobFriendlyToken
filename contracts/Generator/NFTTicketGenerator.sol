@@ -8,7 +8,6 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
 
     using Strings for uint8;
 
-    bool public notInit;
     string public baseURI;
 
     struct TicketState {
@@ -23,13 +22,6 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
         ERC721(baseSettings.name, baseSettings.symbol)
         PaymentSplitter(baseSettings.payees, baseSettings.shares)
         NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply) {
-        notInit = true;
-    }
-
-    modifier onlyOnce() {
-        require(notInit);
-        notInit = false;
-        _;
     }
 
     function initialize(string calldata baseURI_,
