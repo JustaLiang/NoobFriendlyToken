@@ -7,10 +7,9 @@ import "../NoobFriendlyTokenTemplate.sol";
 
 contract NFTBlindbox is NoobFriendlyTokenTemplate {
 
-    using Strings for uint256;
-    using SafeMath for uint256;
-
-    
+    using Strings for uint;
+    using SafeMath for uint;
+  
     uint256 public tokenPrice;
     uint256 public REVEAL_TIMESTAMP;
     uint256 public startingIndex;
@@ -23,9 +22,9 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     }
 
     function initialize(string calldata baseURI_,
-                        uint16 maxPurchase_,
-                        uint120 tokenPrice_,
-                        uint256 saleStart
+                        uint maxPurchase_,
+                        uint tokenPrice_,
+                        uint saleStart
                        ) external onlyOwner onlyOnce {
         maxPurchase = maxPurchase_;
         tokenPrice = tokenPrice_;
@@ -41,12 +40,8 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         }
     }
 
-    function setRevealTimestamp(uint256 revealTimeStamp) public onlyOwner {
+    function setRevealTimestamp(uint revealTimeStamp) public onlyOwner {
         REVEAL_TIMESTAMP = revealTimeStamp;
-    }
-
-    function setBaseURI(string memory baseURI_) public onlyOwner {
-        baseURI = baseURI_;
     }
 
     function mintToken(uint numberOfTokens) external payable {

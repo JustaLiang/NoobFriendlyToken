@@ -5,35 +5,32 @@ import "hardhat/console.sol";
 import "../NoobFriendlyTokenTemplate.sol";
 
 contract NFTGallery is NoobFriendlyTokenTemplate {
-    using Strings for uint256;
+    using Strings for uint;
 
-    uint256 public tokenPrice;
+    uint public tokenPrice;
 
     constructor(BaseSettings memory baseSettings)
         ERC721(baseSettings.name, baseSettings.symbol)
         PaymentSplitter(baseSettings.payees, baseSettings.shares)
-        NoobFriendlyTokenTemplate(
-            baseSettings.typeOfNFT,
-            baseSettings.maxSupply
-        )
+        NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply)
     {}
 
     function initialize(
         string calldata baseURI_,
-        uint120 tokenPrice_
+        uint tokenPrice_
     ) external onlyOwner onlyOnce {
         tokenPrice = tokenPrice_;
         baseURI = baseURI_;
     }
 
-    function mintToken(uint256[] calldata tokenIdList) external payable {
+    function mintToken(uint[] calldata tokenIdList) external payable {
         require(
             tokenPrice*tokenIdList.length <= msg.value,
             "Ether value sent is not correct"
         );
 
-        for (uint256 i = 0; i < tokenIdList.length; i++) {
-            uint256 tokenId = tokenIdList[i];
+        for (uint i = 0; i < tokenIdList.length; i++) {
+            uint tokenId = tokenIdList[i];
             require(tokenId < maxSupply, "The id is out of bound");
             require(
                 !_exists(tokenId),
@@ -42,6 +39,7 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
             _safeMint(msg.sender, tokenId);
         }
     }
+
     function tokenURI(uint tokenId) public override view returns (string memory) {
         require(
             _exists(tokenId),
@@ -51,7 +49,6 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
         return string(abi.encodePacked(baseURI, tokenId.toString()));
     }
 }
-
 
 contract NFTGalleryGenerator is Ownable, GeneratorInterface {
 
