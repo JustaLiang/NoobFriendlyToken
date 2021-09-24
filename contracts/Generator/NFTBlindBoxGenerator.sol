@@ -137,6 +137,5 @@ contract NFTBlindBoxGenerator is Ownable, GeneratorInterface {
         console.log("NFTBlindBox at:", address(nftBlindBox), " Owner:", nftBlindBox.owner());
         return contractAddr;
     }
-
-    
+   
 }
