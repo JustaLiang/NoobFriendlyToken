@@ -38,10 +38,18 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
     uint32 public typeOfNFT;
     uint32 public maxSupply;
     uint public slottingFee;
+    bool public isInit;
 
     constructor(uint32 typeOfNFT_, uint32 maxSupply_) {
         typeOfNFT = typeOfNFT_;
         maxSupply = maxSupply_;
+        isInit = false;
+    }
+
+    modifier onlyOnce() {
+        require(!isInit);
+        isInit = true;
+        _;
     }
 
     function _underSupply(uint tokenId) internal view returns (bool) {
