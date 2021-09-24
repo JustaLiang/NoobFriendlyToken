@@ -36,22 +36,34 @@ interface TemplateInterface {
 
 abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721Enumerable {
 
+    uint256 public maxPurchase;
     uint32 public typeOfNFT;
     uint32 public maxSupply;
     uint public slottingFee;
-    bool public isInit;
     string public baseURI;
+    bool public isInit;
+    bool public saleIsActive;
 
     constructor(uint32 typeOfNFT_, uint32 maxSupply_) {
         typeOfNFT = typeOfNFT_;
         maxSupply = maxSupply_;
         isInit = false;
+        saleIsActive = false;
     }
 
     modifier onlyOnce() {
         require(!isInit);
         isInit = true;
         _;
+    }
+
+    modifier onlyActive() {
+        require(saleIsActive);
+        _;
+    }
+
+    function flipSaleState() public onlyOwner {
+        saleIsActive = !saleIsActive;
     }
 
     function _underSupply(uint tokenId) internal view returns (bool) {
