@@ -7,7 +7,6 @@ import "../NoobFriendlyTokenTemplate.sol";
 contract NFTGallery is NoobFriendlyTokenTemplate {
     using Strings for uint256;
 
-    string public baseURI;
     uint256 public tokenPrice;
 
     constructor(BaseSettings memory baseSettings)

@@ -10,9 +10,7 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     using Strings for uint256;
     using SafeMath for uint256;
 
-    bool public saleIsActive;
-    string public baseURI;
-    uint256 public maxPurchase;
+    
     uint256 public tokenPrice;
     uint256 public REVEAL_TIMESTAMP;
     uint256 public startingIndex;
@@ -22,7 +20,6 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         ERC721(baseSettings.name, baseSettings.symbol)
         PaymentSplitter(baseSettings.payees, baseSettings.shares)
         NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply) {
-        saleIsActive = false;
     }
 
     function initialize(string calldata baseURI_,
@@ -34,10 +31,6 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         tokenPrice = tokenPrice_;
         REVEAL_TIMESTAMP = saleStart + (86400 * 9);
         baseURI = baseURI_;
-    }
-
-    function flipSaleState() public onlyOwner {
-        saleIsActive = !saleIsActive;
     }
 
     function reserveNFT() public onlyOwner {        
@@ -58,6 +51,7 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
 
     function mintToken(uint numberOfTokens) external payable {
 
+        require( isInit, "must initialize first");
         require(saleIsActive, "Sale must be active to mint Ape");
         require(numberOfTokens <= maxPurchase, "Can only mint 20 tokens at a time");
         require(totalSupply().add(numberOfTokens) <= maxSupply, "Purchase would exceed max supply of Apes");

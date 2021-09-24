@@ -8,8 +8,6 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
 
     using Strings for uint8;
 
-    string public baseURI;
-
     struct TicketState {
         uint48[] current;
         uint48[] soldout;
@@ -97,6 +95,4 @@ contract NFTTicketGenerator is Ownable, GeneratorInterface {
         console.log("NFTTicket at:", address(nftTicket), " Owner:", nftTicket.owner());
         return contractAddr;
     }
-
-    
 }
