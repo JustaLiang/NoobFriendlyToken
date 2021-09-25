@@ -36,7 +36,7 @@ interface TemplateInterface {
 
 abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721Enumerable {
 
-    uint256 public maxPurchase;
+    uint public maxPurchase;
     uint32 public typeOfNFT;
     uint32 public maxSupply;
     uint public slottingFee;
@@ -44,7 +44,9 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
     bool public isInit;
     bool public saleIsActive;
 
-    constructor(uint32 typeOfNFT_, uint32 maxSupply_) {
+    constructor(
+        uint32 typeOfNFT_,
+        uint32 maxSupply_) {
         typeOfNFT = typeOfNFT_;
         maxSupply = maxSupply_;
         isInit = false;
@@ -66,16 +68,7 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
         saleIsActive = !saleIsActive;
     }
 
-    function _underSupply(uint tokenId) internal view returns (bool) {
-        return tokenId < maxSupply;
-    }
-
     function getBaseSettings() external view returns (BaseSettingsInfo memory) {
         return BaseSettingsInfo(name(), symbol(), typeOfNFT, maxSupply);
-    }
-
-    function changeSlottingFee(uint newSlottingFee) external onlyOwner {
-        console.log("slotting fee change from", slottingFee, " to", newSlottingFee);
-        slottingFee = newSlottingFee;
     }
 }

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "../NoobFriendlyTokenTemplate.sol";
+import "../NoobFriendlyTokenGenerator.sol";
 
 
 contract NFTBlindbox is NoobFriendlyTokenTemplate {
@@ -44,10 +44,8 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         REVEAL_TIMESTAMP = revealTimeStamp;
     }
 
-    function mintToken(uint numberOfTokens) external payable {
-
+    function mintToken(uint numberOfTokens) external payable onlyActive {
         require( isInit, "must initialize first");
-        require(saleIsActive, "Sale must be active to mint Ape");
         require(numberOfTokens <= maxPurchase, "Can only mint 20 tokens at a time");
         require(totalSupply().add(numberOfTokens) <= maxSupply, "Purchase would exceed max supply of Apes");
         require(tokenPrice.mul(numberOfTokens) <= msg.value, "Ether value sent is not correct");
@@ -91,22 +89,14 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     }
 }
 
-contract NFTBlindboxGenerator is Ownable, GeneratorInterface {
-
-    address public adminAddr;
-    uint public override slottingFee;
-
-    constructor(address adminAddr_, uint slottingFee_) {
-        adminAddr = adminAddr_;
-        slottingFee = slottingFee_;
-    }
+contract NFTBlindboxGenerator is NoobFriendlyTokenGenerator {
     
-    function genNFTContract(address client, BaseSettings calldata baseSettings) external override returns (address) {
-        require(_msgSender() == adminAddr);
-        address contractAddr =  address(new NFTBlindbox(baseSettings));
-        TemplateInterface nftBlindbox = TemplateInterface(contractAddr);
-        nftBlindbox.transferOwnership(client);
-        console.log("NFTBlindbox at:", address(nftBlindbox), " Owner:", nftBlindbox.owner());
-        return contractAddr;
+    constructor(address adminAddr_, uint slottingFee_)
+        NoobFriendlyTokenGenerator(adminAddr_, slottingFee_)
+    {}
+
+    function _createContract(BaseSettings calldata baseSettings)
+        internal override returns (address) {
+        return address(new NFTBlindbox(baseSettings));
     }
 }
