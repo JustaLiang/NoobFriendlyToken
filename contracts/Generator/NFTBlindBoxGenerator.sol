@@ -2,17 +2,14 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "../NoobFriendlyTokenTemplate.sol";
+import "../NoobFriendlyTokenGenerator.sol";
 
 
 contract NFTBlindbox is NoobFriendlyTokenTemplate {
 
-    using Strings for uint256;
-    using SafeMath for uint256;
-
-    bool public saleIsActive;
-    string public baseURI;
-    uint256 public maxPurchase;
+    using Strings for uint;
+    using SafeMath for uint;
+  
     uint256 public tokenPrice;
     uint256 public REVEAL_TIMESTAMP;
     uint256 public startingIndex;
@@ -22,22 +19,17 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         ERC721(baseSettings.name, baseSettings.symbol)
         PaymentSplitter(baseSettings.payees, baseSettings.shares)
         NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply) {
-        saleIsActive = false;
     }
 
     function initialize(string calldata baseURI_,
-                        uint16 maxPurchase_,
-                        uint120 tokenPrice_,
-                        uint256 saleStart
+                        uint maxPurchase_,
+                        uint tokenPrice_,
+                        uint saleStart
                        ) external onlyOwner onlyOnce {
         maxPurchase = maxPurchase_;
         tokenPrice = tokenPrice_;
         REVEAL_TIMESTAMP = saleStart + (86400 * 9);
         baseURI = baseURI_;
-    }
-
-    function flipSaleState() public onlyOwner {
-        saleIsActive = !saleIsActive;
     }
 
     function reserveNFT() public onlyOwner {        
@@ -48,17 +40,12 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         }
     }
 
-    function setRevealTimestamp(uint256 revealTimeStamp) public onlyOwner {
+    function setRevealTimestamp(uint revealTimeStamp) public onlyOwner {
         REVEAL_TIMESTAMP = revealTimeStamp;
     }
 
-    function setBaseURI(string memory baseURI_) public onlyOwner {
-        baseURI = baseURI_;
-    }
-
-    function mintToken(uint numberOfTokens) external payable {
-
-        require(saleIsActive, "Sale must be active to mint Ape");
+    function mintToken(uint numberOfTokens) external payable onlyActive {
+        require( isInit, "must initialize first");
         require(numberOfTokens <= maxPurchase, "Can only mint 20 tokens at a time");
         require(totalSupply().add(numberOfTokens) <= maxSupply, "Purchase would exceed max supply of Apes");
         require(tokenPrice.mul(numberOfTokens) <= msg.value, "Ether value sent is not correct");
@@ -102,22 +89,14 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     }
 }
 
-contract NFTBlindboxGenerator is Ownable, GeneratorInterface {
-
-    address public adminAddr;
-    uint public override slottingFee;
-
-    constructor(address adminAddr_, uint slottingFee_) {
-        adminAddr = adminAddr_;
-        slottingFee = slottingFee_;
-    }
+contract NFTBlindboxGenerator is NoobFriendlyTokenGenerator {
     
-    function genNFTContract(address client, BaseSettings calldata baseSettings) external override returns (address) {
-        require(_msgSender() == adminAddr);
-        address contractAddr =  address(new NFTBlindbox(baseSettings));
-        TemplateInterface nftBlindbox = TemplateInterface(contractAddr);
-        nftBlindbox.transferOwnership(client);
-        console.log("NFTBlindbox at:", address(nftBlindbox), " Owner:", nftBlindbox.owner());
-        return contractAddr;
+    constructor(address adminAddr_, uint slottingFee_)
+        NoobFriendlyTokenGenerator(adminAddr_, slottingFee_)
+    {}
+
+    function _createContract(BaseSettings calldata baseSettings)
+        internal override returns (address) {
+        return address(new NFTBlindbox(baseSettings));
     }
 }

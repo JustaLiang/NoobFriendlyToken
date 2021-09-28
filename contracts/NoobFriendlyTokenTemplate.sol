@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
@@ -35,15 +36,21 @@ interface TemplateInterface {
 
 abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721Enumerable {
 
+    uint public maxPurchase;
     uint32 public typeOfNFT;
     uint32 public maxSupply;
     uint public slottingFee;
+    string public baseURI;
     bool public isInit;
+    bool public saleIsActive;
 
-    constructor(uint32 typeOfNFT_, uint32 maxSupply_) {
+    constructor(
+        uint32 typeOfNFT_,
+        uint32 maxSupply_) {
         typeOfNFT = typeOfNFT_;
         maxSupply = maxSupply_;
         isInit = false;
+        saleIsActive = false;
     }
 
     modifier onlyOnce() {
@@ -52,16 +59,16 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
         _;
     }
 
-    function _underSupply(uint tokenId) internal view returns (bool) {
-        return tokenId < maxSupply;
+    modifier onlyActive() {
+        require(saleIsActive);
+        _;
+    }
+
+    function flipSaleState() public onlyOwner {
+        saleIsActive = !saleIsActive;
     }
 
     function getBaseSettings() external view returns (BaseSettingsInfo memory) {
         return BaseSettingsInfo(name(), symbol(), typeOfNFT, maxSupply);
-    }
-
-    function changeSlottingFee(uint newSlottingFee) external onlyOwner {
-        console.log("slotting fee change from", slottingFee, " to", newSlottingFee);
-        slottingFee = newSlottingFee;
     }
 }
