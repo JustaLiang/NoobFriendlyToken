@@ -43,7 +43,7 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
         maxSupply: 0,
     });
     const { templateAddress } = props;
-
+    console.log(templateAddress);
     useEffect(() => {
         if (signer[0]) {
             setTemplate(NoobFriendlyTokenTemplate__factory.connect(templateAddress, signer[0]))

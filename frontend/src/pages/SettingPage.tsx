@@ -1,14 +1,14 @@
 import React from 'react'
 import { useState, useCallback } from 'react'
 import { create } from 'ipfs-http-client'
-
+import InitStep from '../components/InitStep'
 const client = create({ url: 'https://ipfs.infura.io:5001/api/v0' })
 
 interface Props {
 
 }
 
-function TicketPage(props: Props) {
+function SettingPage(props: Props) {
     const [fileList, setFileList] = useState<FileList>();
     const [jsonList, setJsonList] = useState<FileList>();
     const [fileUrl, setFileUrl] = useState<string[]>([]);
@@ -52,6 +52,7 @@ function TicketPage(props: Props) {
     }
     return (
         <div className="App">
+            <InitStep/>
             <h1>IPFS Example</h1>
             <input type="file" id="folder" ref={imageUploader} onChange={handleImageUpload} />
             <input type="file" id="folder" ref={jsonUploader} onChange={handleJsonUpload} />
@@ -70,5 +71,5 @@ function TicketPage(props: Props) {
     );
 }
 
-export default TicketPage
+export default SettingPage
 
