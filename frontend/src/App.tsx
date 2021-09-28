@@ -3,7 +3,6 @@ import './App.css';
 import { Symfoni } from "./hardhat/SymfoniContext";
 import  AdminPage from './pages/AdminPage';
 import  SettingPage from './pages/SettingPage';
-
 import { Route, Switch, BrowserRouter as Router, } from 'react-router-dom';
 
 function App() {

@@ -2,11 +2,14 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "../NoobFriendlyTokenGenerator.sol";
+import "../NoobFriendlyTokenTemplate.sol";
 
 contract NFTTicket is NoobFriendlyTokenTemplate {
 
     using Strings for uint8;
+
+
+    string public baseURI;
 
     struct TicketState {
         uint48[] current;
@@ -19,8 +22,8 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
     constructor(BaseSettings memory baseSettings)
         ERC721(baseSettings.name, baseSettings.symbol)
         PaymentSplitter(baseSettings.payees, baseSettings.shares)
-        NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply)
-    {}
+        NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply) {
+    }
 
     function initialize(string calldata baseURI_,
                         uint48[] calldata ticketAmounts_,
@@ -77,14 +80,24 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
     }
 }
 
-contract NFTTicketGenerator is NoobFriendlyTokenGenerator {
-    
-    constructor(address adminAddr_, uint slottingFee_)
-        NoobFriendlyTokenGenerator(adminAddr_, slottingFee_)
-    {}
+contract NFTTicketGenerator is Ownable, GeneratorInterface {
 
-    function _createContract(BaseSettings calldata baseSettings)
-        internal override returns (address) {
-        return address(new NFTTicket(baseSettings));
+    address public adminAddr;
+    uint public override slottingFee;
+
+    constructor(address adminAddr_, uint slottingFee_) {
+        adminAddr = adminAddr_;
+        slottingFee = slottingFee_;
     }
+    
+    function genNFTContract(address client, BaseSettings calldata baseSettings) external override returns (address) {
+        require(_msgSender() == adminAddr);
+        address contractAddr =  address(new NFTTicket(baseSettings));
+        TemplateInterface nftTicket = TemplateInterface(contractAddr);
+        nftTicket.transferOwnership(client);
+        console.log("NFTTicket at:", address(nftTicket), " Owner:", nftTicket.owner());
+        return contractAddr;
+    }
+
+    
 }

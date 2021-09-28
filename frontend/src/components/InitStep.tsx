@@ -46,7 +46,7 @@ const InitStep: React.FC<Props> = () => {
                         </Step>
                     ))}
                 </Stepper>
-                <div>
+                <Box>
                     {activeStep === steps.length ? (
                         <div>
                             <Typography >All steps completed</Typography>
@@ -68,7 +68,7 @@ const InitStep: React.FC<Props> = () => {
                             </div>
                         </div>
                     )}
-                </div>
+                </Box>
             </Box>
         </Paper >
     )
