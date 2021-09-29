@@ -39,7 +39,6 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
     uint public maxPurchase;
     uint32 public typeOfNFT;
     uint32 public maxSupply;
-    uint public slottingFee;
     string public baseURI;
     bool public isInit;
     bool public saleIsActive;
