@@ -23,4 +23,13 @@ module.exports = async ({
     console.log("1 - Blindbox:",
         blindboxAddress === blindboxGenerater.address ?
         "success" : "error");
+
+    //--- check type 2: gallery
+    const galleryGenerater = await get("NFTGalleryGenerator");
+    const galleryAddress = await read(
+        "NoobFriendlyTokenAdmin",
+        "typeToGenerator",  2);
+    console.log("2 - Gallery:",
+        galleryAddress === galleryGenerater.address ?
+        "success" : "error");
 };

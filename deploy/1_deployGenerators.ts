@@ -15,7 +15,7 @@ module.exports = async ({
     const ticketIndex = 0;
     const ticketGenerator = await deploy("NFTTicketGenerator", {
         from: deployer,
-        args: [adminContract.address, 5e12],
+        args: [adminContract.address, 5e11],
     });
     await execute(
         "NoobFriendlyTokenAdmin",
@@ -28,13 +28,26 @@ module.exports = async ({
     const blindboxIndex = 1;
     const blindboxGenerator = await deploy("NFTBlindboxGenerator", {
         from: deployer,
-        args: [adminContract.address, 1e11],
+        args: [adminContract.address, 1e12],
     });
     await execute(
         "NoobFriendlyTokenAdmin",
         { from: deployer },
         "updateGenerator",
         blindboxIndex, blindboxGenerator.address
+    );
+
+    //--- deploy gallery generator and link to admin (index: 2)
+    const galleryIndex = 2;
+    const galleryGenerator = await deploy("NFTGalleryGenerator", {
+        from: deployer,
+        args: [adminContract.address, 1e11],
+    });
+    await execute(
+        "NoobFriendlyTokenAdmin",
+        { from: deployer },
+        "updateGenerator",
+        galleryIndex, galleryGenerator.address
     );
 };
 

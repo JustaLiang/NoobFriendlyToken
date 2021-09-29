@@ -4,14 +4,13 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "../NoobFriendlyTokenGenerator.sol";
 
-
 contract NFTBlindbox is NoobFriendlyTokenTemplate {
 
     using Strings for uint;
     using SafeMath for uint;
   
     uint256 public tokenPrice;
-    uint256 public REVEAL_TIMESTAMP;
+    uint256 public revealTimeStamp;
     uint256 public startingIndex;
     uint256 private startingIndexBlock;
 
@@ -28,7 +27,7 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
                        ) external onlyOwner onlyOnce {
         maxPurchase = maxPurchase_;
         tokenPrice = tokenPrice_;
-        REVEAL_TIMESTAMP = saleStart + (86400 * 9);
+        revealTimeStamp = saleStart + (86400 * 9);
         baseURI = baseURI_;
     }
 
@@ -40,8 +39,8 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         }
     }
 
-    function setRevealTimestamp(uint revealTimeStamp) public onlyOwner {
-        REVEAL_TIMESTAMP = revealTimeStamp;
+    function setRevealTimestamp(uint revealTimeStamp_) public onlyOwner {
+        revealTimeStamp = revealTimeStamp_;
     }
 
     function mintToken(uint numberOfTokens) external payable onlyActive {
@@ -61,7 +60,7 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
 
     function setStartingIndex() public {
         require(startingIndex == 0, "Starting index is already set");
-        require(totalSupply() == maxSupply || block.timestamp >= REVEAL_TIMESTAMP,
+        require(totalSupply() == maxSupply || block.timestamp >= revealTimeStamp,
                 "");
 
         startingIndex = uint(blockhash(startingIndexBlock)) % maxSupply;

@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardHeader, CardMedia, CardContent, Typography, Box, CircularProgress, CardActionArea } from "@material-ui/core";
 import { NFTTypeArray } from "./NFTTypeArray";
 import { Link } from "react-router-dom";
+import ConnectToDcentWallet from 'web3modal/dist/providers/connectors/dcentwallet';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,8 +27,6 @@ interface TemplateInfo {
     typeOfNFT: number,
     maxSupply: number,
 }
-
-const baycURI = "https://bafybeihpjhkeuiq3k6nqa3fkgeigeri7iebtrsuyuey5y6vy36n345xmbi.ipfs.dweb.link/";
 
 export const NFTTemplateCard: React.FC<Props> = (props) => {
     const classes = useStyles();
@@ -60,23 +59,24 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
 
     useEffect(() => {
         const updateImageURI = async () => {
-            const randomNum = parseInt(templateAddress) % 10000
-            fetch(`${baycURI}${randomNum}`)
+            const baseURI = await template?.baseURI();
+            fetch(`${baseURI}0`)
                 .then((res) => {
-                    if (res.status === 404) throw Error("URI error: 404")
-                    return res.json()
+                    if (res.status === 404) throw Error("URI error: 404");
+                    return res.json();
                 })
                 .then((metadata) => {
-                    setImageURI("https://ipfs.io/ipfs" + metadata.image.slice(6))
-                    console.log(randomNum)
+                    const imgURI = "https://ipfs.io/ipfs" + metadata.image.slice(6);
+                    setImageURI(imgURI);
+                    console.log(imgURI);
                 })
                 .catch((err) => {
-                    setImageURI("")
-                    console.log(err)
+                    setImageURI("");
+                    console.log(err);
                 })
         }
         updateImageURI()
-    }, [templateAddress])
+    }, [template])
 
     useEffect(() => {
         if (imageURI) {
