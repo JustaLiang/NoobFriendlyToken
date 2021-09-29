@@ -1,7 +1,9 @@
 import React from 'react'
-import { useState, useCallback } from 'react'
+import { useState, useCallback,useRef } from 'react'
 import { create } from 'ipfs-http-client'
 import InitStep from '../components/InitStep'
+import LinearProgressWithLabel from '../components/LinearProgressWithLabel';
+import { Paper } from '@material-ui/core';
 const client = create({ url: 'https://ipfs.infura.io:5001/api/v0' })
 
 interface Props {
@@ -10,8 +12,16 @@ interface Props {
 
 function SettingPage(props: Props) {
     const [fileList, setFileList] = useState<FileList>();
+    const [testList, setTestList] = useState<File[]>();
     const [jsonList, setJsonList] = useState<FileList>();
     const [fileUrl, setFileUrl] = useState<string[]>([]);
+    const [file, setFile] = useState<File>();
+    const [count,setCount] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
+    const addCount = useCallback(() => {
+        console.log(count);
+        setCount(count=>count+1);
+       }, [setCount]);
     const imageUploader = useCallback((node: HTMLInputElement) => {
         if (!node) return;
         node.setAttribute('webkitdirectory', '');
@@ -28,11 +38,41 @@ function SettingPage(props: Props) {
         if (!e.target.files) return;
         console.log(e.target.files);
         setFileList(e.target.files);
+        console.log(Object.values(e.target.files));
+        setTestList(Object.values(e.target.files));
+        setTotalCount(e.target.files.length);
     }
     const handleJsonUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
         console.log(e.target.files);
         setJsonList(e.target.files);
+    }
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
+        console.log(e.target.files);
+        setFile(e.target.files[0]);
+    }
+    const handleFileSubmit = async () => {
+        if (!testList) return;
+        const addOptions = {
+            pin: true,
+            rawLeaves:true,
+            progress: (prog:number) => {
+                console.log(prog);
+                addCount();
+            }
+        }
+        
+        let count = 0;
+
+        for await (const result of client.addAll(testList, addOptions)) {
+            // count += 1;
+            // if (count == testList.length+1){
+            //     console.log(result.cid['_baseCache'].get("z"));
+            // }
+            console.log(result);
+            
+        }
     }
     const handleSubmit = async () => {
         if (!fileList) return;
@@ -50,22 +90,22 @@ function SettingPage(props: Props) {
             setFileUrl(tempList);
         }
     }
+    console.log(count);
+    const progress = Math.min(count / totalCount * 100,100);
     return (
-        <div className="App">
-            <InitStep/>
-            <h1>IPFS Example</h1>
-            <input type="file" id="folder" ref={imageUploader} onChange={handleImageUpload} />
-            <input type="file" id="folder" ref={jsonUploader} onChange={handleJsonUpload} />
-            <button onClick={handleSubmit}>Sumbit</button>
-                <ul>
-                {
-                fileUrl.map((url,index)=>(
-                    <li>
-                        <img key={index} src={url} width="600px" />
-                    </li>
-                    ))
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            <InitStep />
+            <Paper>
+                <h1>IPFS Example</h1>
+                <input type="file" id="folder" ref={imageUploader} onChange={handleImageUpload} />
+                <input type="file" id="folder" ref={jsonUploader} onChange={handleJsonUpload} />
+                <input type="file" id='file' onChange={handleFileUpload} />
+                {fileList ?
+                    <LinearProgressWithLabel value={progress} /> : <></>
                 }
-                </ul>
+                <button onClick={handleFileSubmit}>File Submit</button>
+                <button onClick={handleSubmit}>Sumbit</button>
+            </Paper>
 
         </div>
     );

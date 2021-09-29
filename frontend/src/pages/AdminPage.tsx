@@ -86,7 +86,7 @@ const AdminPage: React.FC<Props> = () => {
     }
 
     return (
-        <div>
+        <div style={{minHeight: '100vh',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
             <Box>
                 <form
                     onSubmit={(e: React.SyntheticEvent) => {

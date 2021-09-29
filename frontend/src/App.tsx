@@ -9,7 +9,6 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
         <Router>
           <Switch>
             <Symfoni autoInit={true} loadingComponent={<h1>Loading...</h1>}>
@@ -18,7 +17,6 @@ function App() {
             </Symfoni>
           </Switch>
         </Router>
-      </header>
     </div>
   );
 }

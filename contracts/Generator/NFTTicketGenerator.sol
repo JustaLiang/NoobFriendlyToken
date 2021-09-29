@@ -9,7 +9,6 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
     using Strings for uint8;
 
 
-    string public baseURI;
 
     struct TicketState {
         uint48[] current;
