@@ -68,7 +68,7 @@ const InitStep: React.FC<Props> = () => {
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
         var temp = Object.values(e.target.files);
-        temp = temp.filter((file)=>(file.name.slice(-3)=="png" ||file.name.slice(-3)=="jpg" || file.name.slice(-3)=="svg" ||file.name.slice(-3)=="gif"));
+        temp = temp.filter((file)=>(file.name.slice(-3)==="png" ||file.name.slice(-3)==="jpg" || file.name.slice(-3)==="svg" ||file.name.slice(-3)==="gif"));
         console.log("temp unsorted: " ,temp);
         temp.sort(ImageCmp);
         console.log('temp sorted: ',temp);
@@ -77,7 +77,7 @@ const InitStep: React.FC<Props> = () => {
     const handleJsonUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
         var temp = Object.values(e.target.files);
-        temp = temp.filter((file)=>file.name.slice(-4)=="json");
+        temp = temp.filter((file)=>file.name.slice(-4)==="json");
         console.log("temp unsorted: " ,temp);
         temp.sort(JsonCmp);
         console.log("temp: ",await temp[0].text());
@@ -94,7 +94,7 @@ const InitStep: React.FC<Props> = () => {
             pin: true,
         }
         for await (const result of client.addAll(imageList, addImageOptions)) {
-            imageIPFSList.push(result.path);
+            imageIPFSList.push("ipfs://"+result.path);
         }
         console.log(imageIPFSList);
         let metadataList = [];
@@ -105,14 +105,22 @@ const InitStep: React.FC<Props> = () => {
             jsonObject.image = imageIPFSList[i];
             metadataList.push(new File([JSON.stringify(jsonObject)],jsonList[i].name,{type: 'application/json' }))
         }
+        const uploadMetaDataList = [];
+        for (let i = 0; i < metadataList.length;++i){
+            uploadMetaDataList.push({
+                path:`${i}`,
+                content:metadataList[i]
+            })
+        }
         const addMetaDataOptions = {
             pin: true,
             wrapWithDirectory: true,
         }
         let count = 0;
-        for await (const result of client.addAll(metadataList, addMetaDataOptions)){
+        for await (const result of client.addAll(uploadMetaDataList, addMetaDataOptions)){
             count += 1;
-            if (count == metadataList.length+1){
+            console.log(result);
+            if (count === uploadMetaDataList.length+1){
                 console.log(result.cid['_baseCache'].get("z"));
             }
         };
@@ -140,7 +148,7 @@ const InitStep: React.FC<Props> = () => {
                                 <Box >
                                     <Grid container spacing={10} style={{ padding: '24px' }}>
                                         {
-                                            activeStep == 0 ?
+                                            activeStep === 0 ?
                                                 <>
                                                     <Grid item md={3}>
                                                     </Grid>
