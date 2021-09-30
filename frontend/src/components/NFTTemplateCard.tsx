@@ -6,7 +6,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardHeader, CardMedia, CardContent, Typography, Box, CircularProgress, CardActionArea } from "@material-ui/core";
 import { NFTTypeArray } from "./NFTTypeArray";
 import { Link } from "react-router-dom";
-import ConnectToDcentWallet from 'web3modal/dist/providers/connectors/dcentwallet';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -42,7 +41,7 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
         maxSupply: 0,
     });
     const { templateAddress } = props;
-
+    console.log(templateAddress);
     useEffect(() => {
         if (signer[0]) {
             setTemplate(NoobFriendlyTokenTemplate__factory.connect(templateAddress, signer[0]))
@@ -60,13 +59,14 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
     useEffect(() => {
         const updateImageURI = async () => {
             const baseURI = await template?.baseURI();
-            fetch(`${baseURI}0`)
+            console.log(baseURI);
+            fetch(`https://ipfs.io/ipfs/${baseURI?.slice(7)}0`)
                 .then((res) => {
                     if (res.status === 404) throw Error("URI error: 404");
                     return res.json();
                 })
                 .then((metadata) => {
-                    const imgURI = "https://ipfs.io/ipfs" + metadata.image.slice(6);
+                    const imgURI = "https://ipfs.io/ipfs/" + metadata.image.slice(7);
                     setImageURI(imgURI);
                     console.log(imgURI);
                 })
@@ -74,7 +74,7 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
                     setImageURI("");
                     console.log(err);
                 })
-        }
+            }
         updateImageURI()
     }, [template])
 
@@ -104,7 +104,7 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
     return (
         <div>
             <Card className={classes.root} style={{ borderRadius: 20 }} elevation={10} >
-                <CardActionArea component={Link} to={`/${NFTTypeArray[templateInfo.typeOfNFT].toLowerCase()}`}>
+                <CardActionArea component={Link} to={`/${NFTTypeArray[templateInfo.typeOfNFT].toLowerCase()}/${templateAddress}`}>
                     <CardHeader
                         title={templateInfo.name}
                         subheader={templateInfo.symbol}
