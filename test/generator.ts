@@ -28,12 +28,13 @@ describe("admin", function () {
     
     // slotting fee
     let slottingFee0 = await tokenAdmin.slottingFee(0);
-    assert( await slottingFee0.toNumber() == 5e12 , "slottingFee 0 not right");
+    assert( await slottingFee0.toNumber() == 5e11 , "slottingFee 0 not right");
     let slottingFee1 = await tokenAdmin.slottingFee(1);
-    assert( await slottingFee1.toNumber() == 1e11 , "slottingFee 1 not right");
-    await expect(
-      tokenAdmin.slottingFee(2)
-    ).to.be.revertedWith("NoobFriendlyTokenAdmin: generator not exists");
+    assert( await slottingFee1.toNumber() == 1e12 , "slottingFee 1 not right");
+
+    // await expect(
+    //   tokenAdmin.slottingFee(2)
+    // ).to.be.revertedWith("NoobFriendlyTokenAdmin: generator not exists");
 
     // typeToGenerator
     const typeToGenerator = await tokenAdmin.typeToGenerator;
@@ -42,6 +43,65 @@ describe("admin", function () {
   });
 
   it( "NFTBlindboxGenerator", async function(){
+
+    assert( await blindboxGenerator.adminAddr() === tokenAdmin.address, "adminAddr equal to tokenAdmin.address");
+    let slottingFee = await blindboxGenerator.slottingFee();
+    assert( slottingFee.toNumber() === 1e12, "blindbox slotting fee not right");
+    
+    const baseSettings = {
+      "name" : "123",
+      "symbol" : "456",
+      "payees" : [addr1.address],
+      "shares" : [1],
+      "typeOfNFT" : 1,
+      "maxSupply" : 1
+    }
+
+    await expect(
+      blindboxGenerator.genNFTContract( addr1.address, baseSettings )
+    ).to.be.revertedWith("");
+
+    await expect(
+      blindboxGenerator.connect(addr1).changeSlottingFee(1)
+    ).to.be.revertedWith("");
+
+    await blindboxGenerator.changeSlottingFee(1);
+    slottingFee = await blindboxGenerator.slottingFee();
+    assert( slottingFee.toNumber() === 1, "blindbox slotting fee equal to 1");
+  });
+
+
+  it( "NoobFriendlyTokenTemplate", async function(){
+
+    assert( await blindboxGenerator.adminAddr() === tokenAdmin.address, "adminAddr equal to tokenAdmin.address");
+
+    const baseSettings = {
+      "name" : "123",
+      "symbol" : "456",
+      "payees" : [addr1.address],
+      "shares" : [1],
+      "typeOfNFT" : 1,
+      "maxSupply" : 100
+    }
+
+    await tokenAdmin.genNFTContract(baseSettings, {value:1e12 * 100});
+    const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
+    const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
+    const blindbox = NFTBlindbox.attach(contractAddr);
+
+    let typeOfNFT = await blindbox.typeOfNFT();
+    let maxSupply = await blindbox.maxSupply();
+    let saleIsActive = await blindbox.saleIsActive();
+    let isInit = await blindbox.isInit();
+
+    assert( typeOfNFT === 1, "typeOfNFT is 1");
+    assert( maxSupply === 100, "maxSupply is 100");
+    assert( saleIsActive === false, "saleIsActive is false");
+    assert( isInit === false, "isInit is false");
+
+  });
+
+  it( "NFTBlindbox", async function(){
 
     assert( await blindboxGenerator.adminAddr() === tokenAdmin.address, "adminAddr equal to tokenAdmin.address");
 
@@ -53,15 +113,13 @@ describe("admin", function () {
       "typeOfNFT" : 1,
       "maxSupply" : 1
     }
-  // console.log(baseSettings);
 
-    await tokenAdmin.genNFTContract(baseSettings, {value:1e11});
+    await tokenAdmin.genNFTContract(baseSettings, {value:1e12});
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
-    console.log( contractAddr );
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
-    assert( await blindbox.saleIsActive() === false, "saleIsActive is false");
-    assert( await blindbox.isInit() === false, "isInit is false");
+
+
 
     // console.log( bl
 
