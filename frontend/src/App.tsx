@@ -13,7 +13,7 @@ function App() {
           <Switch>
             <Symfoni autoInit={true} loadingComponent={<h1>Loading...</h1>}>
             <Route exact path='/' component={AdminPage}/>
-            <Route exact path='/:NFTType' component={SettingPage}/>
+            <Route exact path='/:NFTType/:address' component={SettingPage}/>
             </Symfoni>
           </Switch>
         </Router>
