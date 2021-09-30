@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useContext, useEffect } from 'react';
-import { Box, Stepper, Step, StepLabel, Paper, Typography, Button, Container, Grid, TextField, Input } from '@material-ui/core'
+import { Box, Stepper, Step, StepLabel, Paper, Typography, Button, Container, Grid, TextField, CircularProgress } from '@material-ui/core'
 import { create } from 'ipfs-http-client';
 import LinearProgressWith from './LinearProgressWithLabel';
 import { NFTBlindboxContext } from '../hardhat/SymfoniContext';
@@ -34,15 +34,21 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
     const blindBox = useContext(NFTBlindboxContext);
     const [blindboxContract, setBlindBoxContract] = useState<NFTBlindbox>();
     const [activeStep, setActiveStep] = useState(0);
+    const [loading, setLoading] = useState(false);
     const [jsonList, setJsonList] = useState<File[]>();
     const [imageList, setImageList] = useState<File[]>();
+    const [count, setCount] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
     const [initData, setInitData] = useState<initStruct>({
         baseURI: "",
         maxPurchase: "",
         tokenPrice: "",
         saleStart: ""
     });
-
+    const addCount = useCallback(() => {
+        setCount(count=>count+1);
+       }, [setCount]);
+   
     useEffect(() => {
         const connectToContract = async () => {
             if (!blindBox.factory) return
@@ -51,7 +57,7 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
             console.log(await contract.baseURI());
         };
         connectToContract();
-    }, [blindBox])
+    }, [blindBox,address])
 
     const imageUploader = useCallback((node: HTMLInputElement) => {
         if (!node) return;
@@ -92,21 +98,15 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
         if (!e.target.files) return;
         var temp = Object.values(e.target.files);
         temp = temp.filter((file) => (file.name.slice(-3) === "png" || file.name.slice(-3) === "jpg" || file.name.slice(-3) === "svg" || file.name.slice(-3) === "gif"));
-        console.log("temp unsorted: ", temp);
         temp.sort(ImageCmp);
-        console.log('temp sorted: ', temp);
         setImageList(temp);
+        setTotalCount(temp.length);
     }
     const handleJsonUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
         var temp = Object.values(e.target.files);
         temp = temp.filter((file) => file.name.slice(-4) === "json");
-        console.log("temp unsorted: ", temp);
         temp.sort(JsonCmp);
-        console.log("temp: ", await temp[0].text());
-        var a = JSON.stringify(temp[0]);
-        console.log("Json: ", a);
-        console.log('temp sorted: ', temp);
         setJsonList(temp);
     }
 
@@ -116,6 +116,8 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
         const addImageOptions = {
             pin: true,
         }
+
+        setLoading(true);
         for await (const result of client.addAll(imageList, addImageOptions)) {
             imageIPFSList.push("ipfs://" + result.path);
         }
@@ -137,32 +139,31 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
         const addMetaDataOptions = {
             pin: true,
             wrapWithDirectory: true,
+            progress: (prog:number) => {
+                addCount();
+            }
         }
         let count = 0;
         for await (const result of client.addAll(uploadMetaDataList, addMetaDataOptions)) {
             count += 1;
             console.log(result);
             if (count === uploadMetaDataList.length + 1) {
-                setInitData({ ...initData, baseURI: 'ipfs://' + result.cid['_baseCache'].get("z") +'/'});
+                setInitData({ ...initData, baseURI: 'ipfs://' + result.cid['_baseCache'].get("z") + '/' });
             }
         }
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setLoading(false);
 
     }
 
     const handleInitConfirm = () => {
-        if(!initData?.baseURI||!initData?.maxPurchase||!initData?.saleStart||!initData?.tokenPrice) return;
-        if(!blindboxContract) return;
-        const initParam = {
-            baseURI: initData.baseURI,
-            maxPurchase:+initData.maxPurchase,
-            tokenPrice:+initData.tokenPrice,
-            saleStart: new Date(initData.saleStart).valueOf()
-        }
-        blindboxContract?.initialize(initData.baseURI,+initData.maxPurchase,+initData.tokenPrice,new Date(initData.saleStart).valueOf());
-        
+        if (!initData?.baseURI || !initData?.maxPurchase || !initData?.saleStart || !initData?.tokenPrice) return;
+        if (!blindboxContract) return;
+        blindboxContract?.initialize(initData.baseURI, +initData.maxPurchase, +initData.tokenPrice, new Date(initData.saleStart).valueOf() / 1000);
+
     }
+    const progress = Math.min(count / totalCount*100,100);
     return (
         <Container>
             <Paper>
@@ -204,7 +205,7 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                                     <Grid item md={3}></Grid>
                                     <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-end', gap: '20px' }}>
                                         <Button onClick={handleReset}>Reset</Button>
-                                        <Button onClick={handleInitConfirm} variant='contained' color="primary" disabled={!initData?.baseURI||!initData?.maxPurchase||!initData?.saleStart||!initData?.tokenPrice}>Confirm</Button>
+                                        <Button onClick={handleInitConfirm} variant='contained' color="primary" disabled={!initData?.baseURI || !initData?.maxPurchase || !initData?.saleStart || !initData?.tokenPrice}>Confirm</Button>
 
 
                                     </Grid>
@@ -245,8 +246,8 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                                                 <>
                                                     <Grid item md={3}>
                                                     </Grid>
-                                                    <Grid item md={6}>
-                                                        <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Upload Image Folder</Typography>
+                                                    <Grid item md={3} style={{ textAlign: 'start' }}>
+                                                        <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload Image Folder</Typography>
                                                         <Typography style={{ display: imageList?.length ? "" : "none" }}>Chosen {imageList?.length} file</Typography>
                                                         <Button
                                                             variant="outlined"
@@ -262,12 +263,16 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                                                             />
                                                         </Button>
                                                     </Grid>
-                                                    <Grid item md={3}>
+                                                    <Grid item md={3} style={{borderLeft: '1px solid #d0caca' }}>
+                                                        <Typography style={{ fontWeight: 'bold', marginBottom: 30}}>Upload BaseURI</Typography>
+                                                        <TextField disabled={initData?.baseURI!==""} name="baseURI" value={initData?.baseURI} variant="outlined" style={{ width: '100%' }} placeholder="ipfs://" onChange={handleChange} />
                                                     </Grid>
                                                     <Grid item md={3}>
                                                     </Grid>
-                                                    <Grid item md={6}>
-                                                        <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Upload Metadata Folder</Typography>
+                                                    <Grid item md={3}>
+                                                    </Grid>
+                                                    <Grid item md={3} style={{ textAlign: 'start' }}>
+                                                        <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload Metadata Folder</Typography>
                                                         <Typography style={{ display: jsonList?.length ? "" : "none" }}>Chosen {jsonList?.length} file</Typography>
                                                         <Button
                                                             variant="outlined"
@@ -282,13 +287,24 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                                                                 onChange={handleJsonUpload}
                                                             />
                                                         </Button>
-
                                                     </Grid>
+                                                    <Grid item md={1} style={{ borderLeft: '1px solid #d0caca' }}>
+                                                    </Grid>
+
                                                 </>
 
 
                                         }
                                     </Grid>
+                                    {loading?
+                                        <Grid container style={{padding: '24px' }}>
+                                            <Grid item md={3}></Grid>
+                                            <Grid item md={6}>
+                                                <LinearProgressWith value={progress} />
+                                            </Grid>
+                                        </Grid>:<></>
+                                    }
+
                                     <Grid container spacing={10} style={{ padding: '24px' }}>
                                         <Grid item md={3}>
                                         </Grid>
@@ -308,7 +324,10 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                                                             Next
                                                         </Button>
                                                         :
-                                                        <Button variant="contained" color="primary" onClick={handleIPFSUpload}>
+                                                        <Button variant="contained" color="primary" disabled={loading} onClick={handleIPFSUpload}>
+                                                            {loading ?
+                                                                <CircularProgress size={20} /> : <></>
+                                                            }
                                                             Finish
                                                         </Button>
                                                     ) :
@@ -327,7 +346,7 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                     </Box>
                 </Box>
             </Paper >
-        </Container>
+        </Container >
     )
 }
 
