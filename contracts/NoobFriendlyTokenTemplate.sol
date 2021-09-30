@@ -53,13 +53,13 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
     }
 
     modifier onlyOnce() {
-        require(!isInit);
+        require(!isInit, "init already");
         isInit = true;
         _;
     }
 
     modifier onlyActive() {
-        require(saleIsActive);
+        require(saleIsActive, "sale is not active");
         _;
     }
 

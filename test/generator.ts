@@ -93,11 +93,17 @@ describe("admin", function () {
     let maxSupply = await blindbox.maxSupply();
     let saleIsActive = await blindbox.saleIsActive();
     let isInit = await blindbox.isInit();
+    let maxPurchase = await blindbox.maxPurchase();
 
     assert( typeOfNFT === 1, "typeOfNFT is 1");
     assert( maxSupply === 100, "maxSupply is 100");
     assert( saleIsActive === false, "saleIsActive is false");
     assert( isInit === false, "isInit is false");
+    assert( maxPurchase.toNumber() === 0, "maxPurchase not initialize is 0");
+
+    await blindbox.flipSaleState();
+    saleIsActive = await blindbox.saleIsActive();
+    assert( saleIsActive === true, "flipped saleIsActive is true");
 
   });
 
@@ -111,14 +117,50 @@ describe("admin", function () {
       "payees" : [addr1.address],
       "shares" : [1],
       "typeOfNFT" : 1,
-      "maxSupply" : 1
+      "maxSupply" : 100
     }
 
-    await tokenAdmin.genNFTContract(baseSettings, {value:1e12});
+    await tokenAdmin.genNFTContract(baseSettings, {value:1e12*100});
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
 
+    let maxSupply = await blindbox.maxSupply();
+    let nowBlock = await ethers.provider.getBlockNumber();
+
+    await blindbox.initialize("https://", 12, 1, nowBlock );
+    await expect(
+      blindbox.initialize("https://", 12, 1, nowBlock )
+    ).to.be.revertedWith("")
+
+    await blindbox.reserveNFT();
+    let ownerBalance = await blindbox.balanceOf(owner.address);
+    assert( ownerBalance.toNumber() <= maxSupply );
+
+    await expect(
+      blindbox.setRevealTimestamp( nowBlock - 1 )
+    ).to.be.revertedWith("revealTimeStamp_ < block.timestamp");
+
+    await expect(
+      blindbox.connect(addr1).mintToken( 10,  {value:1*10})
+    ).to.be.revertedWith("sale is not active");
+
+    await blindbox.flipSaleState();
+    await blindbox.connect(addr1).mintToken( 10,  {value:1*10});
+    let addr1Balance = await blindbox.balanceOf(addr1.address);
+    assert( addr1Balance.toNumber() === 10, "add1 balance should be 10" );
+
+    
+    //tokenURI
+    let URI0 = await blindbox.tokenURI(0);
+    assert( URI0 ===  "https://0", "original URI equal to https://0");
+    
+    await blindbox.setStartingIndex();
+    URI0 = await blindbox.tokenURI(0);
+    console.log(URI0);
+    assert( URI0 !=  "https://0", "after lottery draw URI not  equal to https://0");
+
+  });
 
 
     // console.log( bl
@@ -141,7 +183,5 @@ describe("admin", function () {
 
     // expect(blockNumAfter).to.be.equal(blockNumBefore + 1);
     // expect(timestampAfter).to.be.equal(timestampBefore + sevenDays);
-
-  });
 
 });

@@ -32,14 +32,19 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     }
 
     function reserveNFT() public onlyOwner {        
+        
         uint supply = totalSupply();
-        uint i;
-        for (i = 0; i < 30; i++) {
-            _safeMint(msg.sender, supply + i);
+        for (uint i = 0; i < 30; i++) {
+            if ( supply + i < maxSupply){
+                console.log(supply+i);
+                _safeMint(msg.sender, supply + i);
+                startingIndexBlock.add(block.number);
+            }
         }
     }
 
     function setRevealTimestamp(uint revealTimeStamp_) public onlyOwner {
+        require( revealTimeStamp_ > block.timestamp, "revealTimeStamp_ < block.timestamp" );
         revealTimeStamp = revealTimeStamp_;
     }
 
@@ -49,10 +54,11 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         require(totalSupply().add(numberOfTokens) <= maxSupply, "Purchase would exceed max supply of Apes");
         require(tokenPrice.mul(numberOfTokens) <= msg.value, "Ether value sent is not correct");
 
+        uint supply = totalSupply();
         for(uint i = 0; i < numberOfTokens; i++) {
-            uint mintIndex = totalSupply();
-            if (totalSupply() < maxSupply) {
-                _safeMint(msg.sender, mintIndex);
+            if ( supply+i < maxSupply) {
+                console.log(supply+i);
+                _safeMint(msg.sender, supply+i);
                 startingIndexBlock.add(block.number);
             }
         }
@@ -82,7 +88,8 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         
         if (startingIndex != 0){
             uint tokenIndex = (startingIndex + tokenId) % maxSupply;
-            return string(abi.encodePacked(baseURI, tokenIndex));
+            console.log( "tokenIndex is ", tokenIndex);
+            return string(abi.encodePacked(baseURI, tokenIndex.toString()));
         }
         return string(abi.encodePacked(baseURI, tokenId.toString()));
     }
