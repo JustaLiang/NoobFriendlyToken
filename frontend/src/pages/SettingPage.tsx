@@ -12,7 +12,7 @@ interface Props extends RouteComponentProps<MatchParams> {
 }
 function SettingPage(props: Props) {
     const address = props.match.params.address;
-
+    
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
             <InitStepBlindBox address={address}/>

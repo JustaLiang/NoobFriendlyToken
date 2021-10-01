@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { CurrentAddressContext, NoobFriendlyTokenAdminContext } from "../hardhat/SymfoniContext";
 import { NFTTemplateCard } from "../components/NFTTemplateCard";
-import { TextField, Button, Box, InputLabel, NativeSelect, FormControl } from "@material-ui/core";
+import { TextField, Button, Box, InputLabel, Select, FormControl,Paper, Typography, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { NFTTypeArray } from "../components/NFTTypeArray";
-
+import {ContractReceipt} from "ethers";
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
@@ -12,28 +12,20 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: 500,
     },
     filled: {
-        background: '#FFF1E6',
         borderRadius: 5,
         marginRight: theme.spacing(1),
         width: 190,
         height: 50,
         paddingBottom: 10,
     },
-    button: {
-        width: 190,
-    },
     tmpList: {
-        paddingLeft: 10,
-        paddingTop: 10,
-        paddingBottom: 10,
-        paddingRight: 10,
+        padding: 10,
         marginLeft: 10,
         marginRight: 10,
         marginBottom: 30,
         width: 950,
         gap: 20,
-        overflowX: "scroll",
-        border: '0.5px solid rgba(0, 0, 0, 0.125)',
+        overflowX: "scroll"
     }
 }));
 
@@ -84,10 +76,17 @@ const AdminPage: React.FC<Props> = () => {
             }
         }
     }
-
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> ) => {
+        setBaseSettings({ ...baseSettings, [e.target.name]: e.target.value })
+    }
+    const handleSelectChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) =>{
+        const name = e.target.name as keyof typeof baseSettings;
+        setBaseSettings({ ...baseSettings, [name]: e.target.value })
+    }
     return (
         <div style={{minHeight: '100vh',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
-            <Box>
+            <Paper>
+                <Typography variant="h5">Noob Friendly Token</Typography>
                 <form
                     onSubmit={(e: React.SyntheticEvent) => {
                         e.preventDefault()
@@ -95,33 +94,38 @@ const AdminPage: React.FC<Props> = () => {
                     }}
                     className={classes.root}
                 >
-                    <TextField label="name" className={classes.filled} onChange={(e) => {
-                        setBaseSettings({ ...baseSettings, name: e.target.value }) }}
+                    <Box style={{display:'flex',flexDirection:'row',padding:'20px',gap:20}}>
+                    <Box>
+                    <TextField value={baseSettings.name} name="name" variant="filled" label="name" className={classes.filled} onChange={handleChange}
                     />
-                    <TextField label="symbol" className={classes.filled} onChange={(e) => {
-                        setBaseSettings({ ...baseSettings, symbol: e.target.value }) }}
-                    />
-                    <FormControl className={classes.filled}>
+                    </Box>
+                    <Box>
+                    <TextField  value={baseSettings.symbol} name="symbol" variant="filled" label="symbol" className={classes.filled} onChange={handleChange}/>
+                    </Box>
+                    <Box>
+                    <FormControl variant="filled" className={classes.filled}>
                         <InputLabel htmlFor="ticket-type">ticket type</InputLabel>
-                        <NativeSelect
+                        <Select
                             id="ticket-type"
-                            value={baseSettings.typeOfNFT < 0 ? '' : baseSettings.typeOfNFT}
-                            onChange={(e) => {
-                                if(e.target.value)
-                                    setBaseSettings({ ...baseSettings, typeOfNFT: parseInt(e.target.value) })}}
+                            name="typeOfNFT"
+                            value={baseSettings.typeOfNFT}
+                            onChange={handleSelectChange}
                         >
-                            <option aria-label="None" value='' />
+                            <MenuItem aria-label="None" value='' />
                             {NFTTypeArray.map((typeName, idx)=>
-                                <option key={idx} value={idx}>{typeName}</option>
+                                <MenuItem key={idx} value={idx}>{typeName}</MenuItem>
                             )}
-                        </NativeSelect>
+                        </Select>
                     </FormControl>
-                    <TextField label="max supply" className={classes.filled} onChange={(e) => {
-                        setBaseSettings({ ...baseSettings, maxSupply: parseInt(e.target.value) }) }}
-                    />
-                    <Button variant="contained" className={classes.button} type="submit">create</Button>
+                    </Box>
+                    <Box>
+                    <TextField  value={baseSettings.maxSupply} name="maxSupply" variant="filled" label="max supply" className={classes.filled} onChange={handleChange}/>
+                    </Box>
+                    <Box style={{display:'flex',justifyContent:'center'}}>
+                    <Button variant="contained" color="primary" type="submit">create</Button>
+                    </Box>
+                    </Box>
                 </form>
-            </Box>
             <Box display="flex" flexDirection="row" className={classes.tmpList}>
                 {contractList.map((addr) => {
                     return <NFTTemplateCard
@@ -130,6 +134,7 @@ const AdminPage: React.FC<Props> = () => {
                     />
                 })}
             </Box>
+            </Paper>
         </div>
     )
 }

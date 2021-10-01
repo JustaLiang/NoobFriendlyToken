@@ -4,6 +4,8 @@ import { create } from 'ipfs-http-client';
 import LinearProgressWith from './LinearProgressWithLabel';
 import { NFTBlindboxContext } from '../hardhat/SymfoniContext';
 import { NFTBlindbox } from '../hardhat/typechain/NFTBlindbox';
+import { ethers } from "ethers";
+
 
 interface initStruct {
     baseURI: string
@@ -45,19 +47,21 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
         tokenPrice: "",
         saleStart: ""
     });
+    const [isInit, setIsInit] = useState(false);
     const addCount = useCallback(() => {
-        setCount(count=>count+1);
-       }, [setCount]);
-   
+        setCount(count => count + 1);
+    }, [setCount]);
+
     useEffect(() => {
         const connectToContract = async () => {
             if (!blindBox.factory) return
             const contract = blindBox.factory.attach(address);
             setBlindBoxContract(contract);
+            setIsInit(await contract.isInit());
             console.log(await contract.baseURI());
         };
         connectToContract();
-    }, [blindBox,address])
+    }, [blindBox, address]);
 
     const imageUploader = useCallback((node: HTMLInputElement) => {
         if (!node) return;
@@ -139,7 +143,7 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
         const addMetaDataOptions = {
             pin: true,
             wrapWithDirectory: true,
-            progress: (prog:number) => {
+            progress: (prog: number) => {
                 addCount();
             }
         }
@@ -160,191 +164,206 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
     const handleInitConfirm = () => {
         if (!initData?.baseURI || !initData?.maxPurchase || !initData?.saleStart || !initData?.tokenPrice) return;
         if (!blindboxContract) return;
-        blindboxContract?.initialize(initData.baseURI, +initData.maxPurchase, +initData.tokenPrice, new Date(initData.saleStart).valueOf() / 1000);
-
+        blindboxContract?.initialize(initData.baseURI, +initData.maxPurchase, ethers.utils.parseEther(initData.tokenPrice), new Date(initData.saleStart).valueOf() / 1000);
     }
-    const progress = Math.min(count / totalCount*100,100);
+    const handleSaleStart = () => {
+        if (!blindboxContract) return;
+        blindboxContract.flipSaleState();
+    }
+    const progress = Math.min(count / totalCount * 100, 100);
+    console.log(isInit);
+    console.log("10*10**18", 10 * 10 ** 18);
     return (
         <Container>
             <Paper>
-                <Box style={{ width: '100%' }}>
-                    <Stepper activeStep={activeStep} alternativeLabel>
-                        {steps.map((label) => (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
-                            </Step>
-                        ))}
-                    </Stepper>
-                    <Box style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                        {activeStep === steps.length ? (
-                            <Box>
-                                <Typography >All steps completed</Typography>
-
-                                <Grid container spacing={10} style={{ padding: '24px' }}>
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3}><Typography>Max Purchase: </Typography></Grid>
-                                    <Grid item md={3}><Typography>{initData?.maxPurchase}</Typography></Grid>
-                                    <Grid item md={3}></Grid>
-
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3}><Typography>Token Price:</Typography> </Grid>
-                                    <Grid item md={3}><Typography>{initData?.tokenPrice}</Typography></Grid>
-                                    <Grid item md={3}></Grid>
-
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3}><Typography>Sale Start Time: </Typography> </Grid>
-                                    <Grid item md={3}><Typography>{initData?.saleStart}</Typography> </Grid>
-                                    <Grid item md={3}></Grid>
-
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3}><Typography>Base URI:</Typography>  </Grid>
-                                    <Grid item md={3} ><Typography style={{ wordBreak: 'break-word' }}>{initData?.baseURI}</Typography> </Grid>
-                                    <Grid item md={3}></Grid>
-
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-end', gap: '20px' }}>
-                                        <Button onClick={handleReset}>Reset</Button>
-                                        <Button onClick={handleInitConfirm} variant='contained' color="primary" disabled={!initData?.baseURI || !initData?.maxPurchase || !initData?.saleStart || !initData?.tokenPrice}>Confirm</Button>
-
-
-                                    </Grid>
-                                    <Grid item md={3}></Grid>
-
-
-                                </Grid>
-                            </Box>
-                        ) : (
-                            <>
-                                <Box >
-                                    <Grid container spacing={10} style={{ padding: '24px' }}>
-                                        {
-                                            activeStep === 0 ?
-                                                <>
-                                                    <Grid item md={3}>
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                        <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Max purchase per time</Typography>
-                                                        <TextField name="maxPurchase" value={initData?.maxPurchase} variant="outlined" placeholder="Amount..." style={{ width: '100%' }} onChange={handleChange} />
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                        <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Token Price</Typography>
-                                                        <TextField name="tokenPrice" value={initData?.tokenPrice} variant="outlined" placeholder="ETH" style={{ width: '100%' }} onChange={handleChange} />
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                        <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Sale Start Time</Typography>
-                                                        <TextField name="saleStart" value={initData?.saleStart} variant="outlined" type="date" style={{ width: '100%' }} onChange={handleChange} />
-                                                    </Grid>
-
-                                                </>
-
-                                                :
-                                                <>
-                                                    <Grid item md={3}>
-                                                    </Grid>
-                                                    <Grid item md={3} style={{ textAlign: 'start' }}>
-                                                        <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload Image Folder</Typography>
-                                                        <Typography style={{ display: imageList?.length ? "" : "none" }}>Chosen {imageList?.length} file</Typography>
-                                                        <Button
-                                                            variant="outlined"
-                                                            component="label"
-                                                        >
-                                                            Upload Folder
-                                                            <input
-                                                                type="file"
-                                                                accept="image/*"
-                                                                ref={imageUploader}
-                                                                hidden
-                                                                onChange={handleImageUpload}
-                                                            />
-                                                        </Button>
-                                                    </Grid>
-                                                    <Grid item md={3} style={{borderLeft: '1px solid #d0caca' }}>
-                                                        <Typography style={{ fontWeight: 'bold', marginBottom: 30}}>Upload BaseURI</Typography>
-                                                        <TextField disabled={initData?.baseURI!==""} name="baseURI" value={initData?.baseURI} variant="outlined" style={{ width: '100%' }} placeholder="ipfs://" onChange={handleChange} />
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                    </Grid>
-                                                    <Grid item md={3} style={{ textAlign: 'start' }}>
-                                                        <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload Metadata Folder</Typography>
-                                                        <Typography style={{ display: jsonList?.length ? "" : "none" }}>Chosen {jsonList?.length} file</Typography>
-                                                        <Button
-                                                            variant="outlined"
-                                                            component="label"
-                                                        >
-                                                            Upload Folder
-                                                            <input
-                                                                type="file"
-                                                                accept=".json"
-                                                                ref={jsonUploader}
-                                                                hidden
-                                                                onChange={handleJsonUpload}
-                                                            />
-                                                        </Button>
-                                                    </Grid>
-                                                    <Grid item md={1} style={{ borderLeft: '1px solid #d0caca' }}>
-                                                    </Grid>
-
-                                                </>
-
-
-                                        }
-                                    </Grid>
-                                    {loading?
-                                        <Grid container style={{padding: '24px' }}>
-                                            <Grid item md={3}></Grid>
-                                            <Grid item md={6}>
-                                                <LinearProgressWith value={progress} />
-                                            </Grid>
-                                        </Grid>:<></>
-                                    }
+                {!isInit ?
+                    <Box style={{ width: '100%' }}>
+                        <Stepper activeStep={activeStep} alternativeLabel>
+                            {steps.map((label) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
+                        <Box style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                            {activeStep === steps.length ? (
+                                <Box>
+                                    <Typography >All steps completed</Typography>
 
                                     <Grid container spacing={10} style={{ padding: '24px' }}>
-                                        <Grid item md={3}>
-                                        </Grid>
-                                        <Grid item md={3}>
-                                        </Grid>
+                                        <Grid item md={3}></Grid>
+                                        <Grid item md={3}><Typography>Max Purchase: </Typography></Grid>
+                                        <Grid item md={3}><Typography>{initData?.maxPurchase}</Typography></Grid>
+                                        <Grid item md={3}></Grid>
+
+                                        <Grid item md={3}></Grid>
+                                        <Grid item md={3}><Typography>Token Price:</Typography> </Grid>
+                                        <Grid item md={3}><Typography>{initData?.tokenPrice}</Typography></Grid>
+                                        <Grid item md={3}></Grid>
+
+                                        <Grid item md={3}></Grid>
+                                        <Grid item md={3}><Typography>Sale Start Time: </Typography> </Grid>
+                                        <Grid item md={3}><Typography>{initData?.saleStart}</Typography> </Grid>
+                                        <Grid item md={3}></Grid>
+
+                                        <Grid item md={3}></Grid>
+                                        <Grid item md={3}><Typography>Base URI:</Typography>  </Grid>
+                                        <Grid item md={3} ><Typography style={{ wordBreak: 'break-word' }}>{initData?.baseURI}</Typography> </Grid>
+                                        <Grid item md={3}></Grid>
+
+                                        <Grid item md={3}></Grid>
+                                        <Grid item md={3}></Grid>
                                         <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-end', gap: '20px' }}>
-                                            <Button
-                                                disabled={activeStep === 0}
-                                                onClick={handleBack}
-                                            >
-                                                Back
-                                            </Button>
+                                            <Button onClick={handleReset}>Reset</Button>
+                                            <Button onClick={handleInitConfirm} variant='contained' color="primary" disabled={!initData?.baseURI || !initData?.maxPurchase || !initData?.saleStart || !initData?.tokenPrice}>Confirm</Button>
+
+
+                                        </Grid>
+                                        <Grid item md={3}></Grid>
+
+
+                                    </Grid>
+                                </Box>
+                            ) : (
+                                <>
+                                    <Box >
+                                        <Grid container spacing={10} style={{ padding: '24px' }}>
                                             {
-                                                activeStep === steps.length - 1 ?
-                                                    (initData?.baseURI ?
-                                                        <Button variant="contained" color="primary" onClick={handleNext}>
-                                                            Next
-                                                        </Button>
-                                                        :
-                                                        <Button variant="contained" color="primary" disabled={loading} onClick={handleIPFSUpload}>
-                                                            {loading ?
-                                                                <CircularProgress size={20} /> : <></>
-                                                            }
-                                                            Finish
-                                                        </Button>
-                                                    ) :
-                                                    <Button variant="contained" color="primary" onClick={handleNext}>
-                                                        Next
-                                                    </Button>
+                                                activeStep === 0 ?
+                                                    <>
+                                                        <Grid item md={3}>
+                                                        </Grid>
+                                                        <Grid item md={3}>
+                                                            <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Max purchase per time</Typography>
+                                                            <TextField name="maxPurchase" value={initData?.maxPurchase} variant="outlined" placeholder="Amount..." style={{ width: '100%' }} onChange={handleChange} />
+                                                        </Grid>
+                                                        <Grid item md={3}>
+                                                            <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Token Price</Typography>
+                                                            <TextField name="tokenPrice" value={initData?.tokenPrice} variant="outlined" placeholder="ETH" style={{ width: '100%' }} onChange={handleChange} />
+                                                        </Grid>
+                                                        <Grid item md={3}>
+                                                        </Grid>
+                                                        <Grid item md={3}>
+                                                        </Grid>
+                                                        <Grid item md={3}>
+                                                            <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Sale Start Time</Typography>
+                                                            <TextField name="saleStart" value={initData?.saleStart} variant="outlined" type="date" style={{ width: '100%' }} onChange={handleChange} />
+                                                        </Grid>
+
+                                                    </>
+
+                                                    :
+                                                    <>
+                                                        <Grid item md={3}>
+                                                        </Grid>
+                                                        <Grid item md={3} style={{ textAlign: 'start' }}>
+                                                            <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload Image Folder</Typography>
+                                                            <Typography style={{ display: imageList?.length ? "" : "none" }}>Chosen {imageList?.length} file</Typography>
+                                                            <Button
+                                                                variant="outlined"
+                                                                component="label"
+                                                            >
+                                                                Upload Folder
+                                                                <input
+                                                                    type="file"
+                                                                    accept="image/*"
+                                                                    ref={imageUploader}
+                                                                    hidden
+                                                                    onChange={handleImageUpload}
+                                                                />
+                                                            </Button>
+                                                        </Grid>
+                                                        <Grid item md={3} style={{ borderLeft: '1px solid #d0caca' }}>
+                                                            <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload BaseURI</Typography>
+                                                            <TextField disabled={initData?.baseURI !== ""} name="baseURI" value={initData?.baseURI} variant="outlined" style={{ width: '100%' }} placeholder="ipfs://" onChange={handleChange} />
+                                                        </Grid>
+                                                        <Grid item md={3}>
+                                                        </Grid>
+                                                        <Grid item md={3}>
+                                                        </Grid>
+                                                        <Grid item md={3} style={{ textAlign: 'start' }}>
+                                                            <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload Metadata Folder</Typography>
+                                                            <Typography style={{ display: jsonList?.length ? "" : "none" }}>Chosen {jsonList?.length} file</Typography>
+                                                            <Button
+                                                                variant="outlined"
+                                                                component="label"
+                                                            >
+                                                                Upload Folder
+                                                                <input
+                                                                    type="file"
+                                                                    accept=".json"
+                                                                    ref={jsonUploader}
+                                                                    hidden
+                                                                    onChange={handleJsonUpload}
+                                                                />
+                                                            </Button>
+                                                        </Grid>
+                                                        <Grid item md={1} style={{ borderLeft: '1px solid #d0caca' }}>
+                                                        </Grid>
+
+                                                    </>
+
 
                                             }
                                         </Grid>
-                                        <Grid item md={3}>
+                                        {loading ?
+                                            <Grid container style={{ padding: '24px' }}>
+                                                <Grid item md={3}></Grid>
+                                                <Grid item md={6}>
+                                                    <LinearProgressWith value={progress} />
+                                                </Grid>
+                                            </Grid> : <></>
+                                        }
+
+                                        <Grid container spacing={10} style={{ padding: '24px' }}>
+                                            <Grid item md={3}>
+                                            </Grid>
+                                            <Grid item md={3}>
+                                            </Grid>
+                                            <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-end', gap: '20px' }}>
+                                                <Button
+                                                    disabled={activeStep === 0}
+                                                    onClick={handleBack}
+                                                >
+                                                    Back
+                                                </Button>
+                                                {
+                                                    activeStep === steps.length - 1 ?
+                                                        (initData?.baseURI ?
+                                                            <Button variant="contained" color="primary" onClick={handleNext}>
+                                                                Next
+                                                            </Button>
+                                                            :
+                                                            <Button variant="contained" color="primary" disabled={loading} onClick={handleIPFSUpload}>
+                                                                {loading ?
+                                                                    <CircularProgress size={20} /> : <></>
+                                                                }
+                                                                Finish
+                                                            </Button>
+                                                        ) :
+                                                        <Button variant="contained" color="primary" onClick={handleNext}>
+                                                            Next
+                                                        </Button>
+
+                                                }
+                                            </Grid>
+                                            <Grid item md={3}>
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
-                                </Box>
-                            </>
-                        )}
-                    </Box>
-                </Box>
+                                    </Box>
+                                </>
+                            )}
+                        </Box>
+                    </Box> :
+                    <>
+                        <Box>
+                            <Typography variant="h5">Your contract settings</Typography>
+                            <Box>
+                                <Button variant='contained' onClick={handleSaleStart}>Sale Start</Button>
+                            </Box>
+                        </Box>
+                    </>
+                }
             </Paper >
         </Container >
     )
