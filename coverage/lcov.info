@@ -1,5 +1,5 @@
 TN:
-SF:C:\Users\user\Desktop\NoobFriendlyToken\contracts\Generator\NFTBlindBoxGenerator.sol
+SF:/Users/jeffery.yh.lin/Desktop/NoobFriendlyToken/contracts/Generator/NFTBlindBoxGenerator.sol
 FN:20,constructor
 FN:27,initialize
 FN:34,reserveNFT
@@ -88,7 +88,7 @@ BRF:26
 BRH:14
 end_of_record
 TN:
-SF:C:\Users\user\Desktop\NoobFriendlyToken\contracts\Generator\NFTGalleryGenerator.sol
+SF:/Users/jeffery.yh.lin/Desktop/NoobFriendlyToken/contracts/Generator/NFTGalleryGenerator.sol
 FN:15,constructor
 FN:21,initialize
 FN:26,mintToken
@@ -128,7 +128,7 @@ BRF:8
 BRH:0
 end_of_record
 TN:
-SF:C:\Users\user\Desktop\NoobFriendlyToken\contracts\Generator\NFTTicketGenerator.sol
+SF:/Users/jeffery.yh.lin/Desktop/NoobFriendlyToken/contracts/Generator/NFTTicketGenerator.sol
 FN:24,constructor
 FN:29,initialize
 FN:50,mintToken
@@ -194,7 +194,7 @@ BRF:16
 BRH:0
 end_of_record
 TN:
-SF:C:\Users\user\Desktop\NoobFriendlyToken\contracts\NoobFriendlyTokenAdmin.sol
+SF:/Users/jeffery.yh.lin/Desktop/NoobFriendlyToken/contracts/NoobFriendlyTokenAdmin.sol
 FN:17,constructor
 FN:20,updateGenerator
 FN:25,genNFTContract
@@ -237,7 +237,7 @@ BRF:6
 BRH:3
 end_of_record
 TN:
-SF:C:\Users\user\Desktop\NoobFriendlyToken\contracts\NoobFriendlyTokenGenerator.sol
+SF:/Users/jeffery.yh.lin/Desktop/NoobFriendlyToken/contracts/NoobFriendlyTokenGenerator.sol
 FN:13,constructor
 FN:23,genNFTContract
 FN:32,changeSlottingFee
@@ -264,7 +264,7 @@ BRF:2
 BRH:2
 end_of_record
 TN:
-SF:C:\Users\user\Desktop\NoobFriendlyToken\contracts\NoobFriendlyTokenTemplate.sol
+SF:/Users/jeffery.yh.lin/Desktop/NoobFriendlyToken/contracts/NoobFriendlyTokenTemplate.sol
 FN:46,constructor
 FN:55,onlyOnce
 FN:61,onlyActive
