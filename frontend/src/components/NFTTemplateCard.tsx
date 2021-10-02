@@ -1,19 +1,20 @@
+import { Box, Card, CardActionArea, CardContent, CardHeader, CardMedia, CircularProgress, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import React, { useContext, useEffect, useState } from 'react';
-import { SignerContext, ProviderContext } from "../hardhat/SymfoniContext";
+import { Link } from "react-router-dom";
+import { ProviderContext, SignerContext } from "../hardhat/SymfoniContext";
 import { NoobFriendlyTokenTemplate__factory } from "../hardhat/typechain/factories/NoobFriendlyTokenTemplate__factory";
 import { NoobFriendlyTokenTemplate } from "../hardhat/typechain/NoobFriendlyTokenTemplate";
-import { makeStyles } from "@material-ui/core/styles";
-import { Card, CardHeader, CardMedia, CardContent, Typography, Box, CircularProgress, CardActionArea } from "@material-ui/core";
 import { NFTTypeArray } from "./NFTTypeArray";
-import { Link } from "react-router-dom";
-
 const useStyles = makeStyles((theme) => ({
-    root: {
-        width: 300,
-    },
     media: {
-        height: 300,
-    },
+        objectFit: 'contain',
+        width: 'auto',
+        height: 'auto',
+        borderRadius: '5px',
+        maxWidth: '100%',
+        maxHeight: '100%',
+    }
 }))
 
 interface Props {
@@ -59,22 +60,25 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
     useEffect(() => {
         const updateImageURI = async () => {
             const baseURI = await template?.baseURI();
-            console.log(baseURI);
-            fetch(`https://ipfs.io/ipfs/${baseURI?.slice(7)}0`)
-                .then((res) => {
-                    if (res.status === 404) throw Error("URI error: 404");
-                    return res.json();
-                })
-                .then((metadata) => {
-                    const imgURI = "https://ipfs.io/ipfs/" + metadata.image.slice(7);
-                    setImageURI(imgURI);
-                    console.log(imgURI);
-                })
-                .catch((err) => {
-                    setImageURI("");
-                    console.log(err);
-                })
+            if (baseURI) {
+                fetch(`https://ipfs.io/ipfs/${baseURI?.slice(7)}0`)
+                    .then((res) => {
+                        if (res.status === 404) throw Error("URI error: 404");
+                        return res.json();
+                    })
+                    .then((metadata) => {
+                        const imgURI = "https://ipfs.io/ipfs/" + metadata.image.slice(7);
+                        setImageURI(imgURI);
+                    })
+                    .catch((err) => {
+                        setImageURI("");
+                        console.log(err);
+                    })
             }
+            else{
+                setImageURI("");
+            }
+        }
         updateImageURI()
     }, [template])
 
@@ -103,23 +107,31 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
 
     return (
         <div>
-            <Card className={classes.root} style={{ borderRadius: 20 }} elevation={10} >
+            <Card
+                style={{ borderRadius: 8, boxShadow: 'none', border: '1px solid rgb(229, 232, 235)', padding: '10px' }}
+            >
                 <CardActionArea component={Link} to={`/${NFTTypeArray[templateInfo.typeOfNFT].toLowerCase()}/${templateAddress}`}>
                     <CardHeader
                         title={templateInfo.name}
                         subheader={templateInfo.symbol}
                     />
-                    {imageURI !== "fetching" && imgLoaded ? (
+                    {imageURI !== "fetching" && imageURI && imgLoaded ? (
                         <CardMedia
                             className={classes.media}
                             component="img"
                             image={imageURI}
-                            alt="Not initialized"
                         />
                     ) : (
-                        <Box className={classes.media} style={{ textAlign: 'center' }} >
-                            <CircularProgress />
-                        </Box>
+                        imageURI ?
+                            <Box className={classes.media} style={{ textAlign: 'center' }} >
+                                <CircularProgress />
+                            </Box>
+                            :
+                            <CardMedia
+                                className={classes.media}
+                                component="img"
+                                image={"https://getstamped.co.uk/wp-content/uploads/WebsiteAssets/Placeholder.jpg"}
+                            />
                     )}
 
                     <CardContent>
