@@ -36,12 +36,13 @@ interface TemplateInterface {
 
 abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721Enumerable {
 
+    uint public saleStart;
     uint public maxPurchase;
     uint32 public typeOfNFT;
     uint32 public maxSupply;
     string public baseURI;
     bool public isInit;
-    bool public saleIsActive;
+    
 
     constructor(
         uint32 typeOfNFT_,
@@ -49,7 +50,7 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
         typeOfNFT = typeOfNFT_;
         maxSupply = maxSupply_;
         isInit = false;
-        saleIsActive = false;
+        // saleIsActive = false;
     }
 
     modifier onlyOnce() {
@@ -58,14 +59,14 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
         _;
     }
 
-    modifier onlyActive() {
-        require(saleIsActive, "sale is not active");
-        _;
-    }
+    // modifier onlyActive() {
+    //     require(saleIsActive, "sale is not active");
+    //     _;
+    // }
 
-    function flipSaleState() public onlyOwner {
-        saleIsActive = !saleIsActive;
-    }
+    // function flipSaleState() public onlyOwner {
+    //     saleIsActive = !saleIsActive;
+    // }
 
     function getBaseSettings() external view returns (BaseSettingsInfo memory) {
         return BaseSettingsInfo(name(), symbol(), typeOfNFT, maxSupply);

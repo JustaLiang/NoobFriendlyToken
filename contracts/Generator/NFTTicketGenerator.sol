@@ -47,7 +47,7 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
         baseURI = baseURI_;
     }
 
-    function mintToken(uint8 level) external payable onlyActive {
+    function mintToken(uint8 level) external payable {
         require(
             level < _ticketState.prices.length,
             "NFTTicket: no such level"

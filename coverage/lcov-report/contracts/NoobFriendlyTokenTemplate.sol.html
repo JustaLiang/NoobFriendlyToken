@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">0% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>9/9</span>
+        <span class='fraction'>0/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">0% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>4/4</span>
+        <span class='fraction'>0/2</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">0% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>5/5</span>
+        <span class='fraction'>0/3</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">0% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>11/11</span>
+        <span class='fraction'>0/7</span>
       </div>
     </div>
   </div>
-  <div class='status-line high'></div>
+  <div class='status-line low'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -115,7 +115,8 @@
 70
 71
 72
-73</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+73
+74</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -163,29 +164,30 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9×</span>
-<span class="cline-any cline-yes">9×</span>
-<span class="cline-any cline-yes">9×</span>
-<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12×</span>
-<span class="cline-any cline-yes">6×</span>
-<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4×</span>
-<span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">//SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
@@ -225,39 +227,40 @@ interface TemplateInterface {
 &nbsp;
 abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721Enumerable {
 &nbsp;
+    uint public saleStart;
     uint public maxPurchase;
     uint32 public typeOfNFT;
     uint32 public maxSupply;
     string public baseURI;
     bool public isInit;
-    bool public saleIsActive;
+    
 &nbsp;
-    constructor(
+<span class="fstat-no" title="function not covered" >    constructor(</span>
         uint32 typeOfNFT_,
         uint32 maxSupply_) {
-        typeOfNFT = typeOfNFT_;
-        maxSupply = maxSupply_;
-        isInit = false;
-        saleIsActive = false;
+<span class="cstat-no" title="statement not covered" >        typeOfNFT = typeOfNFT_</span>;
+<span class="cstat-no" title="statement not covered" >        maxSupply = maxSupply_</span>;
+<span class="cstat-no" title="statement not covered" >        isInit = false</span>;
+        // saleIsActive = false;
     }
 &nbsp;
-    modifier onlyOnce() {
-        require(!isInit, "init already");
-        isInit = true;
+<span class="fstat-no" title="function not covered" >    modifier onlyOnce() {</span>
+<span class="cstat-no" title="statement not covered" >        require(!isInit, "init already")</span>;
+<span class="cstat-no" title="statement not covered" >        isInit = true</span>;
         _;
     }
 &nbsp;
-    modifier onlyActive() {
-        require(saleIsActive, "sale is not active");
-        _;
-    }
+    // modifier onlyActive() {
+    //     require(saleIsActive, "sale is not active");
+    //     _;
+    // }
 &nbsp;
-    function flipSaleState() public onlyOwner {
-        saleIsActive = !saleIsActive;
-    }
+    // function flipSaleState() public onlyOwner {
+    //     saleIsActive = !saleIsActive;
+    // }
 &nbsp;
-    function getBaseSettings() external view returns (BaseSettingsInfo memory) {
-        return BaseSettingsInfo(name(), symbol(), typeOfNFT, maxSupply);
+<span class="fstat-no" title="function not covered" >    function getBaseSettings() external view returns (BaseSettingsInfo memory) {</span>
+<span class="cstat-no" title="statement not covered" >        return BaseSettingsInfo(name(), symbol(), typeOfNFT, maxSupply);</span>
     }
 }</pre></td></tr>
 </table></pre>
@@ -265,7 +268,7 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Oct 02 2021 00:30:30 GMT+0800 (台北標準時間)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Oct 04 2021 00:46:21 GMT+0800 (台北標準時間)
 </div>
 </div>
 <script src="../prettify.js"></script>

@@ -23,7 +23,7 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
         baseURI = baseURI_;
     }
 
-    function mintToken(uint[] calldata tokenIdList) external payable onlyActive {
+    function mintToken(uint[] calldata tokenIdList) external payable {
         require(
             tokenPrice*tokenIdList.length <= msg.value,
             "Ether value sent is not correct"

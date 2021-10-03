@@ -23,11 +23,12 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     function initialize(string calldata baseURI_,
                         uint maxPurchase_,
                         uint tokenPrice_,
-                        uint saleStart
+                        uint saleStart_
                        ) external onlyOwner onlyOnce {
         maxPurchase = maxPurchase_;
         tokenPrice = tokenPrice_;
-        revealTimeStamp = saleStart + (86400 * 9);
+        saleStart = saleStart_;
+        revealTimeStamp = saleStart_ + (86400 * 9);
         baseURI = baseURI_;
     }
 
@@ -48,8 +49,10 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         revealTimeStamp = revealTimeStamp_;
     }
 
-    function mintToken(uint numberOfTokens) external payable onlyActive {
+    function mintToken(uint numberOfTokens) external payable {
         require( isInit, "must initialize first");
+        console.log("timestamp: ", block.timestamp, "saleStart: ", saleStart);
+        require( block.timestamp > saleStart, "");
         require(numberOfTokens <= maxPurchase, "Can only mint 20 tokens at a time");
         require(totalSupply().add(numberOfTokens) <= maxSupply, "Purchase would exceed max supply of Apes");
         require(tokenPrice.mul(numberOfTokens) <= msg.value, "Ether value sent is not correct");
