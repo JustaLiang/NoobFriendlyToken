@@ -62,7 +62,9 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
             "NFTTicket: not enough for ticket price"    
         );
 
+        _ticketState.current[level] += 1;
         _safeMint(_msgSender(), uint(newTicketId));
+
     }
 
     function tokenURI(uint ticketId) public override view returns (string memory uri) {

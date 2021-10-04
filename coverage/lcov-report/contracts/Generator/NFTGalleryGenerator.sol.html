@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>0/11</span>
+        <span class='fraction'>11/11</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>0/8</span>
+        <span class='fraction'>8/8</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>0/6</span>
+        <span class='fraction'>6/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>0/11</span>
+        <span class='fraction'>11/11</span>
       </div>
     </div>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line high'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -126,38 +126,34 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -165,7 +161,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">//SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
@@ -178,56 +178,56 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
 &nbsp;
     uint public tokenPrice;
 &nbsp;
-<span class="fstat-no" title="function not covered" >    constructor(BaseSettings memory baseSettings)</span>
+    constructor(BaseSettings memory baseSettings)
         ERC721(baseSettings.name, baseSettings.symbol)
         PaymentSplitter(baseSettings.payees, baseSettings.shares)
         NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply)
     {}
 &nbsp;
-<span class="fstat-no" title="function not covered" >    function initialize(</span>
+    function initialize(
         string calldata baseURI_,
         uint tokenPrice_
     ) external onlyOwner onlyOnce {
-<span class="cstat-no" title="statement not covered" >        tokenPrice = tokenPrice_</span>;
-<span class="cstat-no" title="statement not covered" >        baseURI = baseURI_</span>;
+        tokenPrice = tokenPrice_;
+        baseURI = baseURI_;
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    function mintToken(uint[] calldata tokenIdList) external payable {</span>
-<span class="cstat-no" title="statement not covered" >        require(</span>
+    function mintToken(uint[] calldata tokenIdList) external payable {
+        require(
             tokenPrice*tokenIdList.length &lt;= msg.value,
             "Ether value sent is not correct"
         );
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        for (uint i = 0; i &lt; tokenIdList.length; i++) {</span>
-<span class="cstat-no" title="statement not covered" >            uint tokenId = tokenIdList[i];</span>
-<span class="cstat-no" title="statement not covered" >            require(tokenId &lt; maxSupply, "The id is out of bound")</span>;
-<span class="cstat-no" title="statement not covered" >            require(</span>
+        for (uint i = 0; i &lt; tokenIdList.length; i++) {
+            uint tokenId = tokenIdList[i];
+            require(tokenId &lt; maxSupply, "The id is out of bound");
+            require(
                 !_exists(tokenId),
                 "This token has already been minted"
             );
-<span class="cstat-no" title="statement not covered" >            _safeMint(msg.sender, tokenId)</span>;
+            _safeMint(msg.sender, tokenId);
         }
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    function tokenURI(uint tokenId) public override view returns (string memory) {</span>
-<span class="cstat-no" title="statement not covered" >        require(</span>
+    function tokenURI(uint tokenId) public override view returns (string memory) {
+        require(
             _exists(tokenId),
              "ERC721Metadata: URI query for nonexistent token"
         );
         
-<span class="cstat-no" title="statement not covered" >        return string(abi.encodePacked(baseURI, tokenId.toString()));</span>
+        return string(abi.encodePacked(baseURI, tokenId.toString()));
     }
 }
 &nbsp;
 contract NFTGalleryGenerator is NoobFriendlyTokenGenerator {
     
-<span class="fstat-no" title="function not covered" >    constructor(address adminAddr_, uint slottingFee_)</span>
+    constructor(address adminAddr_, uint slottingFee_)
         NoobFriendlyTokenGenerator(adminAddr_, slottingFee_)
     {}
 &nbsp;
-<span class="fstat-no" title="function not covered" >    function _createContract(BaseSettings calldata baseSettings)</span>
+    function _createContract(BaseSettings calldata baseSettings)
         internal override returns (address) {
-<span class="cstat-no" title="statement not covered" >        return address(new NFTGallery(baseSettings));</span>
+        return address(new NFTGallery(baseSettings));
     }
 }</pre></td></tr>
 </table></pre>
@@ -235,7 +235,7 @@ contract NFTGalleryGenerator is NoobFriendlyTokenGenerator {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Oct 04 2021 00:46:21 GMT+0800 (台北標準時間)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Oct 04 2021 14:13:32 GMT+0800 (台北標準時間)
 </div>
 </div>
 <script src="../../prettify.js"></script>

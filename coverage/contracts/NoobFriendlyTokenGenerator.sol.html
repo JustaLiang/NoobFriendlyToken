@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>0/10</span>
+        <span class='fraction'>10/10</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">50% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>0/2</span>
+        <span class='fraction'>1/2</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>0/3</span>
+        <span class='fraction'>3/3</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>0/10</span>
+        <span class='fraction'>10/10</span>
       </div>
     </div>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line high'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -93,25 +93,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">9×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">24×</span>
+<span class="cline-any cline-yes">24×</span>
+<span class="cline-any cline-yes">24×</span>
+<span class="cline-any cline-yes">24×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">//SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
@@ -125,28 +125,28 @@ abstract contract NoobFriendlyTokenGenerator is Ownable, GeneratorInterface{
     address public adminAddr;
     uint public override slottingFee;
 &nbsp;
-<span class="fstat-no" title="function not covered" >    constructor(</span>
+    constructor(
         address adminAddr_,
         uint slottingFee_) {
-<span class="cstat-no" title="statement not covered" >        adminAddr = adminAddr_</span>;
-<span class="cstat-no" title="statement not covered" >        slottingFee = slottingFee_</span>;
+        adminAddr = adminAddr_;
+        slottingFee = slottingFee_;
     }
     
     function _createContract(BaseSettings calldata baseSettings)
         internal virtual returns (address);
 &nbsp;
-<span class="fstat-no" title="function not covered" >    function genNFTContract(address client, BaseSettings calldata baseSettings) external override returns (address) {</span>
-<span class="cstat-no" title="statement not covered" >        require(_msgSender() == adminAddr)</span>;
-<span class="cstat-no" title="statement not covered" >        address contractAddr =  _createContract(baseSettings);</span>
-<span class="cstat-no" title="statement not covered" >        TemplateInterface nftContract = TemplateInterface(contractAddr);</span>
-<span class="cstat-no" title="statement not covered" >        nftContract.transferOwnership(client)</span>;
-<span class="cstat-no" title="statement not covered" >        console.log("NFT Contract at:", address(nftContract), " Owner:", nftContract.owner())</span>;
-<span class="cstat-no" title="statement not covered" >        return contractAddr;</span>
+    function genNFTContract(address client, BaseSettings calldata baseSettings) external override returns (address) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_msgSender() == adminAddr);
+        address contractAddr =  _createContract(baseSettings);
+        TemplateInterface nftContract = TemplateInterface(contractAddr);
+        nftContract.transferOwnership(client);
+        console.log("NFT Contract at:", address(nftContract), " Owner:", nftContract.owner());
+        return contractAddr;
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    function changeSlottingFee(uint newSlottingFee) external onlyOwner {</span>
-<span class="cstat-no" title="statement not covered" >        console.log("slotting fee change from", slottingFee, " to", newSlottingFee)</span>;
-<span class="cstat-no" title="statement not covered" >        slottingFee = newSlottingFee</span>;
+    function changeSlottingFee(uint newSlottingFee) external onlyOwner {
+        console.log("slotting fee change from", slottingFee, " to", newSlottingFee);
+        slottingFee = newSlottingFee;
     }
 } </pre></td></tr>
 </table></pre>
@@ -154,7 +154,7 @@ abstract contract NoobFriendlyTokenGenerator is Ownable, GeneratorInterface{
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Oct 04 2021 00:46:21 GMT+0800 (台北標準時間)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Oct 04 2021 14:13:32 GMT+0800 (台北標準時間)
 </div>
 </div>
 <script src="../prettify.js"></script>

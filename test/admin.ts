@@ -6,14 +6,31 @@ var utils = require('ethers').utils;
 describe("NoobFriendlyTokenAdmin.sol", function () {
 
   let owner, addr1, addr2;
-  let tokenAdmin, blindboxGenerator;
+  let tokenAdmin, ticketGenerator, blindboxGenerator, galleryGenerator;
 
   beforeEach(async function () {
 
     [owner, addr1, addr2] =  await ethers.getSigners();
     await deployments.fixture();
     tokenAdmin = await ethers.getContract('NoobFriendlyTokenAdmin', owner);
+    ticketGenerator = await ethers.getContract('NFTTicketGenerator', owner);
     blindboxGenerator = await ethers.getContract('NFTBlindboxGenerator', owner);
+    galleryGenerator = await ethers.getContract('NFTGalleryGenerator', owner);
+
+  });
+
+  it( "NoobFriendlyTokenGenerator - genNFTContract", async function () {
+
+    const baseSettings = {
+      "name" : "ticket1",
+      "symbol" : "tkt",
+      "payees" : [addr1.address, addr2.address],
+      "shares" : [1, 1],
+      "typeOfNFT" : 0,
+      "maxSupply" : 100
+    }
+
+    await ticketGenerator.genNFTContract( baseSettings , {value:5e11*100});
 
   });
 

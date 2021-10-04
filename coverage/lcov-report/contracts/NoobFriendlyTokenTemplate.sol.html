@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>0/6</span>
+        <span class='fraction'>6/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>0/2</span>
+        <span class='fraction'>2/2</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>0/3</span>
+        <span class='fraction'>3/3</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>0/7</span>
+        <span class='fraction'>7/7</span>
       </div>
     </div>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line high'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -165,21 +165,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">24×</span>
+<span class="cline-any cline-yes">24×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24×</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-yes">20×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -187,7 +182,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">//SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
@@ -235,18 +235,18 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
     bool public isInit;
     
 &nbsp;
-<span class="fstat-no" title="function not covered" >    constructor(</span>
+    constructor(
         uint32 typeOfNFT_,
         uint32 maxSupply_) {
-<span class="cstat-no" title="statement not covered" >        typeOfNFT = typeOfNFT_</span>;
-<span class="cstat-no" title="statement not covered" >        maxSupply = maxSupply_</span>;
-<span class="cstat-no" title="statement not covered" >        isInit = false</span>;
+        typeOfNFT = typeOfNFT_;
+        maxSupply = maxSupply_;
+        isInit = false;
         // saleIsActive = false;
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    modifier onlyOnce() {</span>
-<span class="cstat-no" title="statement not covered" >        require(!isInit, "init already")</span>;
-<span class="cstat-no" title="statement not covered" >        isInit = true</span>;
+    modifier onlyOnce() {
+        require(!isInit, "init already");
+        isInit = true;
         _;
     }
 &nbsp;
@@ -259,8 +259,8 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
     //     saleIsActive = !saleIsActive;
     // }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    function getBaseSettings() external view returns (BaseSettingsInfo memory) {</span>
-<span class="cstat-no" title="statement not covered" >        return BaseSettingsInfo(name(), symbol(), typeOfNFT, maxSupply);</span>
+    function getBaseSettings() external view returns (BaseSettingsInfo memory) {
+        return BaseSettingsInfo(name(), symbol(), typeOfNFT, maxSupply);
     }
 }</pre></td></tr>
 </table></pre>
@@ -268,7 +268,7 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Oct 04 2021 00:46:21 GMT+0800 (台北標準時間)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Oct 04 2021 14:13:32 GMT+0800 (台北標準時間)
 </div>
 </div>
 <script src="../prettify.js"></script>

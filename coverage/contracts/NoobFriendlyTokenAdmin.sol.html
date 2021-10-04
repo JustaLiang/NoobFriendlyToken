@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>0/18</span>
+        <span class='fraction'>18/18</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">50% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>0/6</span>
+        <span class='fraction'>3/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">60% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>0/5</span>
+        <span class='fraction'>3/5</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>0/18</span>
+        <span class='fraction'>18/18</span>
       </div>
     </div>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line high'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -123,44 +123,44 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">10×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">28×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">46×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">28×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">28×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">24×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">//SPDX-License-Identifier: Unlicense
@@ -183,44 +183,44 @@ contract NoobFriendlyTokenAdmin is Ownable, PaymentSplitter {
     }
 &nbsp;
 <span class="fstat-no" title="function not covered" >    function updateGenerator(uint32 typeOfNFT, address generatorAddr) external onlyOwner {</span>
-<span class="cstat-no" title="statement not covered" >        typeToGenerator[typeOfNFT] = GeneratorInterface(generatorAddr)</span>;
-<span class="cstat-no" title="statement not covered" >        console.log("NoobFriendlyTokenAdmin:", typeOfNFT, "=&gt;", generatorAddr)</span>;
+        typeToGenerator[typeOfNFT] = GeneratorInterface(generatorAddr);
+        console.log("NoobFriendlyTokenAdmin:", typeOfNFT, "=&gt;", generatorAddr);
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    function genNFTContract(BaseSettings calldata baseSettings) external payable {</span>
-<span class="cstat-no" title="statement not covered" >        console.log("baseSettings")</span>;
-<span class="cstat-no" title="statement not covered" >        console.log("  name:", baseSettings.name)</span>;
-<span class="cstat-no" title="statement not covered" >        console.log("  symbol:", baseSettings.symbol)</span>;
-<span class="cstat-no" title="statement not covered" >        for (uint i = 0; i &lt; baseSettings.payees.length; i++) {</span>
-<span class="cstat-no" title="statement not covered" >            console.log("    ", baseSettings.payees[i], baseSettings.shares[i])</span>;
+    function genNFTContract(BaseSettings calldata baseSettings) external payable {
+        console.log("baseSettings");
+        console.log("  name:", baseSettings.name);
+        console.log("  symbol:", baseSettings.symbol);
+        for (uint i = 0; i &lt; baseSettings.payees.length; i++) {
+            console.log("    ", baseSettings.payees[i], baseSettings.shares[i]);
         }
-<span class="cstat-no" title="statement not covered" >        console.log("  typeOfNFT:", baseSettings.typeOfNFT)</span>;
-<span class="cstat-no" title="statement not covered" >        console.log("  maxSupply:", baseSettings.maxSupply)</span>;
-<span class="cstat-no" title="statement not covered" >        GeneratorInterface generator = typeToGenerator[baseSettings.typeOfNFT];</span>
-<span class="cstat-no" title="statement not covered" >        require(</span>
+        console.log("  typeOfNFT:", baseSettings.typeOfNFT);
+        console.log("  maxSupply:", baseSettings.maxSupply);
+        GeneratorInterface generator = typeToGenerator[baseSettings.typeOfNFT];
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(
             address(generator) != address(0),
             "NoobFriendlyTokenAdmin: Invalid ticket type"
         );
-<span class="cstat-no" title="statement not covered" >        require(</span>
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(
             msg.value &gt;= generator.slottingFee()*baseSettings.maxSupply,
             "NoobFriendlyTokenAdmin: Slotting fee error"
         );
-<span class="cstat-no" title="statement not covered" >        TemplateInterface nftContract = TemplateInterface(generator.genNFTContract(_msgSender(), baseSettings));</span>
+        TemplateInterface nftContract = TemplateInterface(generator.genNFTContract(_msgSender(), baseSettings));
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        userContracts[_msgSender()].push(nftContract)</span>;
+        userContracts[_msgSender()].push(nftContract);
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    function getContractList() external view returns (TemplateInterface[] memory) {</span>
-<span class="cstat-no" title="statement not covered" >        return userContracts[_msgSender()];</span>
+    function getContractList() external view returns (TemplateInterface[] memory) {
+        return userContracts[_msgSender()];
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    function slottingFee(uint32 generatorType) external view returns (uint) {</span>
-<span class="cstat-no" title="statement not covered" >        GeneratorInterface generator = typeToGenerator[generatorType];</span>
-<span class="cstat-no" title="statement not covered" >        require(</span>
+    function slottingFee(uint32 generatorType) external view returns (uint) {
+        GeneratorInterface generator = typeToGenerator[generatorType];
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(
             address(generator) != address(0),
             "NoobFriendlyTokenAdmin: generator not exists"
         );
-<span class="cstat-no" title="statement not covered" >        return generator.slottingFee();</span>
+        return generator.slottingFee();
     }
 }
 &nbsp;</pre></td></tr>
@@ -229,7 +229,7 @@ contract NoobFriendlyTokenAdmin is Ownable, PaymentSplitter {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Oct 04 2021 00:46:21 GMT+0800 (台北標準時間)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Oct 04 2021 14:13:32 GMT+0800 (台北標準時間)
 </div>
 </div>
 <script src="../prettify.js"></script>
