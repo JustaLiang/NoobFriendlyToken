@@ -254,11 +254,11 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                                                         </Grid>
                                                         <Grid item md={3}>
                                                             <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Sale Start Time</Typography>
-                                                            <TextField name="saleStart" value={initData?.saleStart} variant="outlined" type="date" style={{ width: '100%' }} onChange={handleChange} />
+                                                            <TextField name="saleStart" value={initData?.saleStart} variant="outlined" type="datetime-local" style={{ width: '100%' }} onChange={handleChange} />
                                                         </Grid>
                                                          <Grid item md={3}>
-                                                            <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Sale Start Time</Typography>
-                                                            <TextField name="revealTimeStamp" value={initData?.revealTimeStamp} variant="outlined" type="date" style={{ width: '100%' }} onChange={handleChange} />
+                                                            <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Reveal Time</Typography>
+                                                            <TextField name="revealTimeStamp" value={initData?.revealTimeStamp} variant="outlined" type="datetime-local" style={{ width: '100%' }} onChange={handleChange} />
                                                         </Grid>
 
                                                     </>
