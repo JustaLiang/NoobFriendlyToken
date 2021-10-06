@@ -50,23 +50,13 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
         typeOfNFT = typeOfNFT_;
         maxSupply = maxSupply_;
         isInit = false;
-        // saleIsActive = false;
     }
 
     modifier onlyOnce() {
-        require(!isInit, "init already");
+        require(!isInit, "template: init already");
         isInit = true;
         _;
     }
-
-    // modifier onlyActive() {
-    //     require(saleIsActive, "sale is not active");
-    //     _;
-    // }
-
-    // function flipSaleState() public onlyOwner {
-    //     saleIsActive = !saleIsActive;
-    // }
 
     function getBaseSettings() external view returns (BaseSettingsInfo memory) {
         return BaseSettingsInfo(name(), symbol(), typeOfNFT, maxSupply);

@@ -9,10 +9,10 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     using Strings for uint;
     using SafeMath for uint;
   
-    uint256 public tokenPrice;
-    uint256 public revealTimeStamp;
-    uint256 public startingIndex;
-    uint256 private startingIndexBlock;
+    uint public tokenPrice;
+    uint public revealTimeStamp;
+    uint private startingIndex;
+    uint private startingIndexBlock;
 
     constructor(BaseSettings memory baseSettings)
         ERC721(baseSettings.name, baseSettings.symbol)
@@ -23,54 +23,60 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     function initialize(string calldata baseURI_,
                         uint maxPurchase_,
                         uint tokenPrice_,
-                        uint saleStart_
+                        uint saleStart_,
+                        uint revealTimeStamp_
                        ) external onlyOwner onlyOnce {
         maxPurchase = maxPurchase_;
         tokenPrice = tokenPrice_;
         saleStart = saleStart_;
-        revealTimeStamp = saleStart_ + (86400 * 9);
+        revealTimeStamp = revealTimeStamp_;
         baseURI = baseURI_;
     }
 
-    function reserveNFT() public onlyOwner {        
+    function reserveNFT(uint reserveNum) public onlyOwner {    
+
+        require( 
+            block.timestamp < saleStart,
+            "Blindbox: reserve should before saleStart"
+        );    
         
         uint supply = totalSupply();
-        for (uint i = 0; i < 30; i++) {
+        for (uint i = 0; i < reserveNum; i++) {
             if ( supply + i < maxSupply){
-                console.log(supply+i);
                 _safeMint(msg.sender, supply + i);
                 startingIndexBlock.add(block.number);
             }
         }
     }
 
-    function setRevealTimestamp(uint revealTimeStamp_) public onlyOwner {
-        require( revealTimeStamp_ > block.timestamp, "revealTimeStamp_ < block.timestamp" );
-        revealTimeStamp = revealTimeStamp_;
-    }
+    // function setRevealTimestamp(uint revealTimeStamp_) public onlyOwner {
+    //     require( revealTimeStamp_ > block.timestamp, "revealTimeStamp_ < block.timestamp" );
+    //     revealTimeStamp = revealTimeStamp_;
+    // }
 
     function mintToken(uint numberOfTokens) external payable {
-        require( isInit, "must initialize first");
-        console.log("timestamp: ", block.timestamp, "saleStart: ", saleStart);
-        require( block.timestamp > saleStart, "");
-        require(numberOfTokens <= maxPurchase, "Can only mint 20 tokens at a time");
-        require(totalSupply().add(numberOfTokens) <= maxSupply, "Purchase would exceed max supply of Apes");
-        require(tokenPrice.mul(numberOfTokens) <= msg.value, "Ether value sent is not correct");
+        require( isInit, "BlindBox: must initialize first");
+        require( block.timestamp > saleStart, "BlindBox: sale is not start yet");
+        require(numberOfTokens <= maxPurchase, "BlindBox: exceed max purchase");
+        require(totalSupply().add(numberOfTokens) <= maxSupply, "BlindBox: Purchase would exceed max supply");
+        require(tokenPrice.mul(numberOfTokens) <= msg.value, "BlindBox: Ether value sent is not correct");
 
-        uint supply = totalSupply();
+        uint _supply = totalSupply();
+        uint _maxSupply = maxSupply;
+
         for(uint i = 0; i < numberOfTokens; i++) {
-            if ( supply+i < maxSupply) {
-                console.log(supply+i);
-                _safeMint(msg.sender, supply+i);
+            if ( _supply+i < _maxSupply) {
+                _safeMint(msg.sender, _supply+i);
                 startingIndexBlock.add(block.number);
             }
         }
     }
 
     function setStartingIndex() public {
-        require(startingIndex == 0, "Starting index is already set");
+        require(startingIndex == 0, 
+                "Starting index is already set");
         require(totalSupply() == maxSupply || block.timestamp >= revealTimeStamp,
-                "");
+                "BlindBox: not reveal yet");
 
         startingIndex = uint(blockhash(startingIndexBlock)) % maxSupply;
         // Just a sanity case in the worst case if this function is called late (EVM only stores last 256 block hashes)
@@ -94,7 +100,9 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
             console.log( "tokenIndex is ", tokenIndex);
             return string(abi.encodePacked(baseURI, tokenIndex.toString()));
         }
-        return string(abi.encodePacked(baseURI, tokenId.toString()));
+
+        uint _maxSupply = maxSupply;
+        return string(abi.encodePacked(baseURI, _maxSupply.toString()));
     }
 }
 

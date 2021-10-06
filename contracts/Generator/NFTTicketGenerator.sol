@@ -8,8 +8,6 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
 
     using Strings for uint8;
 
-
-
     struct TicketState {
         uint48[] current;
         uint48[] soldout;
@@ -25,6 +23,7 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
     }
 
     function initialize(string calldata baseURI_,
+                        uint saleStart_,
                         uint48[] calldata ticketAmounts_,
                         uint160[] calldata ticketPrices_) external onlyOwner onlyOnce {
         uint length = ticketAmounts_.length;
@@ -45,25 +44,81 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
             "NFTTicket: sum of supply of each level not match"
         );
         baseURI = baseURI_;
+        saleStart = saleStart_;
     }
 
-    function mintToken(uint8 level) external payable {
-        require(
-            level < _ticketState.prices.length,
-            "NFTTicket: no such level"
-        );
-        uint48 newTicketId = _ticketState.current[level];
-        require(
-            newTicketId < _ticketState.soldout[level],
-            "NFTTicket: sold out at this level"  
-        );
-        require(
-            msg.value >= _ticketState.prices[level],
-            "NFTTicket: not enough for ticket price"    
+    // function reserveNFT(uint8 level, uint reserveNum) public onlyOwner {    
+
+    //     require( 
+    //         block.timestamp < saleStart,
+    //         "Blindbox: reserve should before saleStart"
+    //     );    
+        
+    //     uint supply = totalSupply();
+    //     for (uint i = 0; i < reserveNum; i++) {
+    //         if ( supply + i < maxSupply){
+    //             _safeMint(msg.sender, supply + i);
+    //             startingIndexBlock.add(block.number);
+    //         }
+    //     }
+    // }
+
+    function mintToken(uint8[] calldata levels, uint[] calldata ticketNum) external payable {
+
+        require( 
+            block.timestamp > saleStart,
+            "NFTTicket: sale not start"
         );
 
-        _ticketState.current[level] += 1;
-        _safeMint(_msgSender(), uint(newTicketId));
+        uint totalPayable = 0;
+
+        for( uint i = 0; i < levels.length; i++){
+
+            uint level = levels[i];
+
+            require( level < _ticketState.prices.length, "NFTTicket: no such level" );
+            uint256 newTicketId = _ticketState.current[level] + ticketNum[i] - 1;
+            require(
+                newTicketId < _ticketState.soldout[level],
+                "NFTTicket: sold out at this level"  
+            );
+
+            totalPayable += _ticketState.prices[level]*ticketNum[i];
+            require(
+                msg.value >= totalPayable,
+                "NFTTicket: not enough for ticket price"    
+            );
+        }
+
+        // require(
+        //     level < _ticketState.prices.length,
+        //     "NFTTicket: no such level"
+        // );
+        // uint48 newTicketId = _ticketState.current[level];
+        // require(
+        //     newTicketId < _ticketState.soldout[level],
+        //     "NFTTicket: sold out at this level"  
+        // );
+        // require(
+        //     msg.value >= _ticketState.prices[level],
+        //     "NFTTicket: not enough for ticket price"    
+        // );
+
+        for( uint i = 0; i < levels.length; i++){
+            
+            uint level = levels[i];
+
+            for( uint j = 0; j < ticketNum[i]; j++){
+                uint48 newTicketId = _ticketState.current[level];
+                _ticketState.current[level] += 1;
+                _safeMint(_msgSender(), uint(newTicketId));
+                console.log( "Ticket: mint ID: newTicketId");
+            }
+        }
+
+
+        // _ticketState.current[level] += 1;
+        // _safeMint(_msgSender(), uint(newTicketId));
 
     }
 

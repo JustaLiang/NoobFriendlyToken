@@ -30,7 +30,7 @@ describe("NoobFriendlyTokenAdmin.sol", function () {
       "maxSupply" : 100
     }
 
-    await ticketGenerator.genNFTContract( baseSettings , {value:5e11*100});
+    await tokenAdmin.genNFTContract( baseSettings , {value:5e11*100});
 
   });
 

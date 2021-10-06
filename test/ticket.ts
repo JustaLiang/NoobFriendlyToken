@@ -9,12 +9,22 @@ describe("Ticket", function () {
   let owner, addr1, addr2;
   let tokenAdmin, ticketGenerator;
 
+  let blockNumBefore;
+  let blockBefore;
+  let timestampBefore;
+  let timestampEnd;
+
   beforeEach(async function () {
 
     [owner, addr1, addr2] =  await ethers.getSigners();
     await deployments.fixture();
     tokenAdmin = await ethers.getContract('NoobFriendlyTokenAdmin', owner);
     ticketGenerator = await ethers.getContract('NFTTicketGenerator', owner);
+
+    blockNumBefore = await ethers.provider.getBlockNumber();
+    blockBefore = await ethers.provider.getBlock(blockNumBefore);
+    timestampBefore = blockBefore.timestamp;
+    timestampEnd = timestampBefore + 86400*9
 
   });
 
@@ -69,9 +79,9 @@ describe("Ticket", function () {
       // let maxSupply = await gallery.maxSupply();
       // let nowBlock = await ethers.provider.getBlockNumber();
   
-      await ticket.initialize("https://", [30, 40, 30], [10, 20, 30] );
+      await ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20, 30] );
       await expect(
-        ticket.initialize("https://", [30, 40, 30], [10, 20, 30] )
+        ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20, 30] )
       ).to.be.revertedWith("")
   
     });
@@ -96,7 +106,7 @@ describe("Ticket", function () {
       // let nowBlock = await ethers.provider.getBlockNumber();
   
       await expect(
-        ticket.initialize("https://", [30, 40, 30], [10, 20] )
+        ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20] )
       ).to.be.revertedWith("NFTTicket: level error")
   
     });
@@ -121,7 +131,7 @@ describe("Ticket", function () {
       // let nowBlock = await ethers.provider.getBlockNumber();
   
       await expect(
-        ticket.initialize("https://", [30, 100, 30], [10, 20, 30] )
+        ticket.initialize("https://", timestampBefore, [30, 100, 30], [10, 20, 30] )
       ).to.be.revertedWith("NFTTicket: sum of supply of each level not match")
   
     });
@@ -145,9 +155,9 @@ describe("Ticket", function () {
       // let maxSupply = await gallery.maxSupply();
       // let nowBlock = await ethers.provider.getBlockNumber();
   
-      await ticket.initialize("https://", [30, 40, 30], [10, 20, 30] );
+      await ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20, 30] );
       await expect(
-        ticket.mintToken(3)
+        ticket.mintToken([0, 1, 2], [5, 5, 5])
       ).to.be.revertedWith("NFTTicket: no such level")
   
     });
@@ -171,26 +181,26 @@ describe("Ticket", function () {
       // let maxSupply = await gallery.maxSupply();
       // let nowBlock = await ethers.provider.getBlockNumber();
   
-      await ticket.initialize("https://", [30, 40, 30], [10, 20, 30] );
+      await ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20, 30] );
 
       for( let i = 0; i < 30; i++){
-        await ticket.mintToken(0, {value: 10});
+        await ticket.mintToken([0, 1, 2], [5, 5, 5], {value: 10});
       }
 
       await expect(
-        ticket.mintToken(0, {value: 10})
+        ticket.mintToken( [0, 1, 2], [5, 5, 5], {value: 10})
       ).to.be.revertedWith("NFTTicket: sold out at this level")
 
       for( let i = 0; i < 40; i++){
-        await ticket.mintToken(1, {value: 20});
+        await ticket.mintToken( [0, 1, 2], [5, 5, 5], {value: 20});
       }
 
       await expect(
-        ticket.mintToken(1, {value: 20})
+        ticket.mintToken( [0, 1, 2], [5, 5, 5], {value: 20})
       ).to.be.revertedWith("NFTTicket: sold out at this level")
 
       for( let i = 0; i < 30; i++){
-        await ticket.mintToken(2, {value: 30});
+        await ticket.mintToken( [0, 1, 2], [5, 5, 5], {value: 30});
       }
 
       await expect(
@@ -218,7 +228,7 @@ describe("Ticket", function () {
       // let maxSupply = await gallery.maxSupply();
       // let nowBlock = await ethers.provider.getBlockNumber();
   
-      await ticket.initialize("https://", [30, 40, 30], [10, 20, 30] );
+      await ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20, 30] );
 
       await expect(
         ticket.mintToken(0, {value: 10-1})
@@ -253,7 +263,7 @@ describe("Ticket", function () {
       // let maxSupply = await gallery.maxSupply();
       // let nowBlock = await ethers.provider.getBlockNumber();
   
-      await ticket.initialize("https://", [30, 40, 30], [10, 20, 30] );
+      await ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20, 30] );
 
       await ticket.mintToken(0, {value: 10});
       await ticket.mintToken(1, {value: 20});

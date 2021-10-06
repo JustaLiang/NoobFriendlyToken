@@ -1,9 +1,10 @@
 node_modules
 
 #hardhat files
-cache
-artifacts
+cache/
+artifacts/
 frontend/src/hardhat
-coverage
+coverage/
+coverage.json
 
 .env

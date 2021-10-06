@@ -9,12 +9,22 @@ describe("NFTBlindBoxGenerator.sol", function () {
   let owner, addr1, addr2;
   let tokenAdmin, blindboxGenerator;
 
+  let blockNumBefore;
+  let blockBefore;
+  let timestampBefore;
+  let timestampEnd;
+
   beforeEach(async function () {
 
     [owner, addr1, addr2] =  await ethers.getSigners();
     await deployments.fixture();
     tokenAdmin = await ethers.getContract('NoobFriendlyTokenAdmin', owner);
     blindboxGenerator = await ethers.getContract('NFTBlindboxGenerator', owner);
+
+    blockNumBefore = await ethers.provider.getBlockNumber();
+    blockBefore = await ethers.provider.getBlock(blockNumBefore);
+    timestampBefore = blockBefore.timestamp;
+    timestampEnd = timestampBefore + 86400*9
 
   });
 
@@ -63,11 +73,11 @@ describe("NFTBlindBoxGenerator.sol", function () {
     const blindbox = NFTBlindbox.attach(contractAddr);
 
     let maxSupply = await blindbox.maxSupply();
-    let nowBlock = await ethers.provider.getBlockNumber();
 
-    await blindbox.initialize("https://", 12, 1, nowBlock );
+
+    await blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd );
     await expect(
-      blindbox.initialize("https://", 12, 1, nowBlock )
+      blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd )
     ).to.be.revertedWith("")
 
   });
@@ -90,18 +100,18 @@ describe("NFTBlindBoxGenerator.sol", function () {
     let maxSupply = await blindbox.maxSupply();
     let nowBlock = await ethers.provider.getBlockNumber();
 
-    await blindbox.initialize("https://", 12, 1, nowBlock );
+    await blindbox.initialize("https://", 12, 1, timestampBefore + 60, timestampEnd );
     await expect(
-      blindbox.initialize("https://", 12, 1, nowBlock )
+      blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd )
     ).to.be.revertedWith("")
 
-    await blindbox.reserveNFT();
+    await blindbox.reserveNFT(20);
     let ownerBalance = await blindbox.balanceOf(owner.address);
     assert( ownerBalance.toNumber() <= maxSupply );
 
-    await expect(
-      blindbox.setRevealTimestamp( nowBlock - 1 )
-    ).to.be.revertedWith("revealTimeStamp_ < block.timestamp");
+    // await expect(
+    //   blindbox.setRevealTimestamp( nowBlock - 1 )
+    // ).to.be.revertedWith("revealTimeStamp_ < block.timestamp");
 });
 
   it( "NFTBlindbox - mintToken sale is not start", async function(){
@@ -120,13 +130,14 @@ describe("NFTBlindBoxGenerator.sol", function () {
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
     let maxSupply = await blindbox.maxSupply();
-    const blockNumBefore = await ethers.provider.getBlockNumber();
-    const blockBefore = await ethers.provider.getBlock(blockNumBefore);
-    const timestampBefore = blockBefore.timestamp;
 
-    await blindbox.initialize("https://", 12, 1, timestampBefore + 60 );
+    // const blockNumBefore = await ethers.provider.getBlockNumber();
+    // const blockBefore = await ethers.provider.getBlock(blockNumBefore);
+    // const timestampBefore = blockBefore.timestamp;
+
+    await blindbox.initialize("https://", 12, 1, timestampBefore + 60, timestampEnd );
     await expect(
-      blindbox.initialize("https://", 12, 1, timestampBefore + 60 )
+      blindbox.initialize("https://", 12, 1, timestampBefore + 60, timestampEnd )
     ).to.be.revertedWith("")
 
     await expect(
@@ -156,12 +167,12 @@ describe("NFTBlindBoxGenerator.sol", function () {
     const blindbox = NFTBlindbox.attach(contractAddr);
     let maxSupply = await blindbox.maxSupply();
 
-    let blockNumBefore = await ethers.provider.getBlockNumber();
-    let blockBefore = await ethers.provider.getBlock(blockNumBefore);
-    let timestampBefore = blockBefore.timestamp;
-    console.log("timestampBefore: ", timestampBefore)
+    // let blockNumBefore = await ethers.provider.getBlockNumber();
+    // let blockBefore = await ethers.provider.getBlock(blockNumBefore);
+    // let timestampBefore = blockBefore.timestamp;
+    // console.log("timestampBefore: ", timestampBefore)
 
-    await blindbox.initialize("https://", 12, 1, timestampBefore );
+    await blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd );
 
     // blockNumBefore = await ethers.provider.getBlockNumber();
     // blockBefore = await ethers.provider.getBlock(blockNumBefore);
@@ -173,8 +184,9 @@ describe("NFTBlindBoxGenerator.sol", function () {
     assert( addr1Balance.toNumber() === 10, "add1 balance should be 10" );
     
     //tokenURI
+    let _maxSupply = await blindbox.maxSupply();
     let URI0 = await blindbox.tokenURI(0);
-    assert( URI0 ===  "https://0", "original URI equal to https://0");
+    assert( URI0 ===  "https://"+_maxSupply.toString(), "original URI equal to https:// + maxSupply");
 
     const sevenDays = 30 * 86400;
     await ethers.provider.send('evm_increaseTime', [sevenDays]);
@@ -183,69 +195,39 @@ describe("NFTBlindBoxGenerator.sol", function () {
     await blindbox.setStartingIndex();
     URI0 = await blindbox.tokenURI(0);
     console.log(URI0);
-    assert( URI0 !=  "https://0", "after lottery draw URI not  equal to https://0");
+    // assert( URI0 !=  "https://0", "after lottery draw URI not  equal to https://0");
 
   });
 
+  // it( "NFTBlindbox - setRevealTimestamp: success", async function(){
 
-  it( "NFTBlindbox - setRevealTimestamp: revealTimeStamp_ < block.timestamp", async function(){
+  //   const baseSettings = {
+  //     "name" : "123",
+  //     "symbol" : "456",
+  //     "payees" : [addr1.address],
+  //     "shares" : [1],
+  //     "typeOfNFT" : 1,
+  //     "maxSupply" : 100
+  //   }
 
-    const baseSettings = {
-      "name" : "123",
-      "symbol" : "456",
-      "payees" : [addr1.address],
-      "shares" : [1],
-      "typeOfNFT" : 1,
-      "maxSupply" : 100
-    }
+  //   await tokenAdmin.genNFTContract(baseSettings, {value:1e12*100});
+  //   const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
+  //   const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
+  //   const blindbox = NFTBlindbox.attach(contractAddr);
+  //   let maxSupply = await blindbox.maxSupply();
+  //   let nowBlock = await ethers.provider.getBlockNumber();
 
-    await tokenAdmin.genNFTContract(baseSettings, {value:1e12*100});
-    const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
-    const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
-    const blindbox = NFTBlindbox.attach(contractAddr);
-    let maxSupply = await blindbox.maxSupply();
-    let nowBlock = await ethers.provider.getBlockNumber();
+  //   await blindbox.initialize("https://", 12, 1, nowBlock );
+  //   await expect(
+  //     blindbox.initialize("https://", 12, 1, nowBlock )
+  //   ).to.be.revertedWith("")
 
-    await blindbox.initialize("https://", 12, 1, nowBlock );
-    await expect(
-      blindbox.initialize("https://", 12, 1, nowBlock )
-    ).to.be.revertedWith("")
-
-    await expect(
-      blindbox.setRevealTimestamp( nowBlock )
-    ).to.be.revertedWith("revealTimeStamp_ < block.timestamp");
-
-  });
-
-  it( "NFTBlindbox - setRevealTimestamp: success", async function(){
-
-    const baseSettings = {
-      "name" : "123",
-      "symbol" : "456",
-      "payees" : [addr1.address],
-      "shares" : [1],
-      "typeOfNFT" : 1,
-      "maxSupply" : 100
-    }
-
-    await tokenAdmin.genNFTContract(baseSettings, {value:1e12*100});
-    const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
-    const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
-    const blindbox = NFTBlindbox.attach(contractAddr);
-    let maxSupply = await blindbox.maxSupply();
-    let nowBlock = await ethers.provider.getBlockNumber();
-
-    await blindbox.initialize("https://", 12, 1, nowBlock );
-    await expect(
-      blindbox.initialize("https://", 12, 1, nowBlock )
-    ).to.be.revertedWith("")
-
-    const blockNumBefore = await ethers.provider.getBlockNumber();
-    const blockBefore = await ethers.provider.getBlock(blockNumBefore);
-    const timestampBefore = blockBefore.timestamp;
-    await blindbox.setRevealTimestamp( timestampBefore + (86400 * 100) );
+  //   // const blockNumBefore = await ethers.provider.getBlockNumber();
+  //   // const blockBefore = await ethers.provider.getBlock(blockNumBefore);
+  //   // const timestampBefore = blockBefore.timestamp;
+  //   // await blindbox.setRevealTimestamp( timestampBefore + (86400 * 100) );
     
-  });
+  // });
 
 
     // console.log( bl

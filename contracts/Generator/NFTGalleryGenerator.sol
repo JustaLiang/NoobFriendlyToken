@@ -17,10 +17,12 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
 
     function initialize(
         string calldata baseURI_,
-        uint tokenPrice_
+        uint tokenPrice_,
+        uint saleStart_
     ) external onlyOwner onlyOnce {
         tokenPrice = tokenPrice_;
         baseURI = baseURI_;
+        saleStart = saleStart_;
     }
 
     function mintToken(uint[] calldata tokenIdList) external payable {
@@ -28,6 +30,7 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
             tokenPrice*tokenIdList.length <= msg.value,
             "Ether value sent is not correct"
         );
+        require( block.timestamp > saleStart, "NFTGallery: sale not start yet");
 
         for (uint i = 0; i < tokenIdList.length; i++) {
             uint tokenId = tokenIdList[i];

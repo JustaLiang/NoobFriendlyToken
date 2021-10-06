@@ -9,12 +9,22 @@ describe("Gallery", function () {
   let owner, addr1, addr2;
   let tokenAdmin, galleryGenerator;
 
+  let blockNumBefore
+  let blockBefore
+  let timestampBefore
+  let timestampEnd
+
   beforeEach(async function () {
 
     [owner, addr1, addr2] =  await ethers.getSigners();
     await deployments.fixture();
     tokenAdmin = await ethers.getContract('NoobFriendlyTokenAdmin', owner);
     galleryGenerator = await ethers.getContract('NFTGalleryGenerator', owner);
+
+    blockNumBefore = await ethers.provider.getBlockNumber();
+    blockBefore = await ethers.provider.getBlock(blockNumBefore);
+    timestampBefore = blockBefore.timestamp;
+    timestampEnd = timestampBefore + 86400*9
 
   });
 
@@ -69,9 +79,9 @@ describe("Gallery", function () {
       // let maxSupply = await gallery.maxSupply();
       // let nowBlock = await ethers.provider.getBlockNumber();
   
-      await gallery.initialize("https://", 1e11 );
+      await gallery.initialize("https://", 1e11, timestampBefore );
       await expect(
-        gallery.initialize("https://", 1e11 )
+        gallery.initialize("https://", 1e11, timestampBefore )
       ).to.be.revertedWith("")
   
     });
@@ -95,9 +105,9 @@ describe("Gallery", function () {
       // let maxSupply = await gallery.maxSupply();
       // let nowBlock = await ethers.provider.getBlockNumber();
   
-      await gallery.initialize("https://", 1e11 );
+      await gallery.initialize("https://", 1e11, timestampBefore );
       await expect(
-        gallery.initialize("https://", 1e11 )
+        gallery.initialize("https://", 1e11, timestampBefore )
       ).to.be.revertedWith("")
 
       await expect(
@@ -125,7 +135,7 @@ describe("Gallery", function () {
       // let maxSupply = await gallery.maxSupply();
       // let nowBlock = await ethers.provider.getBlockNumber();
   
-      await gallery.initialize("https://", 1e11 );
+      await gallery.initialize("https://", 1e11, timestampBefore );
 
       await gallery.mintToken([1, 3, 5], {value: 3*1e11});
   
@@ -150,7 +160,7 @@ describe("Gallery", function () {
       // let maxSupply = await gallery.maxSupply();
       // let nowBlock = await ethers.provider.getBlockNumber();
   
-      await gallery.initialize("https://", 1e11 );
+      await gallery.initialize("https://", 1e11, timestampBefore );
 
       await expect(
         gallery.mintToken([1, 3, 101], {value: 3*1e11})
@@ -177,7 +187,7 @@ describe("Gallery", function () {
       // let maxSupply = await gallery.maxSupply();
       // let nowBlock = await ethers.provider.getBlockNumber();
   
-      await gallery.initialize("https://", 1e11 );
+      await gallery.initialize("https://", 1e11, timestampBefore );
 
       await gallery.mintToken([1, 3, 5], {value: 3*1e11});
       await expect(
@@ -205,7 +215,7 @@ describe("Gallery", function () {
       // let maxSupply = await gallery.maxSupply();
       // let nowBlock = await ethers.provider.getBlockNumber();
   
-      await gallery.initialize("https://", 1e11 );
+      await gallery.initialize("https://", 1e11, timestampBefore );
       
       await expect(
         gallery.tokenURI(3)
@@ -233,7 +243,7 @@ describe("Gallery", function () {
       // let maxSupply = await gallery.maxSupply();
       // let nowBlock = await ethers.provider.getBlockNumber();
   
-      await gallery.initialize("https://", 1e11 );
+      await gallery.initialize("https://", 1e11, timestampBefore );
 
       await gallery.mintToken([1, 3, 5], {value: 3*1e11});
       
