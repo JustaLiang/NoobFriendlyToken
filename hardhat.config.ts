@@ -54,5 +54,12 @@ const config: HardhatUserConfig = {
       },
     ],
   },
+  typechain: {
+    outDir: "./frontend/hardhat/typechain",
+  },
+  paths: {
+    react: "./frontend/hardhat",
+    deployments: "./frontend/hardhat/deployments",
+  }
 };
 export default config;

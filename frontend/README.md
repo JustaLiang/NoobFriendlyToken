@@ -1,31 +1,34 @@
-# Get started
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-1. Clone the repo and cd into it `git clone https://github.com/symfoni/hardhat-react-boilerplate.git MyProject && cd MyProject`
-2. Install deps with yarn `yarn` or npm `npm install`
-3. Start hardhat `npx hardhat node --watch`
-   ![](https://media.giphy.com/media/9l6z9MzXfHX9gKzbvU/giphy.gif)
+## Getting Started
 
-```text
-It runs up a Hardhat node, compile contracts, generates typescript interfaces, creates React context and instantiates your contract instances and factories with frontend provider.
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
 ```
 
-4. Open up a new terminal
-5. `cd frontend`
-6. Install deps with yarn `yarn` or npm `npm install`
-7. Start React app with yarn `yarn start` or npm `npm start`
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-The frontend should start up at http://localhost:3000/.
+You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-Because of this default hardhat.config.ts it will first try to connect with an injected provider like Metamask (web3modal package does this).
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
-If nothing found it will try to connect with your hardhat node. On localhost and hardhat nodes it will inject your mnemonic into the frontend so you have a "browser wallet" that can both call and send transactions. NB! Dont ever put a mnemonic with actual value here. We will limit this feature going forward so its more explicit.
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-```ts
-const config: HardhatUserConfig = {
-  react: {
-    providerPriority: ["web3modal", "hardhat"],
-  },
-};
-```
+## Learn More
 
-The default mnemonic currently used by hardhat is `test test test test test test test test test test test junk`
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
