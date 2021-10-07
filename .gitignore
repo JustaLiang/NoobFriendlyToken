@@ -1,10 +1,14 @@
-node_modules
+node_modules/
 
-#hardhat files
+# hardhat files
 cache/
 artifacts/
 frontend/src/hardhat
 coverage/
 coverage.json
 
+# evironment varibles
 .env
+
+# mac
+.DS_Store
