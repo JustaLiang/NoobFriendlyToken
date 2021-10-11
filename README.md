@@ -45,3 +45,21 @@ eth_sendRawTransaction
 ```
 
 Reset your account in Metamask.
+
+## Start building
+Start a local node
+```bash
+npx hardhat node --watch
+# or
+yarn hardhat node --watch 
+```
+
+Start frontend
+```bash
+cd frontend
+npm run dev
+# or
+yarn dev
+```
+
+
