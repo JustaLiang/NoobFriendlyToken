@@ -41,6 +41,9 @@ const config: HardhatUserConfig = {
       accounts: [`0x${process.env.PRIVATE_KEY}`]
     },
   },
+  etherscan: {
+    apiKey: `${process.env.API_KEY}`,
+  },
   solidity: {
     compilers: [
       {
