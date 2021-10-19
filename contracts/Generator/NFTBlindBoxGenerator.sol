@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: Unlicense
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
@@ -33,7 +33,7 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         revealTimeStamp = revealTimeStamp_;
     }
 
-    function reserveNFT(uint reserveNum) public onlyOwner {    
+    function reserveNFT(uint256 reserveNum) public onlyOwner {    
 
         require( 
             block.timestamp < saleStart,
@@ -49,10 +49,9 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         }
     }
 
-    // function setRevealTimestamp(uint revealTimeStamp_) public onlyOwner {
-    //     require( revealTimeStamp_ > block.timestamp, "revealTimeStamp_ < block.timestamp" );
-    //     revealTimeStamp = revealTimeStamp_;
-    // }
+    function setTokenPrice(uint256 newPrice) external onlyOwner {
+        tokenPrice = newPrice;
+    }
 
     function mintToken(uint numberOfTokens) external payable {
         require( isInit, "BlindBox: must initialize first");
@@ -61,15 +60,16 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         require(totalSupply().add(numberOfTokens) <= maxSupply, "BlindBox: Purchase would exceed max supply");
         require(tokenPrice.mul(numberOfTokens) <= msg.value, "BlindBox: Ether value sent is not correct");
 
+        uint _supply = totalSupply();
+
         for(uint i = 0; i < numberOfTokens; i++) {
-            uint _supply = totalSupply();
-            _safeMint(owner(), _supply);
-            _safeTransfer(owner(), msg.sender, _supply, "");
+            _safeMint(owner(), _supply+i);
+            _safeTransfer(owner(), msg.sender, _supply+i, "");
             startingIndexBlock.add(block.number);
         }
     }
 
-    function reveal() public {
+    function reveal() external {
         require(startingIndex == 0, 
                 "Starting index is already set");
         require(totalSupply() == maxSupply || block.timestamp >= revealTimeStamp,

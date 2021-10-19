@@ -1,18 +1,19 @@
-//SPDX-License-Identifier: Unlicense
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "./NoobFriendlyTokenTemplate.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-abstract contract NoobFriendlyTokenGenerator is Ownable, GeneratorInterface{
+abstract contract NoobFriendlyTokenGenerator is Ownable, GeneratorInterface {
 
     address public adminAddr;
     uint public override slottingFee;
 
     constructor(
         address adminAddr_,
-        uint slottingFee_) {
+        uint slottingFee_)
+    {
         adminAddr = adminAddr_;
         slottingFee = slottingFee_;
     }

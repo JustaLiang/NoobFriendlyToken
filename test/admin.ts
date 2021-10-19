@@ -1,9 +1,10 @@
-var {ethers, getNamedAccounts, getUnnamedAccounts, deployments} = require('hardhat');
-var { BigNumber } = require("ethers");
-var { expect, assert } = require("chai");
-var utils = require('ethers').utils;
+const { ethers, deployments } = require('hardhat');
+const { expect, assert } = require("chai");
+import { utils } from "ethers";
 
-describe("NoobFriendlyTokenAdmin.sol", function () {
+const slottingFee = utils.parseEther("0.3");
+
+describe("Admin", function () {
 
   let owner, addr1, addr2;
   let tokenAdmin, ticketGenerator, blindboxGenerator, galleryGenerator;
@@ -30,15 +31,12 @@ describe("NoobFriendlyTokenAdmin.sol", function () {
       "maxSupply" : 100
     }
 
-    await tokenAdmin.genNFTContract( baseSettings , {value:5e11*100});
-
+    await tokenAdmin.genNFTContract( baseSettings , {value: slottingFee});
   });
 
 
   it( "admin - updateGenerator", async function () {
-
     await tokenAdmin.updateGenerator( 1 , addr1.address);
-
   });
 
   it( "admin - genNFTContract: invalid ticket type", async function () {
@@ -69,7 +67,7 @@ describe("NoobFriendlyTokenAdmin.sol", function () {
     }
 
     await expect(
-      tokenAdmin.genNFTContract( baseSettings , {value:1e12})
+      tokenAdmin.genNFTContract( baseSettings , {value: slottingFee.sub(100)})
     ).to.be.revertedWith("NoobFriendlyTokenAdmin: Slotting fee error");
 
   });
@@ -85,42 +83,32 @@ describe("NoobFriendlyTokenAdmin.sol", function () {
       "maxSupply" : 1
     }
 
-    await tokenAdmin.genNFTContract( baseSettings , {value:1e12});
+    await tokenAdmin.genNFTContract( baseSettings , {value: slottingFee});
   });
 
   
   it( "admin - getContractList", async function () {
 
-    let contractList = await tokenAdmin.getContractList();
+    const contractList = await tokenAdmin.getContractList();
     await expect(
       contractList.length
     ).to.equal( 0 );
-    
-
   });
 
   it( "admin - slottingFee", async function () {
 
-    let slottingFee0 = await tokenAdmin.slottingFee(0);
-    assert( await slottingFee0.toNumber() == 5e11 , "slottingFee 0 not right");
-    let slottingFee1 = await tokenAdmin.slottingFee(1);
-    assert( await slottingFee1.toNumber() == 1e12 , "slottingFee 1 not right");
-
-    let slottingFee2 = await tokenAdmin.slottingFee(2);
-    assert( await slottingFee2.toNumber() == 1e11 , "slottingFee 2 not right");
+    assert(slottingFee.eq(await tokenAdmin.slottingFee(0)) , "slottingFee 0 not right");
+    assert(slottingFee.eq(await tokenAdmin.slottingFee(1)) , "slottingFee 1 not right");
+    assert(slottingFee.eq(await tokenAdmin.slottingFee(2)) , "slottingFee 2 not right");
 
     await expect(
       tokenAdmin.slottingFee(10)
     ).to.be.revertedWith("NoobFriendlyTokenAdmin: generator not exists");
-
   });
 
   
   it( "admin - typeToGenerator", async function () {
-
-
-    let generatorInterface = await tokenAdmin.typeToGenerator( 1 );
-
+    await tokenAdmin.typeToGenerator(1);
   });
 
 });

@@ -1,8 +1,8 @@
-var {ethers, getNamedAccounts, getUnnamedAccounts, deployments} = require('hardhat');
-var { BigNumber } = require("ethers");
-var { expect, assert } = require("chai");
-var utils = require('ethers').utils;
+const { ethers, deployments } = require('hardhat');
+const { expect, assert } = require("chai");
+import { utils } from "ethers";
 
+const slottingFee = utils.parseEther("0.3");
 
 describe("Ticket", function () {
 
@@ -24,11 +24,11 @@ describe("Ticket", function () {
     blockNumBefore = await ethers.provider.getBlockNumber();
     blockBefore = await ethers.provider.getBlock(blockNumBefore);
     timestampBefore = blockBefore.timestamp;
-    timestampEnd = timestampBefore + 86400*9
+    timestampEnd = timestampBefore + 86400*9;
 
   });
 
-    it( "NFTTicket - not enough slotting fee", async function(){
+    it( "NFTTicket - not enough slotting fee", async function() {
   
       const baseSettings = {
         "name" : "ticket1",
@@ -40,7 +40,7 @@ describe("Ticket", function () {
       }
   
       await expect(
-        tokenAdmin.genNFTContract(baseSettings, {value:5e11*99})
+        tokenAdmin.genNFTContract(baseSettings, {value: slottingFee.sub(150)})
       ).to.be.revertedWith("NoobFriendlyTokenAdmin: Slotting fee error");
   
     });
@@ -56,11 +56,11 @@ describe("Ticket", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:5e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
   
     });
 
-    it( "NFTTicket - initialize only once", async function(){
+    it( "NFTTicket - initialize only once", async function() {
   
       const baseSettings = {
         "name" : "ticket1",
@@ -71,14 +71,11 @@ describe("Ticket", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:5e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTTicket = await ethers.getContractFactory("NFTTicket");
       const ticket = NFTTicket.attach(contractAddr);
 
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
-  
       await ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20, 30] );
       await expect(
         ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20, 30] )
@@ -97,14 +94,11 @@ describe("Ticket", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:5e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTTicket = await ethers.getContractFactory("NFTTicket");
       const ticket = NFTTicket.attach(contractAddr);
 
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
-  
       await expect(
         ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20] )
       ).to.be.revertedWith("NFTTicket: level error")
@@ -122,14 +116,11 @@ describe("Ticket", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:5e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTTicket = await ethers.getContractFactory("NFTTicket");
       const ticket = NFTTicket.attach(contractAddr);
 
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
-  
       await expect(
         ticket.initialize("https://", timestampBefore, [30, 100, 30], [10, 20, 30] )
       ).to.be.revertedWith("NFTTicket: sum of supply of each level not match")
@@ -147,14 +138,11 @@ describe("Ticket", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:5e11*100});
-      const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
+      const contractAddr = await tokenAdmin.userContracts(owner.address, 0);
       const NFTTicket = await ethers.getContractFactory("NFTTicket");
       const ticket = NFTTicket.attach(contractAddr);
 
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
-  
       await ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20, 30] );
       await expect(
         ticket.mintToken([0, 1, 2], [5, 5, 5])
@@ -173,14 +161,11 @@ describe("Ticket", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:5e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTTicket = await ethers.getContractFactory("NFTTicket");
       const ticket = NFTTicket.attach(contractAddr);
 
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
-  
       await ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20, 30] );
 
       for( let i = 0; i < 30; i++){
@@ -220,14 +205,11 @@ describe("Ticket", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:5e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTTicket = await ethers.getContractFactory("NFTTicket");
       const ticket = NFTTicket.attach(contractAddr);
 
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
-  
       await ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20, 30] );
 
       await expect(
@@ -255,14 +237,11 @@ describe("Ticket", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:5e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTTicket = await ethers.getContractFactory("NFTTicket");
       const ticket = NFTTicket.attach(contractAddr);
 
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
-  
       await ticket.initialize("https://", timestampBefore, [30, 40, 30], [10, 20, 30] );
 
       await ticket.mintToken(0, {value: 10});
@@ -278,8 +257,6 @@ describe("Ticket", function () {
       assert( uri1 === "https://1", "uri1 wrong");
   
     });
-
-
 
     // it( "NFTTicket - mint 3 NFT tokenURI URI query for nonexistent token", async function(){
   

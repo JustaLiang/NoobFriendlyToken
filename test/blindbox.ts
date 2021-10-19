@@ -1,12 +1,12 @@
-var {ethers, getNamedAccounts, getUnnamedAccounts, deployments} = require('hardhat');
-var { BigNumber } = require("ethers");
-var { expect, assert } = require("chai");
-var utils = require('ethers').utils;
+const { ethers, deployments } = require('hardhat');
+const { expect, assert } = require("chai");
+import { utils } from "ethers";
 
+const slottingFee = utils.parseEther("0.3");
 
-describe("NFTBlindBoxGenerator.sol", function () {
+describe("Blindbox", function () {
 
-  let owner, addr1, addr2;
+  let owner, addr1;
   let tokenAdmin, blindboxGenerator;
 
   let blockNumBefore;
@@ -16,7 +16,7 @@ describe("NFTBlindBoxGenerator.sol", function () {
 
   beforeEach(async function () {
 
-    [owner, addr1, addr2] =  await ethers.getSigners();
+    [owner, addr1] =  await ethers.getSigners();
     await deployments.fixture();
     tokenAdmin = await ethers.getContract('NoobFriendlyTokenAdmin', owner);
     blindboxGenerator = await ethers.getContract('NFTBlindboxGenerator', owner);
@@ -24,17 +24,16 @@ describe("NFTBlindBoxGenerator.sol", function () {
     blockNumBefore = await ethers.provider.getBlockNumber();
     blockBefore = await ethers.provider.getBlock(blockNumBefore);
     timestampBefore = blockBefore.timestamp;
-    timestampEnd = timestampBefore + 86400*9
-
-
-
+    timestampEnd = timestampBefore + 86400*9;
   });
 
   it( "NFTBlindboxGenerator", async function(){
 
     assert( await blindboxGenerator.adminAddr() === tokenAdmin.address, "adminAddr equal to tokenAdmin.address");
-    let slottingFee = await blindboxGenerator.slottingFee();
-    assert( slottingFee.toNumber() === 5e14, "blindbox slotting fee not right");
+    assert( 
+      slottingFee.eq(await blindboxGenerator.slottingFee()),
+      "blindbox slotting fee not right"
+    );
     
     const baseSettings = {
       "name" : "123",
@@ -54,8 +53,8 @@ describe("NFTBlindBoxGenerator.sol", function () {
     ).to.be.revertedWith("");
 
     await blindboxGenerator.changeSlottingFee(1);
-    slottingFee = await blindboxGenerator.slottingFee();
-    assert( slottingFee.toNumber() === 1, "blindbox slotting fee equal to 1");
+    const newSlottingFee = await blindboxGenerator.slottingFee();
+    assert( newSlottingFee.eq(1), "blindbox slotting fee equal to 1");
   });
 
   it( "NFTBlindbox - initialize", async function(){
@@ -69,13 +68,10 @@ describe("NFTBlindBoxGenerator.sol", function () {
       "maxSupply" : 100
     }
 
-    await tokenAdmin.genNFTContract(baseSettings, {value:5e14});
+    await tokenAdmin.genNFTContract(baseSettings, {value:slottingFee});
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
-
-    let maxSupply = await blindbox.maxSupply();
-
 
     await blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd );
     const _baseURI = await blindbox.baseURI()
@@ -107,12 +103,11 @@ describe("NFTBlindBoxGenerator.sol", function () {
       "maxSupply" : 100
     }
 
-    await tokenAdmin.genNFTContract(baseSettings, {value:5e14});
+    await tokenAdmin.genNFTContract(baseSettings, {value:slottingFee});
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
-    let maxSupply = await blindbox.maxSupply();
-    let nowBlock = await ethers.provider.getBlockNumber();
+    const maxSupply = await blindbox.maxSupply();
 
     await blindbox.initialize("https://", 12, 1, timestampBefore + 60, timestampEnd );
     await expect(
@@ -124,9 +119,8 @@ describe("NFTBlindBoxGenerator.sol", function () {
     ).to.emit(blindbox, "Transfer")
     .withArgs(ethers.constants.AddressZero, owner.address, 1)
 
-
-    let ownerBalance = await blindbox.balanceOf(owner.address);
-    assert( ownerBalance.toNumber() <= maxSupply );
+    const ownerBalance = await blindbox.balanceOf(owner.address);
+    assert( ownerBalance.lt(maxSupply) );
 
 });
 
@@ -141,11 +135,10 @@ describe("NFTBlindBoxGenerator.sol", function () {
       "maxSupply" : 100
     }
 
-    await tokenAdmin.genNFTContract(baseSettings, {value:5e14});
+    await tokenAdmin.genNFTContract(baseSettings, {value:slottingFee});
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
-    let maxSupply = await blindbox.maxSupply();
 
     await blindbox.initialize("https://", 12, 1, timestampBefore + 60, timestampEnd );
     await expect(
@@ -155,11 +148,6 @@ describe("NFTBlindBoxGenerator.sol", function () {
     await expect(
       blindbox.connect(addr1).mintToken( 10,  {value:1*10})
     ).to.be.revertedWith("");
-
-    // await blindbox.flipSaleState();
-    // await blindbox.connect(addr1).mintToken( 10,  {value:1*10});
-    // let addr1Balance = await blindbox.balanceOf(addr1.address);
-    // assert( addr1Balance.toNumber() === 10, "add1 balance should be 10" );
 });
 
   it( "NFTBlindbox - tokenURI mint then reveal ", async function(){
@@ -173,11 +161,10 @@ describe("NFTBlindBoxGenerator.sol", function () {
       "maxSupply" : 100
     }
 
-    await tokenAdmin.genNFTContract(baseSettings, {value:5e14});
+    await tokenAdmin.genNFTContract(baseSettings, {value:slottingFee});
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
-    let maxSupply = await blindbox.maxSupply();
 
     await blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd );
 
@@ -190,17 +177,17 @@ describe("NFTBlindBoxGenerator.sol", function () {
 
     
     //tokenURI
-    let _maxSupply = await blindbox.maxSupply();
-    let URI0 = await blindbox.tokenURI(0);
-    assert( URI0 ===  "https://"+_maxSupply.toString(), "original URI equal to https:// + maxSupply");
+    const maxSupply = await blindbox.maxSupply();
+    const URI0 = await blindbox.tokenURI(0);
+    assert( URI0 ===  "https://"+maxSupply.toString(), "original URI equal to https:// + maxSupply");
 
     const sevenDays = 30 * 86400;
     await ethers.provider.send('evm_increaseTime', [sevenDays]);
     await ethers.provider.send('evm_mine');
     
     await blindbox.reveal();
-    URI0 = await blindbox.tokenURI(0);
-    console.log("new URI: ", URI0);
+    const newURI0 = await blindbox.tokenURI(0);
+    console.log("new URI: ", newURI0);
 
   });
 
@@ -215,11 +202,10 @@ describe("NFTBlindBoxGenerator.sol", function () {
       "maxSupply" : 100
     }
 
-    await tokenAdmin.genNFTContract(baseSettings, {value:5e14});
+    await tokenAdmin.genNFTContract(baseSettings, {value:slottingFee});
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
-    let maxSupply = await blindbox.maxSupply();
 
     await blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd );
   
@@ -237,12 +223,8 @@ describe("NFTBlindBoxGenerator.sol", function () {
     .and.to.emit(blindbox, "Transfer")
     .withArgs(owner.address, addr1.address, 1)
     //tokenURI
-    let _maxSupply = await blindbox.maxSupply();
-    let URI0 = await blindbox.tokenURI(0);
+    const URI0 = await blindbox.tokenURI(0);
     console.log("new URI: ", URI0);
-
-
-
   });
 
 
