@@ -26,11 +26,11 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
                         uint saleStart_,
                         uint revealTimeStamp_
                        ) external onlyOwner onlyOnce {
+        baseURI = baseURI_;
         maxPurchase = maxPurchase_;
         tokenPrice = tokenPrice_;
         saleStart = saleStart_;
         revealTimeStamp = revealTimeStamp_;
-        baseURI = baseURI_;
     }
 
     function reserveNFT(uint reserveNum) public onlyOwner {    
@@ -62,17 +62,15 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         require(tokenPrice.mul(numberOfTokens) <= msg.value, "BlindBox: Ether value sent is not correct");
 
         uint _supply = totalSupply();
-        uint _maxSupply = maxSupply;
+        // uint _maxSupply = maxSupply;
 
         for(uint i = 0; i < numberOfTokens; i++) {
-            if ( _supply+i < _maxSupply) {
-                _safeMint(msg.sender, _supply+i);
-                startingIndexBlock.add(block.number);
-            }
+            _safeMint(msg.sender, _supply+i);
+            startingIndexBlock.add(block.number);
         }
     }
 
-    function setStartingIndex() public {
+    function reveal() public {
         require(startingIndex == 0, 
                 "Starting index is already set");
         require(totalSupply() == maxSupply || block.timestamp >= revealTimeStamp,

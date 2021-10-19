@@ -72,9 +72,9 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
 
         uint totalPayable = 0;
 
-        for( uint i = 0; i < levels.length; i++){
+        for( uint8 i = 0; i < levels.length; i++){
 
-            uint level = levels[i];
+            uint8 level = levels[i];
 
             require( level < _ticketState.prices.length, "NFTTicket: no such level" );
             uint256 newTicketId = _ticketState.current[level] + ticketNum[i] - 1;
