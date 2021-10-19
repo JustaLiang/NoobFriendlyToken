@@ -32,6 +32,7 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
     const classes = useStyles();
     const signer = useContext(SignerContext);
     const provider = useContext(ProviderContext);
+    const [isInit, setIsInit] = useState<Boolean>(false);
     const [imageURI, setImageURI] = useState<string>("fetching");
     const [imgLoaded, setImgLoaded] = useState<Boolean>(false);
     const [template, setTemplate] = useState<NoobFriendlyTokenTemplate>();
@@ -48,14 +49,21 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
             setTemplate(NoobFriendlyTokenTemplate__factory.connect(templateAddress, signer[0]))
             console.log("connect contract by signer")
         }
-        else if (provider[0]) {
-            setTemplate(NoobFriendlyTokenTemplate__factory.connect(templateAddress, provider[0]))
-            console.log("connect contract by provider")
-        }
         else {
-            console.log("no signer or provider")
+            console.log("no signer")
         }
-    }, [signer, provider, templateAddress])
+    }, [signer, templateAddress])
+    useEffect(() => {
+        const getInit = async () => {
+            if (template) {
+                const init = await template.isInit();
+                if (init) {
+                    setIsInit(init);
+                }
+            }
+        }
+        getInit();
+    }, [template])
 
     useEffect(() => {
         const updateImageURI = async () => {
@@ -75,7 +83,7 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
                         console.log(err);
                     })
             }
-            else{
+            else {
                 setImageURI("");
             }
         }
@@ -104,13 +112,15 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
         }
         reloadTemplate()
     }, [template])
-
+    console.log(provider);
+    console.log(signer);
+    console.log("isinit:", isInit);
     return (
         <div>
             <Card
                 style={{ borderRadius: 8, boxShadow: 'none', border: '1px solid rgb(229, 232, 235)', padding: '10px' }}
             >
-                <CardActionArea component={Link} to={`/${NFTTypeArray[templateInfo.typeOfNFT].toLowerCase()}/${templateAddress}`}>
+                <CardActionArea component={Link} to={isInit?`/${NFTTypeArray[templateInfo.typeOfNFT].toLowerCase()}/${templateAddress}/dashboard`:`/${NFTTypeArray[templateInfo.typeOfNFT].toLowerCase()}/${templateAddress}/setup`}>
                     <CardHeader
                         title={templateInfo.name}
                         subheader={templateInfo.symbol}

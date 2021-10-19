@@ -3,6 +3,8 @@ import './App.css';
 import { Symfoni } from "./hardhat/SymfoniContext";
 import  AdminPage from './pages/AdminPage';
 import  SettingPage from './pages/SettingPage';
+import OpenseaPage from './pages/OpenseaPage';
+import DashboardPage from './pages/DashboardPage'
 import { Route, Switch, BrowserRouter as Router, } from 'react-router-dom';
 
 function App() {
@@ -13,7 +15,9 @@ function App() {
           <Switch>
             <Symfoni autoInit={true} loadingComponent={<h1>Loading...</h1>}>
             <Route exact path='/' component={AdminPage}/>
-            <Route exact path='/:NFTType/:address' component={SettingPage}/>
+            <Route exact path='/market' component={OpenseaPage}/>
+            <Route exact path='/:NFTType/:address/setup' component={SettingPage}/>
+            <Route exact path='/:NFTType/:address/dashboard' component={DashboardPage}/>
             </Symfoni>
           </Switch>
         </Router>

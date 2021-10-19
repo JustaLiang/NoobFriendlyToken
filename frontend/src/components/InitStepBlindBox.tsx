@@ -40,6 +40,7 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
     const [loading, setLoading] = useState(false);
     const [jsonList, setJsonList] = useState<File[]>();
     const [imageList, setImageList] = useState<File[]>();
+    const [imageListSize,setImageListSize] = useState<number>();
     const [count, setCount] = useState(0);
     const [totalCount, setTotalCount] = useState(0);
     const [initData, setInitData] = useState<initStruct>({
@@ -49,7 +50,6 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
         saleStart: "",
         revealTimeStamp:""
     });
-    const [isInit, setIsInit] = useState(false);
     const addCount = useCallback(() => {
         setCount(count => count + 1);
     }, [setCount]);
@@ -59,8 +59,6 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
             if (!blindBox.factory) return
             const contract = blindBox.factory.attach(address);
             setBlindBoxContract(contract);
-            setIsInit(await contract.isInit());
-            console.log(await contract.baseURI());
         };
         connectToContract();
     }, [blindBox, address]);
@@ -105,6 +103,12 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
         var temp = Object.values(e.target.files);
         temp = temp.filter((file) => (file.name.slice(-3) === "png" || file.name.slice(-3) === "jpg" || file.name.slice(-3) === "svg" || file.name.slice(-3) === "gif"));
         temp.sort(ImageCmp);
+        let tempSize = 0;
+        for(let file of temp){
+            tempSize += file.size/1000000;
+        }
+        console.log(tempSize);
+        setImageListSize(tempSize);
         setImageList(temp);
         setTotalCount(temp.length);
     }
@@ -117,16 +121,24 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
     }
 
     const handleIPFSUpload = async () => {
-        if (!imageList || !jsonList) return;
+        if (!imageList || !jsonList ||!imageListSize) return;
         let imageIPFSList = [];
         const addImageOptions = {
             pin: true,
+            enableShardingExperiment:true,
         }
 
         setLoading(true);
-        for await (const result of client.addAll(imageList, addImageOptions)) {
-            imageIPFSList.push("ipfs://" + result.path);
+        let uploadCount = Math.floor(imageListSize/100) + 1;
+        let uploadPerTime = Math.floor(imageList.length/uploadCount);
+
+        for (let i = 0;i < uploadCount;++i){
+            let tempList = imageList.slice(i*uploadPerTime,(i+1)*uploadPerTime);
+            for await (const result of client.addAll(tempList, addImageOptions)) {
+                imageIPFSList.push("ipfs://" + result.path);
+            }
         }
+       
         console.log(imageIPFSList);
         let metadataList = [];
         for (let i = 0; i < jsonList.length; ++i) {
@@ -145,6 +157,7 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
         const addMetaDataOptions = {
             pin: true,
             wrapWithDirectory: true,
+            enableShardingExperiment:true,
             progress: (prog: number) => {
                 addCount();
             }
@@ -168,17 +181,11 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
         if (!blindboxContract) return;
         blindboxContract?.initialize(initData.baseURI, +initData.maxPurchase, ethers.utils.parseEther(initData.tokenPrice), new Date(initData.saleStart).valueOf() / 1000,new Date(initData.revealTimeStamp).valueOf() / 1000);
     }
-    const handleSaleStart = () => {
-        if (!blindboxContract) return;
-        blindboxContract.flipSaleState();
-    }
     const progress = Math.min(count / totalCount * 100, 100);
-    console.log(isInit);
     console.log("10*10**18", 10 * 10 ** 18);
     return (
         <Container>
             <Paper>
-                {!isInit ?
                     <Box style={{ width: '100%' }}>
                         <Stepper activeStep={activeStep} alternativeLabel>
                             {steps.map((label) => (
@@ -365,16 +372,8 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                                 </>
                             )}
                         </Box>
-                    </Box> :
-                    <>
-                        <Box>
-                            <Typography variant="h5">Your contract settings</Typography>
-                            <Box>
-                                <Button variant='contained' onClick={handleSaleStart}>Sale Start</Button>
-                            </Box>
-                        </Box>
-                    </>
-                }
+                    </Box> 
+                    
             </Paper >
         </Container >
     )
