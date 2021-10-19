@@ -162,7 +162,7 @@ describe("NFTBlindBoxGenerator.sol", function () {
     // assert( addr1Balance.toNumber() === 10, "add1 balance should be 10" );
 });
 
-  it( "NFTBlindbox - tokenURI", async function(){
+  it( "NFTBlindbox - tokenURI mint then reveal ", async function(){
 
     const baseSettings = {
       "name" : "123",
@@ -201,6 +201,47 @@ describe("NFTBlindBoxGenerator.sol", function () {
     await blindbox.reveal();
     URI0 = await blindbox.tokenURI(0);
     console.log("new URI: ", URI0);
+
+  });
+
+  it( "NFTBlindbox - tokenURI reveal then mint ", async function(){
+
+    const baseSettings = {
+      "name" : "123",
+      "symbol" : "456",
+      "payees" : [addr1.address],
+      "shares" : [1],
+      "typeOfNFT" : 1,
+      "maxSupply" : 100
+    }
+
+    await tokenAdmin.genNFTContract(baseSettings, {value:5e14});
+    const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
+    const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
+    const blindbox = NFTBlindbox.attach(contractAddr);
+    let maxSupply = await blindbox.maxSupply();
+
+    await blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd );
+  
+
+    const sevenDays = 30 * 86400;
+    await ethers.provider.send('evm_increaseTime', [sevenDays]);
+    await ethers.provider.send('evm_mine');
+    
+    await blindbox.reveal();
+
+    await expect(
+      blindbox.connect(addr1).mintToken( 10,  {value:1*10})
+    ).to.emit(blindbox, "Transfer")
+    .withArgs(ethers.constants.AddressZero, owner.address, 1)
+    .and.to.emit(blindbox, "Transfer")
+    .withArgs(owner.address, addr1.address, 1)
+    //tokenURI
+    let _maxSupply = await blindbox.maxSupply();
+    let URI0 = await blindbox.tokenURI(0);
+    console.log("new URI: ", URI0);
+
+
 
   });
 
