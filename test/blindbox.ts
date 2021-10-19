@@ -26,6 +26,8 @@ describe("NFTBlindBoxGenerator.sol", function () {
     timestampBefore = blockBefore.timestamp;
     timestampEnd = timestampBefore + 86400*9
 
+
+
   });
 
   it( "NFTBlindboxGenerator", async function(){
@@ -76,6 +78,18 @@ describe("NFTBlindBoxGenerator.sol", function () {
 
 
     await blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd );
+    const _baseURI = await blindbox.baseURI()
+    const _maxPurchase = await blindbox.maxPurchase()
+    const _tokenPrice = await blindbox.tokenPrice()
+    const _timestampBefore = await blindbox.saleStart()
+    const _timestampEnd = await blindbox.revealTimeStamp()
+
+    assert( _baseURI === "https://", "baseURI not right" )
+    assert( _maxPurchase.toString() === '12', "maxPurchase not right" )
+    assert( _tokenPrice.toString() === "1", "tokenPrice not right" )
+    assert( _timestampBefore.toString() === timestampBefore.toString(), "saleStart not right" )
+    assert( _timestampEnd.toString() === timestampEnd.toString(), "revealTimeStamp not right" )
+
     await expect(
       blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd )
     ).to.be.revertedWith("")
@@ -105,13 +119,15 @@ describe("NFTBlindBoxGenerator.sol", function () {
       blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd )
     ).to.be.revertedWith("")
 
-    await blindbox.reserveNFT(20);
+    await expect( 
+      blindbox.reserveNFT(20)
+    ).to.emit(blindbox, "Transfer")
+    .withArgs(ethers.constants.AddressZero, owner.address, 1)
+
+
     let ownerBalance = await blindbox.balanceOf(owner.address);
     assert( ownerBalance.toNumber() <= maxSupply );
 
-    // await expect(
-    //   blindbox.setRevealTimestamp( nowBlock - 1 )
-    // ).to.be.revertedWith("revealTimeStamp_ < block.timestamp");
 });
 
   it( "NFTBlindbox - mintToken sale is not start", async function(){
@@ -130,10 +146,6 @@ describe("NFTBlindBoxGenerator.sol", function () {
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
     let maxSupply = await blindbox.maxSupply();
-
-    // const blockNumBefore = await ethers.provider.getBlockNumber();
-    // const blockBefore = await ethers.provider.getBlock(blockNumBefore);
-    // const timestampBefore = blockBefore.timestamp;
 
     await blindbox.initialize("https://", 12, 1, timestampBefore + 60, timestampEnd );
     await expect(
@@ -167,21 +179,15 @@ describe("NFTBlindBoxGenerator.sol", function () {
     const blindbox = NFTBlindbox.attach(contractAddr);
     let maxSupply = await blindbox.maxSupply();
 
-    // let blockNumBefore = await ethers.provider.getBlockNumber();
-    // let blockBefore = await ethers.provider.getBlock(blockNumBefore);
-    // let timestampBefore = blockBefore.timestamp;
-    // console.log("timestampBefore: ", timestampBefore)
-
     await blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd );
 
-    // blockNumBefore = await ethers.provider.getBlockNumber();
-    // blockBefore = await ethers.provider.getBlock(blockNumBefore);
-    // timestampBefore = blockBefore.timestamp;
-    // console.log("timestampAfter: ", timestampBefore)
+    await expect(
+      blindbox.connect(addr1).mintToken( 10,  {value:1*10})
+    ).to.emit(blindbox, "Transfer")
+    .withArgs(ethers.constants.AddressZero, owner.address, 1)
+    .and.to.emit(blindbox, "Transfer")
+    .withArgs(owner.address, addr1.address, 1)
 
-    await blindbox.connect(addr1).mintToken( 10,  {value:1*10});
-    let addr1Balance = await blindbox.balanceOf(addr1.address);
-    assert( addr1Balance.toNumber() === 10, "add1 balance should be 10" );
     
     //tokenURI
     let _maxSupply = await blindbox.maxSupply();
@@ -192,64 +198,11 @@ describe("NFTBlindBoxGenerator.sol", function () {
     await ethers.provider.send('evm_increaseTime', [sevenDays]);
     await ethers.provider.send('evm_mine');
     
-    await blindbox.setStartingIndex();
+    await blindbox.reveal();
     URI0 = await blindbox.tokenURI(0);
-    console.log(URI0);
-    // assert( URI0 !=  "https://0", "after lottery draw URI not  equal to https://0");
+    console.log("new URI: ", URI0);
 
   });
-
-  // it( "NFTBlindbox - setRevealTimestamp: success", async function(){
-
-  //   const baseSettings = {
-  //     "name" : "123",
-  //     "symbol" : "456",
-  //     "payees" : [addr1.address],
-  //     "shares" : [1],
-  //     "typeOfNFT" : 1,
-  //     "maxSupply" : 100
-  //   }
-
-  //   await tokenAdmin.genNFTContract(baseSettings, {value:1e12*100});
-  //   const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
-  //   const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
-  //   const blindbox = NFTBlindbox.attach(contractAddr);
-  //   let maxSupply = await blindbox.maxSupply();
-  //   let nowBlock = await ethers.provider.getBlockNumber();
-
-  //   await blindbox.initialize("https://", 12, 1, nowBlock );
-  //   await expect(
-  //     blindbox.initialize("https://", 12, 1, nowBlock )
-  //   ).to.be.revertedWith("")
-
-  //   // const blockNumBefore = await ethers.provider.getBlockNumber();
-  //   // const blockBefore = await ethers.provider.getBlock(blockNumBefore);
-  //   // const timestampBefore = blockBefore.timestamp;
-  //   // await blindbox.setRevealTimestamp( timestampBefore + (86400 * 100) );
-    
-  // });
-
-
-    // console.log( bl
-
-    // const { expect } = require("chai");
-    // const { ethers } = require('hardhat');
-
-    // const sevenDays = 7 * 24 * 60 * 60;
-
-    // const blockNumBefore = await ethers.provider.getBlockNumber();
-    // const blockBefore = await ethers.provider.getBlock(blockNumBefore);
-    // const timestampBefore = blockBefore.timestamp;
-
-    // await ethers.provider.send('evm_increaseTime', [sevenDays]);
-    // await ethers.provider.send('evm_mine');
-
-    // const blockNumAfter = await ethers.provider.getBlockNumber();
-    // const blockAfter = await ethers.provider.getBlock(blockNumAfter);
-    // const timestampAfter = blockAfter.timestamp;
-
-    // expect(blockNumAfter).to.be.equal(blockNumBefore + 1);
-    // expect(timestampAfter).to.be.equal(timestampBefore + sevenDays);
 
 
 });

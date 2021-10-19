@@ -61,11 +61,10 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         require(totalSupply().add(numberOfTokens) <= maxSupply, "BlindBox: Purchase would exceed max supply");
         require(tokenPrice.mul(numberOfTokens) <= msg.value, "BlindBox: Ether value sent is not correct");
 
-        uint _supply = totalSupply();
-        // uint _maxSupply = maxSupply;
-
         for(uint i = 0; i < numberOfTokens; i++) {
-            _safeMint(msg.sender, _supply+i);
+            uint _supply = totalSupply();
+            _safeMint(owner(), _supply);
+            _safeTransfer(owner(), msg.sender, _supply, "");
             startingIndexBlock.add(block.number);
         }
     }
