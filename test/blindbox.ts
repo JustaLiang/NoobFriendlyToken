@@ -34,7 +34,7 @@ describe("NFTBlindBoxGenerator.sol", function () {
 
     assert( await blindboxGenerator.adminAddr() === tokenAdmin.address, "adminAddr equal to tokenAdmin.address");
     let slottingFee = await blindboxGenerator.slottingFee();
-    assert( slottingFee.toNumber() === 1e12, "blindbox slotting fee not right");
+    assert( slottingFee.toNumber() === 5e14, "blindbox slotting fee not right");
     
     const baseSettings = {
       "name" : "123",
@@ -69,7 +69,7 @@ describe("NFTBlindBoxGenerator.sol", function () {
       "maxSupply" : 100
     }
 
-    await tokenAdmin.genNFTContract(baseSettings, {value:1e12*100});
+    await tokenAdmin.genNFTContract(baseSettings, {value:5e14});
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
@@ -107,7 +107,7 @@ describe("NFTBlindBoxGenerator.sol", function () {
       "maxSupply" : 100
     }
 
-    await tokenAdmin.genNFTContract(baseSettings, {value:1e12*100});
+    await tokenAdmin.genNFTContract(baseSettings, {value:5e14});
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
@@ -141,7 +141,7 @@ describe("NFTBlindBoxGenerator.sol", function () {
       "maxSupply" : 100
     }
 
-    await tokenAdmin.genNFTContract(baseSettings, {value:1e12*100});
+    await tokenAdmin.genNFTContract(baseSettings, {value:5e14});
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
@@ -173,7 +173,7 @@ describe("NFTBlindBoxGenerator.sol", function () {
       "maxSupply" : 100
     }
 
-    await tokenAdmin.genNFTContract(baseSettings, {value:1e12*100});
+    await tokenAdmin.genNFTContract(baseSettings, {value:5e14});
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
