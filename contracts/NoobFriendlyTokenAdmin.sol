@@ -37,7 +37,7 @@ contract NoobFriendlyTokenAdmin is Ownable, PaymentSplitter {
             "NoobFriendlyTokenAdmin: Invalid ticket type"
         );
         require(
-            msg.value >= generator.slottingFee()*baseSettings.maxSupply,
+            msg.value >= generator.slottingFee(),
             "NoobFriendlyTokenAdmin: Slotting fee error"
         );
         TemplateInterface nftContract = TemplateInterface(generator.genNFTContract(_msgSender(), baseSettings));

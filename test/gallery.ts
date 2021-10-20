@@ -1,8 +1,8 @@
-var {ethers, getNamedAccounts, getUnnamedAccounts, deployments} = require('hardhat');
-var { BigNumber } = require("ethers");
-var { expect, assert } = require("chai");
-var utils = require('ethers').utils;
+const { ethers, getNamedAccounts, getUnnamedAccounts, deployments } = require('hardhat');
+const { expect, assert } = require("chai");
+import { utils } from "ethers";
 
+const slottingFee = utils.parseEther("0.3");
 
 describe("Gallery", function () {
 
@@ -24,7 +24,7 @@ describe("Gallery", function () {
     blockNumBefore = await ethers.provider.getBlockNumber();
     blockBefore = await ethers.provider.getBlock(blockNumBefore);
     timestampBefore = blockBefore.timestamp;
-    timestampEnd = timestampBefore + 86400*9
+    timestampEnd = timestampBefore + 86400*9;
 
   });
 
@@ -40,7 +40,7 @@ describe("Gallery", function () {
       }
   
       await expect(
-        tokenAdmin.genNFTContract(baseSettings, {value:1e11*99})
+        tokenAdmin.genNFTContract(baseSettings, {value: slottingFee.sub(200)})
       ).to.be.revertedWith("NoobFriendlyTokenAdmin: Slotting fee error");
   
     });
@@ -56,7 +56,7 @@ describe("Gallery", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:1e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
   
     });
 
@@ -71,14 +71,11 @@ describe("Gallery", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:1e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTGallery = await ethers.getContractFactory("NFTGallery");
       const gallery = NFTGallery.attach(contractAddr);
 
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
-  
       await gallery.initialize("https://", 1e11, timestampBefore );
       await expect(
         gallery.initialize("https://", 1e11, timestampBefore )
@@ -97,14 +94,11 @@ describe("Gallery", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:1e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTGallery = await ethers.getContractFactory("NFTGallery");
       const gallery = NFTGallery.attach(contractAddr);
 
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
-  
       await gallery.initialize("https://", 1e11, timestampBefore );
       await expect(
         gallery.initialize("https://", 1e11, timestampBefore )
@@ -127,13 +121,10 @@ describe("Gallery", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:1e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTGallery = await ethers.getContractFactory("NFTGallery");
       const gallery = NFTGallery.attach(contractAddr);
-
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
   
       await gallery.initialize("https://", 1e11, timestampBefore );
 
@@ -152,14 +143,11 @@ describe("Gallery", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:1e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTGallery = await ethers.getContractFactory("NFTGallery");
       const gallery = NFTGallery.attach(contractAddr);
 
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
-  
       await gallery.initialize("https://", 1e11, timestampBefore );
 
       await expect(
@@ -179,14 +167,11 @@ describe("Gallery", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:1e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTGallery = await ethers.getContractFactory("NFTGallery");
       const gallery = NFTGallery.attach(contractAddr);
 
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
-  
       await gallery.initialize("https://", 1e11, timestampBefore );
 
       await gallery.mintToken([1, 3, 5], {value: 3*1e11});
@@ -207,13 +192,10 @@ describe("Gallery", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:1e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTGallery = await ethers.getContractFactory("NFTGallery");
       const gallery = NFTGallery.attach(contractAddr);
-
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
   
       await gallery.initialize("https://", 1e11, timestampBefore );
       
@@ -235,22 +217,17 @@ describe("Gallery", function () {
         "maxSupply" : 100
       }
   
-      await tokenAdmin.genNFTContract(baseSettings, {value:1e11*100});
+      await tokenAdmin.genNFTContract(baseSettings, {value: slottingFee});
       const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
       const NFTGallery = await ethers.getContractFactory("NFTGallery");
       const gallery = NFTGallery.attach(contractAddr);
 
-      // let maxSupply = await gallery.maxSupply();
-      // let nowBlock = await ethers.provider.getBlockNumber();
-  
       await gallery.initialize("https://", 1e11, timestampBefore );
 
       await gallery.mintToken([1, 3, 5], {value: 3*1e11});
       
       let uri = await gallery.tokenURI(3);
       assert( uri === "https://3");
-
-  
     });
 
 });

@@ -14,7 +14,7 @@ Noob-friendly interface for uploading and managing NFT contracts.
   4. Click "Add"
   5. Give the profile a name and click "Add"
   6. In this new browser window, install Metamask and import the keyphrase above
-8. Ensure Metamask RPC is set to `http://localhost:8545` and chainID `31337`.
+8. Ensure Metamask RPC is set to `http://localhost:8545` and chainID `1337`.
 9. Start the React app: `npm start`
 
 The frontend should open at http://localhost:3000/

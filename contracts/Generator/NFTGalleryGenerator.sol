@@ -25,6 +25,20 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
         saleStart = saleStart_;
     }
 
+    function reserveNFT(uint[] calldata tokenIdList) external onlyOwner {
+        require( block.timestamp < saleStart, "NFTGallery: researve only before saleStart");
+
+        for (uint i = 0; i < tokenIdList.length; i++) {
+            uint tokenId = tokenIdList[i];
+            require(tokenId < maxSupply, "The id is out of bound");
+            require(
+                !_exists(tokenId),
+                "This token has already been minted"
+            );
+            _safeMint(msg.sender, tokenId);
+        }
+    }
+
     function mintToken(uint[] calldata tokenIdList) external payable {
         require(
             tokenPrice*tokenIdList.length <= msg.value,
