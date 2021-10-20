@@ -26,10 +26,6 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
     }
 
     function reserveNFT(uint[] calldata tokenIdList) external onlyOwner {
-        // require(
-        //     tokenPrice*tokenIdList.length <= msg.value,
-        //     "Ether value sent is not correct"
-        // );
         require( block.timestamp < saleStart, "NFTGallery: researve only before saleStart");
 
         for (uint i = 0; i < tokenIdList.length; i++) {
