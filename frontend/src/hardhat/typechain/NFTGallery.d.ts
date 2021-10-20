@@ -41,6 +41,7 @@ interface NFTGalleryInterface extends ethers.utils.Interface {
     "release(address)": FunctionFragment;
     "released(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "reserveNFT(uint256[])": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "saleStart()": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
@@ -103,6 +104,10 @@ interface NFTGalleryInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "reserveNFT",
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
@@ -190,6 +195,7 @@ interface NFTGalleryInterface extends ethers.utils.Interface {
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "reserveNFT", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
@@ -507,6 +513,16 @@ export class NFTGallery extends Contract {
     renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    reserveNFT(
+      tokenIdList: BigNumberish[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "reserveNFT(uint256[])"(
+      tokenIdList: BigNumberish[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -863,6 +879,16 @@ export class NFTGallery extends Contract {
 
   "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
+  reserveNFT(
+    tokenIdList: BigNumberish[],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "reserveNFT(uint256[])"(
+    tokenIdList: BigNumberish[],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   "safeTransferFrom(address,address,uint256)"(
     from: string,
     to: string,
@@ -1135,6 +1161,16 @@ export class NFTGallery extends Contract {
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
+
+    reserveNFT(
+      tokenIdList: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "reserveNFT(uint256[])"(
+      tokenIdList: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -1422,6 +1458,16 @@ export class NFTGallery extends Contract {
 
     "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
 
+    reserveNFT(
+      tokenIdList: BigNumberish[],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "reserveNFT(uint256[])"(
+      tokenIdList: BigNumberish[],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     "safeTransferFrom(address,address,uint256)"(
       from: string,
       to: string,
@@ -1693,6 +1739,16 @@ export class NFTGallery extends Contract {
     renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    reserveNFT(
+      tokenIdList: BigNumberish[],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "reserveNFT(uint256[])"(
+      tokenIdList: BigNumberish[],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,

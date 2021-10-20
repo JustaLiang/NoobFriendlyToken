@@ -68,8 +68,7 @@ const AdminPage: React.FC<Props> = () => {
             .then((fee) => { return fee })
             .catch(() => { return null })
         if (fee) {
-            const totalFee = fee.mul(baseSettingsInput.maxSupply)
-            const tx = await admin.instance.genNFTContract(baseSettingsInput, { value: totalFee })
+            const tx = await admin.instance.genNFTContract(baseSettingsInput, { value: fee })
             await tx.wait();
             setChecked(false);
             setBaseSettings({

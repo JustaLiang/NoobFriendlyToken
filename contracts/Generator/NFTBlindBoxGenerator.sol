@@ -11,7 +11,7 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
   
     uint public tokenPrice;
     uint public revealTimeStamp;
-    uint private _startingIndex;
+    uint public startingIndex;
     uint private _startingIndexBlock;
     string public coverURI; 
 
@@ -33,6 +33,7 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         saleStart = saleStart_;
         revealTimeStamp = revealTimeStamp_;
         coverURI = "";
+        startingIndex = 0;
     }
 
     function reserveNFT(uint reserveNum) public onlyOwner {    
@@ -80,19 +81,21 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     }
 
     function reveal() external {
-        require(_startingIndex == 0, 
-                "Starting index is already set");
+        require(startingIndex == 0, 
+                "BlindBox: already revealed");
         require(totalSupply() == maxSupply || block.timestamp >= revealTimeStamp,
                 "BlindBox: not reveal yet");
+        require(bytes(baseURI).length > 0,
+                "Blindbox: baseURI not set");
 
-        _startingIndex = uint(blockhash(_startingIndexBlock)) % maxSupply;
+        startingIndex = uint(blockhash(_startingIndexBlock)) % maxSupply;
         // Just a sanity case in the worst case if this function is called late (EVM only stores last 256 block hashes)
         if (block.number.sub(_startingIndexBlock) > 255) {
-            _startingIndex = uint(blockhash(block.number - 1)) % maxSupply;
+            startingIndex = uint(blockhash(block.number - 1)) % maxSupply;
         }
         // Prevent default sequence
-        if (_startingIndex == 0) {
-            _startingIndex = _startingIndex.add(1);
+        if (startingIndex == 0) {
+            startingIndex = startingIndex.add(1);
         }
     }
 
@@ -102,8 +105,8 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
              "ERC721Metadata: URI query for nonexistent token"
         );
         
-        if (_startingIndex > 0) {
-            uint tokenIndex = (_startingIndex + tokenId) % maxSupply;
+        if (startingIndex > 0) {
+            uint tokenIndex = (startingIndex + tokenId) % maxSupply;
             console.log( "tokenIndex is ", tokenIndex);
             return string(abi.encodePacked(baseURI, tokenIndex.toString()));
         }

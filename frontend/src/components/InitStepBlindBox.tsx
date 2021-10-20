@@ -177,7 +177,7 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
     }
 
     const handleInitConfirm = () => {
-        if (!initData?.baseURI || !initData?.maxPurchase || !initData?.saleStart || !initData?.tokenPrice) return;
+        if ( !initData?.maxPurchase || !initData?.saleStart || !initData?.tokenPrice|| !initData?.revealTimeStamp ) return;
         if (!blindboxContract) return;
         blindboxContract?.initialize(initData.baseURI, +initData.maxPurchase, ethers.utils.parseEther(initData.tokenPrice), new Date(initData.saleStart).valueOf() / 1000,new Date(initData.revealTimeStamp).valueOf() / 1000);
     }
@@ -229,7 +229,7 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                                         <Grid item md={3}></Grid>
                                         <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-end', gap: '20px' }}>
                                             <Button onClick={handleReset}>Reset</Button>
-                                            <Button onClick={handleInitConfirm} variant='contained' color="primary" disabled={!initData?.baseURI || !initData?.maxPurchase || !initData?.saleStart || !initData?.tokenPrice || !initData?.revealTimeStamp}>Confirm</Button>
+                                            <Button onClick={handleInitConfirm} variant='contained' color="primary" disabled={!initData?.maxPurchase || !initData?.saleStart || !initData?.tokenPrice || !initData?.revealTimeStamp}>Confirm</Button>
 
 
                                         </Grid>
@@ -347,7 +347,7 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                                                 </Button>
                                                 {
                                                     activeStep === steps.length - 1 ?
-                                                        (initData?.baseURI ?
+                                                        ((initData?.baseURI || !imageList?.length || !jsonList?.length)?
                                                             <Button variant="contained" color="primary" onClick={handleNext}>
                                                                 Next
                                                             </Button>
