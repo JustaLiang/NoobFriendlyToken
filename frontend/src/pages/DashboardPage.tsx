@@ -112,20 +112,22 @@ const DashboardPage: React.FC<Props> = (props) => {
     }
     const handleSetCoverURI = async (e: React.SyntheticEvent) => {
         e.preventDefault()
-        if (!coverURI) return;
-        const tx = await blindboxContract?.setCoverURI(coverURI);
-        await tx?.wait();
-        window.location.reload();
+        if (!coverURI || !blindboxContract ) return;
+        const tx = await blindboxContract.setCoverURI(coverURI);
+        const receipt = await tx.wait();
+        if (receipt.status) {
+            setContractCoverURI(await blindboxContract.coverURI());
+        }
         
     }
     const handleSetBaseURI = async (e: React.SyntheticEvent) => {
         e.preventDefault()
-        if (!baseURI) return;
-        const tx = await blindboxContract?.setBaseURI(baseURI);
-        await tx?.wait();
-        window.location.reload();
-
-
+        if (!baseURI || !blindboxContract) return;
+        const tx = await blindboxContract.setBaseURI(baseURI);
+        const receipt = await tx.wait();
+        if (receipt.status) {
+            setContractBaseURI(await blindboxContract.baseURI());
+        }
     }
     const handleReserve = async (e: React.SyntheticEvent) => {
         e.preventDefault()
@@ -136,10 +138,12 @@ const DashboardPage: React.FC<Props> = (props) => {
     }
     const handleWithDraw = async (e: React.SyntheticEvent) => {
         e.preventDefault()
-        if (!withdrawAddress) return;
-        const tx = await blindboxContract?.release(withdrawAddress);
-        await tx?.wait();
-        window.location.reload();
+        if (!withdrawAddress || !blindboxContract) return;
+        const tx = await blindboxContract.release(withdrawAddress);
+        const receipt = await tx.wait();
+        if (receipt.status && provider) {
+            setEthValue(await provider.getBalance(blindboxContract.address));
+        }
     }
     const handleSetReveal = async () => {
         await blindboxContract?.reveal();

@@ -89,7 +89,6 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
                 uint48 newTicketId = _ticketState.current[level];
                 _ticketState.current[level] += 1;
                 _safeMint(_msgSender(), uint(newTicketId));
-                console.log( "Ticket: mint ID: newTicketId");
             }
         }
     }

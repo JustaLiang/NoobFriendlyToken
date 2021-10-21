@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
 import "../NoobFriendlyTokenGenerator.sol";
 
 /**
@@ -173,7 +172,6 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         
         if (offsetId > 0) {
             uint tokenIndex = (offsetId + tokenId) % settings.maxSupply;
-            console.log( "tokenIndex is ", tokenIndex);
             return string(abi.encodePacked(baseURI, tokenIndex.toString()));
         }
         else {
