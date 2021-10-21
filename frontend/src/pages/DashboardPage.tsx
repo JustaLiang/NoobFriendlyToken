@@ -56,6 +56,7 @@ const DashboardPage: React.FC<Props> = (props) => {
     const [loading, setLoading] = useState(false);
     const [metaDataURI, setMetaDataURI] = useState<string>();
     const [snackOpen, setSnackOpen] = useState(false);
+    const [reserveAmount,setReserveAmount] = useState(0);
     const imageUploader = useCallback((node: HTMLInputElement) => {
         if (!node) return;
         node.setAttribute('webkitdirectory', '');
@@ -106,6 +107,9 @@ const DashboardPage: React.FC<Props> = (props) => {
     const handleWithdrawAddressChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setWithdrawAddress(e.target.value)
     }
+    const handleReserveAmountChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setReserveAmount(+e.target.value)
+    }
     const handleSetCoverURI = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         if (!coverURI) return;
@@ -122,6 +126,13 @@ const DashboardPage: React.FC<Props> = (props) => {
         window.location.reload();
 
 
+    }
+    const handleReserve = async (e: React.SyntheticEvent) => {
+        e.preventDefault()
+        if (!withdrawAddress) return;
+        const tx = await blindboxContract?.release(withdrawAddress);
+        await tx?.wait();
+        window.location.reload();
     }
     const handleWithDraw = async (e: React.SyntheticEvent) => {
         e.preventDefault()
@@ -439,6 +450,17 @@ const DashboardPage: React.FC<Props> = (props) => {
                                             <TableCell>
                                                 <form onSubmit={handleSetCoverURI}>
                                                     <TextField label="coverURI" variant="outlined" placeholder='ipfs://' size="small" style={{ width: '220px', marginRight: "10px" }} value={coverURI} onChange={handleCoverURIChange} />
+                                                    <Button variant='contained' color="primary" style={{ textTransform: 'none' }} type="submit">Submit</Button>
+                                                </form>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>
+                                                <Typography>Reserve:</Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <form onSubmit={handleReserve}>
+                                                    <TextField label="reserve" variant="outlined" placeholder='amount' size="small" style={{ width: '220px', marginRight: "10px" }} value={reserveAmount} onChange={handleReserveAmountChange} type="number"/>
                                                     <Button variant='contained' color="primary" style={{ textTransform: 'none' }} type="submit">Submit</Button>
                                                 </form>
                                             </TableCell>
