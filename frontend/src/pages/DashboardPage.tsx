@@ -266,7 +266,7 @@ const DashboardPage: React.FC<Props> = (props) => {
                                                 <Typography>Ether Value: </Typography>
                                             </TableCell>
                                             <TableCell>
-                                                ${ethers.utils.formatEther(ethValue)}ETH
+                                                $ {ethers.utils.formatEther(ethValue)} ETH
                                             </TableCell>
                                         </TableRow>
                                         <TableRow>
@@ -383,7 +383,7 @@ const DashboardPage: React.FC<Props> = (props) => {
                                                 <Typography style={{ fontWeight: 'bold' }}>Contract Settings</Typography>
                                             </TableCell>
                                             <TableCell style={{ textAlign: 'end' }}>
-                                                <span style={{fontStyle:'italic',fontWeight:100,fontSize:'10px',marginRight:'15px'}}>You can only reveal your collection after you set your base uri</span>
+                                                <span style={{fontStyle:'italic',fontWeight:100,fontSize:'10px',marginRight:'15px'}}>You can only reveal your collection after you set your base URI</span>
                                                 <Button disabled={isReveal} onClick={handleSetReveal} variant='contained' style={{ textTransform: 'none',color:'#fff',backgroundColor:"#000" }}>Reveal</Button>
                                             </TableCell>
                                         </TableRow>
