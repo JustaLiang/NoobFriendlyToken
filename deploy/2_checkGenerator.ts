@@ -1,3 +1,5 @@
+import { deployEnable } from "../control/DeployEnable"; 
+
 module.exports = async ({
     getNamedAccounts,
     deployments,
@@ -7,29 +9,35 @@ module.exports = async ({
     const { get, read } = deployments;
 
     //--- check type 0: ticket
-    const ticketGenerater = await get("NFTTicketGenerator");
-    const ticketAddress = await read(
-        "NoobFriendlyTokenAdmin",
-        "typeToGenerator",  0);
-    console.log("0 - Ticket:",
-        ticketAddress === ticketGenerater.address ?
-        "success" : "error");
+    if (deployEnable[0]) {
+        const ticketGenerater = await get("NFTTicketGenerator");
+        const ticketAddress = await read(
+            "NoobFriendlyTokenAdmin",
+            "typeToGenerator",  0);
+        console.log("0 - Ticket:",
+            ticketAddress === ticketGenerater.address ?
+            "success" : "error");
+    }
 
     //--- check type 1: blindbox
-    const blindboxGenerater = await get("NFTBlindboxGenerator");
-    const blindboxAddress = await read(
-        "NoobFriendlyTokenAdmin",
-        "typeToGenerator",  1);
-    console.log("1 - Blindbox:",
-        blindboxAddress === blindboxGenerater.address ?
-        "success" : "error");
+    if (deployEnable[1]) {
+        const blindboxGenerater = await get("NFTBlindboxGenerator");
+        const blindboxAddress = await read(
+            "NoobFriendlyTokenAdmin",
+            "typeToGenerator",  1);
+        console.log("1 - Blindbox:",
+            blindboxAddress === blindboxGenerater.address ?
+            "success" : "error");
+    }
 
     //--- check type 2: gallery
-    const galleryGenerater = await get("NFTGalleryGenerator");
-    const galleryAddress = await read(
-        "NoobFriendlyTokenAdmin",
-        "typeToGenerator",  2);
-    console.log("2 - Gallery:",
-        galleryAddress === galleryGenerater.address ?
-        "success" : "error");
+    if (deployEnable[2]) {
+        const galleryGenerater = await get("NFTGalleryGenerator");
+        const galleryAddress = await read(
+            "NoobFriendlyTokenAdmin",
+            "typeToGenerator",  2);
+        console.log("2 - Gallery:",
+            galleryAddress === galleryGenerater.address ?
+            "success" : "error");
+    }
 };
