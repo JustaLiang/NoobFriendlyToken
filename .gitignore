@@ -3,7 +3,7 @@ node_modules/
 # hardhat files
 cache/
 artifacts/
-# frontend/src/hardhat
+frontend/src/hardhat/
 coverage/
 coverage.json
 

@@ -23,19 +23,15 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface NFTBlindboxGeneratorInterface extends ethers.utils.Interface {
   functions: {
     "adminAddr()": FunctionFragment;
-    "changeSlottingFee(uint256)": FunctionFragment;
     "genNFTContract(address,tuple)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "slottingFee()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "updateSlottingFee(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "adminAddr", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "changeSlottingFee",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "genNFTContract",
     values: [
@@ -63,12 +59,12 @@ interface NFTBlindboxGeneratorInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "updateSlottingFee",
+    values: [BigNumberish]
+  ): string;
 
   decodeFunctionResult(functionFragment: "adminAddr", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "changeSlottingFee",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "genNFTContract",
     data: BytesLike
@@ -84,6 +80,10 @@ interface NFTBlindboxGeneratorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateSlottingFee",
     data: BytesLike
   ): Result;
 
@@ -119,16 +119,6 @@ export class NFTBlindboxGenerator extends Contract {
     ): Promise<{
       0: string;
     }>;
-
-    changeSlottingFee(
-      newSlottingFee: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "changeSlottingFee(uint256)"(
-      newSlottingFee: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
 
     genNFTContract(
       client: string,
@@ -193,21 +183,21 @@ export class NFTBlindboxGenerator extends Contract {
       newOwner: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    updateSlottingFee(
+      newSlottingFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "updateSlottingFee(uint256)"(
+      newSlottingFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
   };
 
   adminAddr(overrides?: CallOverrides): Promise<string>;
 
   "adminAddr()"(overrides?: CallOverrides): Promise<string>;
-
-  changeSlottingFee(
-    newSlottingFee: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "changeSlottingFee(uint256)"(
-    newSlottingFee: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
 
   genNFTContract(
     client: string,
@@ -257,20 +247,20 @@ export class NFTBlindboxGenerator extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  updateSlottingFee(
+    newSlottingFee: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "updateSlottingFee(uint256)"(
+    newSlottingFee: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     adminAddr(overrides?: CallOverrides): Promise<string>;
 
     "adminAddr()"(overrides?: CallOverrides): Promise<string>;
-
-    changeSlottingFee(
-      newSlottingFee: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "changeSlottingFee(uint256)"(
-      newSlottingFee: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     genNFTContract(
       client: string,
@@ -319,6 +309,16 @@ export class NFTBlindboxGenerator extends Contract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updateSlottingFee(
+      newSlottingFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "updateSlottingFee(uint256)"(
+      newSlottingFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -332,16 +332,6 @@ export class NFTBlindboxGenerator extends Contract {
     adminAddr(overrides?: CallOverrides): Promise<BigNumber>;
 
     "adminAddr()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    changeSlottingFee(
-      newSlottingFee: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "changeSlottingFee(uint256)"(
-      newSlottingFee: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
 
     genNFTContract(
       client: string,
@@ -390,22 +380,22 @@ export class NFTBlindboxGenerator extends Contract {
       newOwner: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    updateSlottingFee(
+      newSlottingFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "updateSlottingFee(uint256)"(
+      newSlottingFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     adminAddr(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "adminAddr()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    changeSlottingFee(
-      newSlottingFee: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "changeSlottingFee(uint256)"(
-      newSlottingFee: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
 
     genNFTContract(
       client: string,
@@ -452,6 +442,16 @@ export class NFTBlindboxGenerator extends Contract {
 
     "transferOwnership(address)"(
       newOwner: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    updateSlottingFee(
+      newSlottingFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "updateSlottingFee(uint256)"(
+      newSlottingFee: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
   };

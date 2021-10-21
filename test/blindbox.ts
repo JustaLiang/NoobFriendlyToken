@@ -49,10 +49,10 @@ describe("Blindbox", function () {
     ).to.be.revertedWith("");
 
     await expect(
-      blindboxGenerator.connect(addr1).changeSlottingFee(1)
+      blindboxGenerator.connect(addr1).updateSlottingFee(1)
     ).to.be.revertedWith("");
 
-    await blindboxGenerator.changeSlottingFee(1);
+    await blindboxGenerator.updateSlottingFee(1);
     const newSlottingFee = await blindboxGenerator.slottingFee();
     assert( newSlottingFee.eq(1), "blindbox slotting fee equal to 1");
   });
@@ -75,16 +75,17 @@ describe("Blindbox", function () {
 
     await blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd );
     const _baseURI = await blindbox.baseURI()
-    const _maxPurchase = await blindbox.maxPurchase()
+    const _blindboxSettings = await blindbox.settings()
+    const _maxPurchase = _blindboxSettings['maxPurchase']
     const _tokenPrice = await blindbox.tokenPrice()
-    const _timestampBefore = await blindbox.saleStart()
-    const _timestampEnd = await blindbox.revealTimeStamp()
+    const _timestampBefore = _blindboxSettings['startTimestamp']
+    const _timestampEnd = await blindbox.revealTimestamp()
 
     assert( _baseURI === "https://", "baseURI not right" )
     assert( _maxPurchase.toString() === '12', "maxPurchase not right" )
     assert( _tokenPrice.toString() === "1", "tokenPrice not right" )
-    assert( _timestampBefore.toString() === timestampBefore.toString(), "saleStart not right" )
-    assert( _timestampEnd.toString() === timestampEnd.toString(), "revealTimeStamp not right" )
+    assert( _timestampBefore.toString() === timestampBefore.toString(), "startTimestamp not right" )
+    assert( _timestampEnd.toString() === timestampEnd.toString(), "revealTimestamp not right" )
 
     await expect(
       blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd )
@@ -107,7 +108,7 @@ describe("Blindbox", function () {
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
-    const maxSupply = await blindbox.maxSupply();
+    const maxSupply = (await blindbox.settings())['maxSupply'];
 
     await blindbox.initialize("https://", 12, 1, timestampBefore + 60, timestampEnd );
     await expect(
@@ -121,7 +122,6 @@ describe("Blindbox", function () {
 
     const ownerBalance = await blindbox.balanceOf(owner.address);
     assert( ownerBalance.lt(maxSupply) );
-
 });
 
   it( "NFTBlindbox - mintToken sale is not start", async function(){
@@ -177,7 +177,7 @@ describe("Blindbox", function () {
 
     
     //tokenURI
-    const maxSupply = await blindbox.maxSupply();
+    const maxSupply = (await blindbox.settings())['maxSupply'];
     const URI0 = await blindbox.tokenURI(0);
     assert( URI0 ===  "https://"+maxSupply.toString(), "original URI equal to https:// + maxSupply");
 
@@ -208,7 +208,6 @@ describe("Blindbox", function () {
     const blindbox = NFTBlindbox.attach(contractAddr);
 
     await blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd );
-  
 
     const sevenDays = 30 * 86400;
     await ethers.provider.send('evm_increaseTime', [sevenDays]);
@@ -226,7 +225,5 @@ describe("Blindbox", function () {
     const URI0 = await blindbox.tokenURI(0);
     console.log("new URI: ", URI0);
   });
-
-
 });
 

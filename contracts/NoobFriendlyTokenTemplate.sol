@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 struct BaseSettings {
     string name;
@@ -34,31 +33,52 @@ interface TemplateInterface {
     function transferOwnership(address newOwner) external;
 }
 
+/**
+ @author Justa Liang
+ @notice Template of NFT contract
+ */
 abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721Enumerable {
 
-    uint public saleStart;
-    uint public maxPurchase;
-    uint32 public typeOfNFT;
-    uint32 public maxSupply;
-    string public baseURI;
-    bool public isInit;
-    
+    struct Settings {
+        uint32 maxSupply;
+        uint32 maxPurchase;
+        uint32 typeOfNFT;
+        uint160 startTimestamp;
+    }
 
+    /// @notice Template settings
+    Settings public settings;
+    
+    /// @notice Prefix of tokenURI
+    string public baseURI;
+
+    /// @notice Whether contract is initialized
+    bool public isInit;
+
+    /// @dev Setup type and max supply 
     constructor(
         uint32 typeOfNFT_,
-        uint32 maxSupply_) {
-        typeOfNFT = typeOfNFT_;
-        maxSupply = maxSupply_;
+        uint32 maxSupply_
+    ) {
+        settings.typeOfNFT = typeOfNFT_;
+        settings.maxSupply = maxSupply_;
         isInit = false;
     }
 
+    /// @dev Make the contract to initialized only once
     modifier onlyOnce() {
         require(!isInit, "template: init already");
         isInit = true;
         _;
     }
 
+    /// @notice get BaseSettings
     function getBaseSettings() external view returns (BaseSettingsInfo memory) {
-        return BaseSettingsInfo(name(), symbol(), typeOfNFT, maxSupply);
+        return  BaseSettingsInfo(
+                    name(),
+                    symbol(),
+                    settings.typeOfNFT,
+                    settings.maxSupply
+                );
     }
 }

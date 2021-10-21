@@ -52,7 +52,7 @@ describe("Admin", function () {
 
     await expect(
       tokenAdmin.genNFTContract( baseSettings)
-    ).to.be.revertedWith("NoobFriendlyTokenAdmin: Invalid ticket type");
+    ).to.be.revertedWith("Admin: invalid ticket type");
   });
 
   it( "admin - genNFTContract: Slotting fee error", async function () {
@@ -68,7 +68,7 @@ describe("Admin", function () {
 
     await expect(
       tokenAdmin.genNFTContract( baseSettings , {value: slottingFee.sub(100)})
-    ).to.be.revertedWith("NoobFriendlyTokenAdmin: Slotting fee error");
+    ).to.be.revertedWith("Admin: slotting fee error");
 
   });
 
@@ -103,7 +103,7 @@ describe("Admin", function () {
 
     await expect(
       tokenAdmin.slottingFee(10)
-    ).to.be.revertedWith("NoobFriendlyTokenAdmin: generator not exists");
+    ).to.be.revertedWith("Admin: invalid ticket type");
   });
 
   

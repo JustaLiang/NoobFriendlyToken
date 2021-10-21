@@ -315,32 +315,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "maxPurchase",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "maxSupply",
-    outputs: [
-      {
-        internalType: "uint32",
-        name: "",
-        type: "uint32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "name",
     outputs: [
       {
@@ -494,19 +468,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "saleStart",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -522,6 +483,34 @@ const _abi = [
     name: "setApprovalForAll",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "settings",
+    outputs: [
+      {
+        internalType: "uint32",
+        name: "maxSupply",
+        type: "uint32",
+      },
+      {
+        internalType: "uint32",
+        name: "maxPurchase",
+        type: "uint32",
+      },
+      {
+        internalType: "uint32",
+        name: "typeOfNFT",
+        type: "uint32",
+      },
+      {
+        internalType: "uint160",
+        name: "startTimestamp",
+        type: "uint160",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -710,19 +699,6 @@ const _abi = [
     name: "transferOwnership",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "typeOfNFT",
-    outputs: [
-      {
-        internalType: "uint32",
-        name: "",
-        type: "uint32",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
