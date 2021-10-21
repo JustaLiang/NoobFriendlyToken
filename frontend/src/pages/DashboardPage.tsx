@@ -109,17 +109,26 @@ const DashboardPage: React.FC<Props> = (props) => {
     const handleSetCoverURI = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         if (!coverURI) return;
-        await blindboxContract?.setCoverURI(coverURI);
+        const tx = await blindboxContract?.setCoverURI(coverURI);
+        await tx?.wait();
+        window.location.reload();
+        
     }
     const handleSetBaseURI = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         if (!baseURI) return;
-        await blindboxContract?.setBaseURI(baseURI);
+        const tx = await blindboxContract?.setBaseURI(baseURI);
+        await tx?.wait();
+        window.location.reload();
+
+
     }
     const handleWithDraw = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         if (!withdrawAddress) return;
-        await blindboxContract?.release(withdrawAddress);
+        const tx = await blindboxContract?.release(withdrawAddress);
+        await tx?.wait();
+        window.location.reload();
     }
     const handleSetReveal = async () => {
         await blindboxContract?.reveal();
