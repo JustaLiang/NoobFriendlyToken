@@ -15,7 +15,7 @@ const toGatewayURL = (url: any, options: any = {}) => {
     return url.protocol === 'ipfs:'
       ? new URL(`/ipfs/${url.href.slice('ipfs://'.length)}`, gateway)
       : url
-  }
+}
 
 const useStyles = makeStyles((theme) => ({
     media: {

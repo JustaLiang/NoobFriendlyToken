@@ -231,6 +231,11 @@ const DashboardPage: React.FC<Props> = (props) => {
             }
         }
         setLoading(false);
+        setImageList([]);
+        setImageListSize(0);
+        setJsonList([]);
+        setCount(0);
+        setTotalCount(0);
     }
     const handleCopy = () => {
         if (!metaDataURI) return;
