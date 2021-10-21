@@ -194,7 +194,6 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
 
     }
     const progress = Math.min(count / totalCount * 100, 100);
-    console.log("10*10**18", 10 * 10 ** 18);
     return (
         <Container>
             <Paper>
@@ -261,11 +260,11 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                                                     </Grid>
                                                     <Grid item md={3}>
                                                         <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Max purchase per time</Typography>
-                                                        <TextField name="maxPurchase" value={initData?.maxPurchase} variant="outlined" placeholder="Amount..." style={{ width: '100%' }} onChange={handleChange} />
+                                                        <TextField name="maxPurchase" value={initData?.maxPurchase} variant="outlined" placeholder="Amount..." style={{ width: '100%' }} error={isNaN(+(initData.maxPurchase))} helperText={isNaN(+(initData.maxPurchase))?"Please enter a number":""} onChange={handleChange} />
                                                     </Grid>
                                                     <Grid item md={3}>
                                                         <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Token Price</Typography>
-                                                        <TextField name="tokenPrice" value={initData?.tokenPrice} variant="outlined" placeholder="ETH" style={{ width: '100%' }} onChange={handleChange} />
+                                                        <TextField name="tokenPrice" value={initData?.tokenPrice} variant="outlined" placeholder="ETH" style={{ width: '100%' }} error={isNaN(+(initData.tokenPrice))} helperText={isNaN(+(initData.tokenPrice))?"Please enter a number":""} onChange={handleChange} />
                                                     </Grid>
                                                     <Grid item md={3}>
                                                     </Grid>
@@ -349,8 +348,8 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                                         <Grid item md={3}>
                                         </Grid>
                                         <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-start' }}>
-                                            <Button style={{ textTransform: 'none' }} onClick={()=>{history.push('/')}}>
-                                                <KeyboardBackspaceIcon style={{marginRight:'5px'}} /> Home
+                                            <Button style={{ textTransform: 'none' }} onClick={() => { history.push('/') }}>
+                                                <KeyboardBackspaceIcon style={{ marginRight: '5px' }} /> Home
                                             </Button>
                                         </Grid>
                                         <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-end', gap: '20px' }}>

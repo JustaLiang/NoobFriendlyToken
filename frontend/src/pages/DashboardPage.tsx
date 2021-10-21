@@ -56,6 +56,8 @@ const DashboardPage: React.FC<Props> = (props) => {
     const [loading, setLoading] = useState(false);
     const [metaDataURI, setMetaDataURI] = useState<string>();
     const [snackOpen, setSnackOpen] = useState(false);
+    const [reserveAmount, setReserveAmount] = useState<string>("");
+    const [reserveInputError, setReserveInputError] = useState(false);
     const imageUploader = useCallback((node: HTMLInputElement) => {
         if (!node) return;
         node.setAttribute('webkitdirectory', '');
@@ -106,15 +108,25 @@ const DashboardPage: React.FC<Props> = (props) => {
     const handleWithdrawAddressChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setWithdrawAddress(e.target.value)
     }
+    const handleReserveAmountChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if (isNaN(parseInt(e.target.value))) {
+            setReserveAmount(e.target.value)
+            setReserveInputError(true);
+            return;
+        }
+        setReserveAmount(e.target.value)
+        setReserveInputError(false);
+
+    }
     const handleSetCoverURI = async (e: React.SyntheticEvent) => {
         e.preventDefault()
-        if (!coverURI || !blindboxContract ) return;
+        if (!coverURI || !blindboxContract) return;
         const tx = await blindboxContract.setCoverURI(coverURI);
         const receipt = await tx.wait();
         if (receipt.status) {
             setContractCoverURI(await blindboxContract.coverURI());
         }
-        
+
     }
     const handleSetBaseURI = async (e: React.SyntheticEvent) => {
         e.preventDefault()
@@ -123,6 +135,15 @@ const DashboardPage: React.FC<Props> = (props) => {
         const receipt = await tx.wait();
         if (receipt.status) {
             setContractBaseURI(await blindboxContract.baseURI());
+        }
+    }
+    const handleReserve = async (e: React.SyntheticEvent) => {
+        e.preventDefault()
+        if (!reserveAmount || !blindboxContract) return;
+        const tx = await blindboxContract.reserveNFT(reserveAmount);
+        const receipt = await tx.wait();
+        if (receipt.status) {
+            setTotalSupply(await blindboxContract.totalSupply());
         }
     }
     const handleWithDraw = async (e: React.SyntheticEvent) => {
@@ -210,7 +231,6 @@ const DashboardPage: React.FC<Props> = (props) => {
             }
         }
         setLoading(false);
-
     }
     const handleCopy = () => {
         if (!metaDataURI) return;
@@ -239,14 +259,15 @@ const DashboardPage: React.FC<Props> = (props) => {
                     </Alert>
                 </Snackbar>
                 <Paper>
-                    <Box style={{paddingLeft: '20px', textAlign: "start" }}>
-                        <IconButton onClick={()=>{history.push('/')}}><KeyboardBackspaceIcon/></IconButton>
+                    <Box style={{ paddingLeft: '20px', textAlign: "start" }}>
+                        <IconButton onClick={() => { history.push('/') }}><KeyboardBackspaceIcon /></IconButton>
                     </Box>
                     <Grid container>
                         <Grid item md={6} style={{ padding: '20px' }}>
                             <TableContainer component={Paper}>
                                 <Table>
                                     <TableHead>
+
                                         <TableRow>
                                             <TableCell>
                                                 <Typography style={{ fontWeight: 'bold' }}>Contract Overview</Typography>
@@ -371,7 +392,7 @@ const DashboardPage: React.FC<Props> = (props) => {
                                                 {loading ?
                                                     <CircularProgress size={20} /> : <></>
                                                 }
-                                                <Button variant='contained' style={{ textTransform: 'none',color:'#fff',backgroundColor:"#000"  }} onClick={handleIPFSUpload} >Upload</Button>
+                                                <Button variant='contained' style={{ textTransform: 'none', color: '#fff', backgroundColor: "#000" }} onClick={handleIPFSUpload} >Upload</Button>
                                             </TableCell>
                                         </TableRow>
                                     </TableBody>
@@ -387,8 +408,11 @@ const DashboardPage: React.FC<Props> = (props) => {
                                                 <Typography style={{ fontWeight: 'bold' }}>Contract Settings</Typography>
                                             </TableCell>
                                             <TableCell style={{ textAlign: 'end' }}>
-                                                <span style={{fontStyle:'italic',fontWeight:100,fontSize:'10px',marginRight:'15px'}}>You can only reveal your collection after you set your base URI</span>
-                                                <Button disabled={isReveal} onClick={handleSetReveal} variant='contained' style={{ textTransform: 'none',color:'#fff',backgroundColor:"#000" }}>Reveal</Button>
+                                                <span style={{ fontStyle: 'italic', fontWeight: 100, fontSize: '10px', marginRight: '15px' }}>You can only reveal your collection after you set your base URI</span>
+                                                {isReveal ?
+                                                    <Button disabled={true} variant='contained' style={{ textTransform: 'none' }}>Reveal</Button> :
+                                                    <Button onClick={handleSetReveal} variant='contained' style={{ textTransform: 'none', color: '#fff', backgroundColor: "#000" }}>Reveal</Button>
+                                                }
                                             </TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -443,6 +467,17 @@ const DashboardPage: React.FC<Props> = (props) => {
                                             <TableCell>
                                                 <form onSubmit={handleSetCoverURI}>
                                                     <TextField label="coverURI" variant="outlined" placeholder='ipfs://' size="small" style={{ width: '220px', marginRight: "10px" }} value={coverURI} onChange={handleCoverURIChange} />
+                                                    <Button variant='contained' color="primary" style={{ textTransform: 'none' }} type="submit">Submit</Button>
+                                                </form>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>
+                                                <Typography>Reserve:</Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <form onSubmit={handleReserve}>
+                                                    <TextField label="reserve" variant="outlined" placeholder='amount' size="small" style={{ width: '220px', marginRight: "10px" }} value={reserveAmount} onChange={handleReserveAmountChange} error={reserveInputError} helperText={reserveInputError ? 'Please enter number' : ""} />
                                                     <Button variant='contained' color="primary" style={{ textTransform: 'none' }} type="submit">Submit</Button>
                                                 </form>
                                             </TableCell>
