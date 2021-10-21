@@ -6,8 +6,8 @@ import "hardhat-deploy";
 import "@symfoni/hardhat-react";
 import "hardhat-typechain";
 import "@typechain/ethers-v5";
-import "dotenv/config"
-import "solidity-coverage"
+import "dotenv/config";
+import "solidity-coverage";
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -36,14 +36,18 @@ const config: HardhatUserConfig = {
         mnemonic: "test test test test test test test test test test test junk",
       },
     },
-    rinkeby: {
-      url: `https://rinkeby.infura.io/v3/${process.env.WEB3_INFURA_PROJECT_ID}`,
-      accounts: [`0x${process.env.PRIVATE_KEY}`]
-    },
+    // rinkeby: {
+    //   url: `https://rinkeby.infura.io/v3/${process.env.WEB3_INFURA_PROJECT_ID}`,
+    //   accounts: [`0x${process.env.PRIVATE_KEY}`]
+    // },
+    // mainnet: {
+    //   url: `https://mainnet.infura.io/v3/${process.env.WEB3_INFURA_PROJECT_ID}`,
+    //   accounts: [`0x${process.env.PRIVATE_KEY}`]
+    // },
   },
-  etherscan: {
-    apiKey: `${process.env.API_KEY}`,
-  },
+  // etherscan: {
+  //   apiKey: `${process.env.API_KEY}`,
+  // },
   solidity: {
     compilers: [
       {
