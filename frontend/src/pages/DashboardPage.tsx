@@ -22,11 +22,7 @@ const DashboardPage: React.FC<Props> = (props) => {
             if (!blindBox.factory) return
             const contract = blindBox.factory.attach(address);
             setBlindBoxContract(contract);
-            const isReveal = await contract.startingIndex();
-            console.log(isReveal)
-            if (!isReveal.eq(0)) {
-                setIsReveal(false);
-            }
+            setIsReveal(!(await contract.offsetId()).eq(0));
         };
         connectToContract();
     }, [blindBox, address]);
