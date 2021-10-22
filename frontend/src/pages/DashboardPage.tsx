@@ -164,7 +164,7 @@ const DashboardPage: React.FC<Props> = (props) => {
         const tx = await blindboxContract.reveal();
         const receipt = await tx.wait();
         if(receipt.status){
-            setIsReveal(!(await contract.offsetId()).eq(0));
+            setIsReveal(!(await blindboxContract.offsetId()).eq(0));
         }
 
     }
