@@ -1,5 +1,5 @@
 export const deployEnable: boolean[] = [
-    /* Ticket   */  false,
+    /* Ticket   */  true,
     /* Blindbox */  true,
-    /* Gallery  */  false,
+    /* Gallery  */  true,
 ];

@@ -125,6 +125,7 @@ const DashboardPage: React.FC<Props> = (props) => {
         const receipt = await tx.wait();
         if (receipt.status) {
             setContractCoverURI(await blindboxContract.coverURI());
+            setCoverURI("");
         }
 
     }
@@ -135,6 +136,7 @@ const DashboardPage: React.FC<Props> = (props) => {
         const receipt = await tx.wait();
         if (receipt.status) {
             setContractBaseURI(await blindboxContract.baseURI());
+            setBaseURI("");
         }
     }
     const handleReserve = async (e: React.SyntheticEvent) => {
@@ -144,6 +146,7 @@ const DashboardPage: React.FC<Props> = (props) => {
         const receipt = await tx.wait();
         if (receipt.status) {
             setTotalSupply(await blindboxContract.totalSupply());
+            setReserveAmount("");
         }
     }
     const handleWithDraw = async (e: React.SyntheticEvent) => {
@@ -153,10 +156,17 @@ const DashboardPage: React.FC<Props> = (props) => {
         const receipt = await tx.wait();
         if (receipt.status && provider) {
             setEthValue(await provider.getBalance(blindboxContract.address));
+            setWithdrawAddress("");
         }
     }
     const handleSetReveal = async () => {
-        await blindboxContract?.reveal();
+        if(!blindboxContract) return;
+        const tx = await blindboxContract.reveal();
+        const receipt = await tx.wait();
+        if(receipt.status){
+            setIsReveal(!(await contract.offsetId()).eq(0));
+        }
+
     }
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
