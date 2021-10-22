@@ -3,6 +3,10 @@ pragma solidity ^0.8.0;
 
 import "../NoobFriendlyTokenGenerator.sol";
 
+/**
+ @author Chiao-Yu Yang, Justa Liang, Jeffrey lin
+ @notice Gallery: hind the NFT until revealed
+ */
 contract NFTGallery is NoobFriendlyTokenTemplate {
     using Strings for uint;
 

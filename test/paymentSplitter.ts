@@ -4,7 +4,7 @@ import { utils } from "ethers";
 
 const slottingFee = utils.parseEther("0.3");
 
-describe("Blindbox", function () {
+describe("Payment Splitter", function () {
 
   let owner, addr1;
   let tokenAdmin, blindboxGenerator;

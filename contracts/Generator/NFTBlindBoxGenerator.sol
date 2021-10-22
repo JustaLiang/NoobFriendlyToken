@@ -65,7 +65,7 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     ) public onlyOwner {   
         uint supply = totalSupply();
         require(
-            supply + reserveNum < settings.maxSupply,
+            supply + reserveNum <= settings.maxSupply,
             "Blindbox: exceed max supply"
         );
         for (uint i = 0; i < reserveNum; i++) {
