@@ -6,6 +6,7 @@ import SettingPage from './pages/SettingPage';
 import OpenseaPage from './pages/OpenseaPage';
 import DashboardPage from './pages/DashboardPage';
 import LoadingPage from './pages/LoadingPage';
+import MintPage from './pages/MintPage';
 import OwnerPage from './pages/OwnerPage';
 import { Route, Switch, BrowserRouter as Router, } from 'react-router-dom';
 function App() {
@@ -20,6 +21,7 @@ function App() {
             <Route exact path='/owner' component={OwnerPage} />
             <Route exact path='/:NFTType/:address/setup' component={SettingPage} />
             <Route exact path='/:NFTType/:address/dashboard' component={DashboardPage} />
+            <Route exact path='/:NFTType/:address/mint' component={MintPage} />
           </Symfoni>
         </Switch>
       </Router>

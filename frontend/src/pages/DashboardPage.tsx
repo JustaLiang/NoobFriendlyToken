@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { Box, Button, CircularProgress, Container, Grid, IconButton, Paper, Snackbar, SnackbarCloseReason, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@material-ui/core';
+import { Box, Button, CircularProgress, Container, Grid, IconButton, Paper, Snackbar, SnackbarCloseReason, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Link } from '@material-ui/core';
 import FilterNoneIcon from '@material-ui/icons/FilterNone';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
@@ -33,6 +33,7 @@ const JsonCmp = (a: File, b: File) => {
 
 const DashboardPage: React.FC<Props> = (props) => {
     const address = props.match.params.address;
+    const nftType= props.match.params.NFTType;
     const history = useHistory();
     const [provider,] = useContext(ProviderContext);
     const blindBox = useContext(NFTBlindboxContext);
@@ -161,11 +162,11 @@ const DashboardPage: React.FC<Props> = (props) => {
         }
     }
     const handleSetReveal = async () => {
-        if(!blindboxContract) return;
+        if (!blindboxContract) return;
         const tx = await blindboxContract.reveal();
         const receipt = await tx.wait();
         if(receipt.status){
-            setIsReveal(!(await blindboxContract.offsetId()).eq(0));
+            setIsReveal((await blindboxContract.blindboxSettings()).offsetId !== 0);
         }
 
     }
@@ -275,8 +276,9 @@ const DashboardPage: React.FC<Props> = (props) => {
                     </Alert>
                 </Snackbar>
                 <Paper>
-                    <Box style={{ paddingLeft: '20px', textAlign: "start" }}>
+                    <Box style={{ display: 'flex', justifyContent: 'space-between', padding: '0px 20px', textAlign: "start" }}>
                         <IconButton onClick={() => { history.push('/') }}><KeyboardBackspaceIcon /></IconButton>
+                        <Link href={`/${nftType}/${address}/mint`} style={{textDecoration:'none',paddingTop:'10px'}}><Typography>➝ Go to Mint Page</Typography></Link>
                     </Box>
                     <Grid container>
                         <Grid item md={6} style={{ padding: '20px' }}>
