@@ -29,7 +29,7 @@ const GeneratorCard: React.FC<Props> = (props) => {
             }
         }
         getGeneratorAddr();
-    }, [adminContract]);
+    }, [adminContract, typeIndex]);
 
     useEffect(() => {
         if (signer && genAddr !== constants.AddressZero) {
@@ -38,7 +38,7 @@ const GeneratorCard: React.FC<Props> = (props) => {
         else if (provider && genAddr !== constants.AddressZero) {
             setGenerator(NoobFriendlyTokenGenerator__factory.connect(genAddr, provider));
         }
-    }, [signer, provider]);
+    }, [genAddr, signer, provider]);
 
     useEffect(() => {
         const getSlottingFee = async () => {
@@ -50,8 +50,9 @@ const GeneratorCard: React.FC<Props> = (props) => {
     }, [generator]);
 
     const onInputSlottingFee = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.textContent) {
-            setSlottingFeeText(e.target.textContent);
+        // console.log(e.target.value);
+        if (e.target.value) {
+            setSlottingFeeText(e.target.value);
         }
     }
 
@@ -73,6 +74,9 @@ const GeneratorCard: React.FC<Props> = (props) => {
 
     return <Card>
         <CardContent>
+            <Typography variant='h6' align='left'>
+                type: {typeName}
+            </Typography>
             <Typography variant='h6' align='left'>
                 slotting fee: {utils.formatEther(slottingFee)}
             </Typography>
