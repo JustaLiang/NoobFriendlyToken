@@ -10,10 +10,10 @@ import { NFTBlindbox } from '../hardhat/typechain/NFTBlindbox';
 import LinearProgressWith from './LinearProgressWithLabel';
 
 const StyledStepLabel = styled(StepLabel)({
-  "& .MuiStepLabel-active": {
+  "& .MuiStepIcon-active": {
     color: "#0666dc"
   },
-  "& .MuiStepLabel-completed": {
+  "& .MuiStepIcon-completed": {
     color: "#0666dc"
   }
 });
