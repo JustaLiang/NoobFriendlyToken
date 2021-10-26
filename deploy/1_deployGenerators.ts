@@ -34,7 +34,7 @@ module.exports = async ({
         const blindboxIndex = 1;
         const blindboxGenerator = await deploy("NFTBlindboxGenerator", {
             from: deployer,
-            args: [adminContract.address, ethers.utils.parseEther("0.3")],
+            args: [adminContract.address, ethers.utils.parseEther("0.7")],
         });
         await execute(
             "NoobFriendlyTokenAdmin",
