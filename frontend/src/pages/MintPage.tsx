@@ -73,7 +73,7 @@ const handleMint = async () => {
     const receipt = await tx.wait();
     if(receipt.status) {
         setBalance((await blindboxContract.balanceOf(currentAddress)).toNumber());
-        
+        setTotalSupply((await blindboxContract.settings()).totalSupply);
     }
 
 }

@@ -1,7 +1,24 @@
-import { IconButton } from "@material-ui/core";
-import { BigNumberish, ethers } from "ethers";
 import React, { useContext, useEffect, useState } from 'react';
-import { CurrentAddressContext, NoobFriendlyTokenAdminContext, ProviderContext } from "../hardhat/SymfoniContext";
+import { NoobFriendlyTokenAdminContext, ProviderContext, CurrentAddressContext } from "../hardhat/SymfoniContext";
+import { ethers, BigNumberish } from "ethers";
+import { IconButton } from "@material-ui/core";
+import GeneratorCard from "../components/GeneratorCard";
+
+type GeneratorType = {
+    [key: number]: string
+}
+
+const generatorMap: GeneratorType = {
+    0: "Ticket",
+    1: "Blindbox",
+    2: "Gallery",
+}
+
+const generatorTypes = [
+    0, // Ticket
+    1, // Blindbox
+    2, // Gallery
+]
 
 interface Props { }
 
@@ -10,15 +27,16 @@ const OwnerPage: React.FC<Props> = () => {
     const adminContract = useContext(NoobFriendlyTokenAdminContext);
     const [provider,] = useContext(ProviderContext);
     const [account,] = useContext(CurrentAddressContext);
-    const [adminBalance, setAdminBalance] = useState<BigNumberish>(0);
+    const [noobBalance, setNoobBalance] = useState<BigNumberish>(0);
 
     useEffect(() => {
-        const getAdminBalance = async () => {
+        const getNoobInfo = async () => {
             if (provider && adminContract.instance) {
-                setAdminBalance(await provider.getBalance(adminContract.instance.address));
+                setNoobBalance(await provider.getBalance(adminContract.instance.address));
             }
+
         }
-        getAdminBalance();
+        getNoobInfo();
     }, [provider, adminContract]);
 
     const onWithdraw = async () => {
@@ -26,14 +44,20 @@ const OwnerPage: React.FC<Props> = () => {
             const tx = await adminContract.instance.release(account);
             const receipt = await tx.wait();
             if (receipt.status && provider) {
-                setAdminBalance(await provider.getBalance(adminContract.instance.address))
+                setNoobBalance(await provider.getBalance(adminContract.instance.address))
             }
         }
     }
 
     return (<div>
-        <h2>Admin Balance: {ethers.utils.formatEther(adminBalance)} ETH</h2>
+        <h2>Noob Balance: {ethers.utils.formatEther(noobBalance)} ETH</h2>
         <IconButton onClick={onWithdraw}>withdraw</IconButton>
+        { generatorTypes.map((typeIndex) => 
+            <GeneratorCard
+                key={typeIndex}
+                typeIndex={typeIndex}
+                typeName={generatorMap[typeIndex]}
+            />) }
     </div>)
 }
 
