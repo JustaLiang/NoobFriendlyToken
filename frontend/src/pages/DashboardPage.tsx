@@ -42,7 +42,7 @@ const DashboardPage: React.FC<Props> = (props) => {
     const [baseURI, setBaseURI] = useState<string>();
     const [coverURI, setCoverURI] = useState<string>();
     const [maxSupply, setMaxSupply] = useState<number>(0);
-    const [totalSupply, setTotalSupply] = useState<BigNumber>(BigNumber.from(0));
+    const [totalSupply, setTotalSupply] = useState<number>(0);
     const [withdrawAddress, setWithdrawAddress] = useState<string>();
     const [revealTime, setRevealTime] = useState<BigNumber>(BigNumber.from(0));
     const [startTime, setStartTime] = useState<BigNumber>(BigNumber.from(0));
@@ -81,10 +81,11 @@ const DashboardPage: React.FC<Props> = (props) => {
             const contract = blindBox.factory.attach(address);
             const contractFund = await provider.getBalance(address);
             const contractSettings = await contract.settings();
-            const _maxSupply = contractSettings['maxSupply'];
-            const _totalSupply = await contract.totalSupply();
-            const _revealTime = await contract.revealTimestamp();
-            const _startTime = contractSettings['startTimestamp'];
+            const detailedSettings = await contract.blindboxSettings();
+            const _maxSupply = contractSettings.maxSupply;
+            const _totalSupply = contractSettings.totalSupply;
+            const _startTime = contractSettings.startTimestamp;
+            const _revealTime = detailedSettings.revealTimestamp;
             const _coverURI = await contract.coverURI();
             const _baseURI = await contract.baseURI();
             setContractCoverURI(_coverURI);
@@ -95,7 +96,7 @@ const DashboardPage: React.FC<Props> = (props) => {
             setTotalSupply(_totalSupply);
             setEthValue(contractFund);
             setBlindBoxContract(contract);
-            setIsReveal(!(await contract.offsetId()).eq(0));
+            setIsReveal(detailedSettings.offsetId !== 0);
         };
         connectToContract();
     }, [blindBox, address, provider]);
@@ -145,7 +146,7 @@ const DashboardPage: React.FC<Props> = (props) => {
         const tx = await blindboxContract.reserveNFT(reserveAmount);
         const receipt = await tx.wait();
         if (receipt.status) {
-            setTotalSupply(await blindboxContract.totalSupply());
+            setTotalSupply((await blindboxContract.settings()).totalSupply);
             setReserveAmount("");
         }
     }
@@ -327,7 +328,7 @@ const DashboardPage: React.FC<Props> = (props) => {
                                                 <Typography>Sale State: </Typography>
                                             </TableCell>
                                             <TableCell>
-                                                {totalSupply.toNumber()}/{maxSupply} ({(totalSupply.toNumber() / maxSupply * 100).toFixed(2)})%
+                                                {totalSupply}/{maxSupply} ({(totalSupply / maxSupply * 100).toFixed(2)})%
                                             </TableCell>
                                         </TableRow>
 

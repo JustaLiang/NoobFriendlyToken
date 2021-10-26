@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 struct BaseSettings {
     string name;
@@ -36,13 +36,14 @@ interface TemplateInterface {
  @author Justa Liang
  @notice Template of NFT contract
  */
-abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721Enumerable {
+abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721 {
 
     struct Settings {
         uint32 maxSupply;
+        uint32 totalSupply;
         uint32 maxPurchase;
         uint32 typeOfNFT;
-        uint160 startTimestamp;
+        uint128 startTimestamp;
     }
 
     /// @notice Template settings
@@ -69,15 +70,5 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721E
         require(!isInit, "template: init already");
         isInit = true;
         _;
-    }
-
-    /// @notice get BaseSettings
-    function getBaseSettings() external view returns (BaseSettingsInfo memory) {
-        return  BaseSettingsInfo(
-                    name(),
-                    symbol(),
-                    settings.typeOfNFT,
-                    settings.maxSupply
-                );
     }
 }

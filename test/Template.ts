@@ -32,8 +32,5 @@ describe("Template", function () {
     const contractAddr= await tokenAdmin.userContracts(owner.address, 0);
     const NFTBlindbox = await ethers.getContractFactory("NFTBlindbox");
     const blindbox = NFTBlindbox.attach(contractAddr);
-
-    await blindbox.getBaseSettings();
   });
-
 });

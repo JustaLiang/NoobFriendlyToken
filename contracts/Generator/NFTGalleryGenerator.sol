@@ -8,6 +8,7 @@ import "../NoobFriendlyTokenGenerator.sol";
  @notice Gallery: hind the NFT until revealed
  */
 contract NFTGallery is NoobFriendlyTokenTemplate {
+    
     using Strings for uint;
 
     uint public tokenPrice;
@@ -21,7 +22,7 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
     function initialize(
         string calldata baseURI_,
         uint tokenPrice_,
-        uint160 startTimestamp_
+        uint128 startTimestamp_
     ) external onlyOwner onlyOnce {
         tokenPrice = tokenPrice_;
         baseURI = baseURI_;
@@ -29,7 +30,8 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
     }
 
     function reserveNFT(uint[] calldata tokenIdList) external onlyOwner {
-        for (uint i = 0; i < tokenIdList.length; i++) {
+        uint32 numberOfTokens = uint32(tokenIdList.length);
+        for (uint i = 0; i < numberOfTokens; i++) {
             uint tokenId = tokenIdList[i];
             require(
                 tokenId < settings.maxSupply,
@@ -37,9 +39,11 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
             );
             _safeMint(_msgSender(), tokenId);
         }
+        settings.totalSupply += numberOfTokens;
     }
 
     function mintToken(uint[] calldata tokenIdList) external payable {
+        uint32 numberOfTokens = uint32(tokenIdList.length);
         require(
             isInit,
             "Gallery: not initialized"
@@ -49,11 +53,11 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
             "Gallery: sale not start"
         );
         require(
-            msg.value >= tokenPrice*tokenIdList.length,
+            msg.value >= tokenPrice * numberOfTokens,
             "Gallery: payment not enough"
         );
 
-        for (uint i = 0; i < tokenIdList.length; i++) {
+        for (uint i = 0; i < numberOfTokens; i++) {
             uint tokenId = tokenIdList[i];
             require(
                 tokenId < settings.maxSupply,
@@ -61,6 +65,7 @@ contract NFTGallery is NoobFriendlyTokenTemplate {
             );
             _safeMint(_msgSender(), tokenId);
         }
+        settings.totalSupply += numberOfTokens;
     }
 
     function tokenURI(uint tokenId) public override view returns (string memory) {

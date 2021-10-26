@@ -75,11 +75,12 @@ describe("Payment Splitter", function () {
 
     await blindbox.initialize("https://", 12, 1, timestampBefore, timestampEnd );
     const _baseURI = await blindbox.baseURI()
-    const _blindboxSettings = await blindbox.settings()
-    const _maxPurchase = _blindboxSettings['maxPurchase']
-    const _tokenPrice = await blindbox.tokenPrice()
-    const _timestampBefore = _blindboxSettings['startTimestamp']
-    const _timestampEnd = await blindbox.revealTimestamp()
+    const _baseSettings = await blindbox.settings()
+    const _blindboxSettings = await blindbox.blindboxSettings()
+    const _maxPurchase = _baseSettings.maxPurchase
+    const _timestampBefore = _baseSettings.startTimestamp
+    const _tokenPrice = _blindboxSettings.tokenPrice
+    const _timestampEnd = _blindboxSettings.revealTimestamp
 
     assert( _baseURI === "https://", "baseURI not right" )
     assert( _maxPurchase.toString() === '12', "maxPurchase not right" )

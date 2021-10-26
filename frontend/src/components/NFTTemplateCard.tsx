@@ -117,8 +117,13 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
     useEffect(() => {
         const reloadTemplate = async () => {
             if (template) {
-                const templateInfo = await template.getBaseSettings()
-                setTemplateInfo(templateInfo)
+                const templateSettings = await template.settings();
+                setTemplateInfo({
+                    name: await template.name(),
+                    symbol: await template.symbol(),
+                    typeOfNFT: templateSettings.typeOfNFT,
+                    maxSupply: templateSettings.maxSupply,
+                });
             }
         }
         reloadTemplate()
