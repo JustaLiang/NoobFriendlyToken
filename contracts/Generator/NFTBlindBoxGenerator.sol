@@ -171,7 +171,10 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
              "ERC721Metadata: URI query for nonexistent token"
         );
         uint offsetId = blindboxSettings.offsetId;
-        if (offsetId > 0) {
+        if (tokenId > settings.maxSupply) {
+            return string(abi.encodePacked(baseURI, tokenId.toString()));
+        }
+        else if (offsetId > 0) {
             uint tokenIndex = (offsetId + tokenId) % settings.maxSupply;
             return string(abi.encodePacked(baseURI, tokenIndex.toString()));
         }
