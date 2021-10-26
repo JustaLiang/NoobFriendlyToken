@@ -41,6 +41,7 @@
   "homepage": "https://github.com/symfoni/hardhat-react-boilerplate#readme",
   "dependencies": {
     "dotenv": "^10.0.0",
+    "hardhat-gas-reporter": "^1.0.4",
     "yarn": "^1.22.11"
   }
 }

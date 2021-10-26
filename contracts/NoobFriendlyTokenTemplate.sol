@@ -67,8 +67,20 @@ abstract contract NoobFriendlyTokenTemplate is Ownable, PaymentSplitter, ERC721 
 
     /// @dev Make the contract to initialized only once
     modifier onlyOnce() {
-        require(!isInit, "template: init already");
+        require(!isInit, "init already");
         isInit = true;
         _;
+    }
+
+    /// @notice Mint token with ID exceeding max supply
+    function specialMint(
+        address recevier,
+        uint tokenId
+    ) external onlyOwner {
+        require(
+            tokenId > settings.maxSupply,
+            "special mint error"
+        );
+        _safeMint(recevier, tokenId);
     }
 }
