@@ -33,7 +33,7 @@ const JsonCmp = (a: File, b: File) => {
 
 const DashboardPage: React.FC<Props> = (props) => {
     const address = props.match.params.address;
-    const nftType= props.match.params.NFTType;
+    const nftType = props.match.params.NFTType;
     const history = useHistory();
     const [provider,] = useContext(ProviderContext);
     const blindBox = useContext(NFTBlindboxContext);
@@ -59,6 +59,10 @@ const DashboardPage: React.FC<Props> = (props) => {
     const [snackOpen, setSnackOpen] = useState(false);
     const [reserveAmount, setReserveAmount] = useState<string>("");
     const [reserveInputError, setReserveInputError] = useState(false);
+    const [specialMintInputError, setSpecialMintInputError] = useState(false);
+    const [specialMintId, setSpecialMintId] = useState<string>("");
+    const [specialMintAddress, setSpecialMintAddress] = useState<string>("");
+    const [alertText,setAlertText] = useState<string>("");
     const imageUploader = useCallback((node: HTMLInputElement) => {
         if (!node) return;
         node.setAttribute('webkitdirectory', '');
@@ -120,6 +124,16 @@ const DashboardPage: React.FC<Props> = (props) => {
         setReserveInputError(false);
 
     }
+    const handleSpecialMintChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if (isNaN(parseInt(e.target.value))) {
+            setSpecialMintId(e.target.value)
+            setSpecialMintInputError(true);
+            return;
+        }
+        setSpecialMintId(e.target.value)
+        setSpecialMintInputError(false);
+
+    }
     const handleSetCoverURI = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         if (!coverURI || !blindboxContract) return;
@@ -151,6 +165,19 @@ const DashboardPage: React.FC<Props> = (props) => {
             setReserveAmount("");
         }
     }
+
+    const handleSpecialMint = async (e: React.SyntheticEvent) => {
+        e.preventDefault()
+        if (!specialMintId || !blindboxContract) return;
+        const tx = await blindboxContract.specialMint(specialMintAddress,specialMintId);
+        const receipt = await tx.wait();
+        if (receipt.status) {
+            setAlertText(`Successfully Mint TokenID: ${specialMintId} to ${specialMintAddress}!`)
+            setSnackOpen(true);
+            setSpecialMintId("");
+            setSpecialMintAddress("");
+        }
+    }
     const handleWithDraw = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         if (!withdrawAddress || !blindboxContract) return;
@@ -165,7 +192,7 @@ const DashboardPage: React.FC<Props> = (props) => {
         if (!blindboxContract) return;
         const tx = await blindboxContract.reveal();
         const receipt = await tx.wait();
-        if(receipt.status){
+        if (receipt.status) {
             setIsReveal((await blindboxContract.blindboxSettings()).offsetId !== 0);
         }
 
@@ -252,6 +279,7 @@ const DashboardPage: React.FC<Props> = (props) => {
     const handleCopy = () => {
         if (!metaDataURI) return;
         navigator.clipboard.writeText(metaDataURI);
+        setAlertText("Copy!")
         setSnackOpen(true);
     }
     const handleBarClose = (event: React.SyntheticEvent<any>, reason: SnackbarCloseReason) => {
@@ -268,17 +296,17 @@ const DashboardPage: React.FC<Props> = (props) => {
     const progress = Math.min(count / totalCount * 100, 100);
 
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',marginTop:'30px' }}>
             <Container maxWidth='lg'>
-                <Snackbar open={snackOpen} autoHideDuration={1000} onClose={handleBarClose}>
+                <Snackbar open={snackOpen} autoHideDuration={5000} onClose={handleBarClose}>
                     <Alert onClose={handleAlertClose} severity="success">
-                        Copy!
+                        {alertText}
                     </Alert>
                 </Snackbar>
                 <Paper>
                     <Box style={{ display: 'flex', justifyContent: 'space-between', padding: '0px 20px', textAlign: "start" }}>
                         <IconButton onClick={() => { history.push('/') }}><KeyboardBackspaceIcon /></IconButton>
-                        <Link href={`/${nftType}/${address}/mint`} style={{textDecoration:'none',paddingTop:'10px'}}><Typography>➝ Go to Mint Page</Typography></Link>
+                        <Link href={`/${nftType}/${address}/mint`} style={{ textDecoration: 'none', paddingTop: '10px' }}><Typography>➝ Go to Mint Page</Typography></Link>
                     </Box>
                     <Grid container>
                         <Grid item md={6} style={{ padding: '20px' }}>
@@ -321,7 +349,7 @@ const DashboardPage: React.FC<Props> = (props) => {
                                             <TableCell>
                                                 <form onSubmit={handleWithDraw}>
                                                     <TextField label="address" variant="outlined" placeholder='0x' size="small" style={{ width: '220px', marginRight: "10px" }} value={withdrawAddress} onChange={handleWithdrawAddressChange} />
-                                                    <Button variant='contained' style={{ textTransform: 'none' }} color="primary" type="submit">Withdraw</Button>
+                                                    <Button variant='contained' style={{ textTransform: 'none',backgroundColor:'#0666dc',color:'#fff' }} type="submit">Withdraw</Button>
                                                 </form>
                                             </TableCell>
                                         </TableRow>
@@ -474,7 +502,7 @@ const DashboardPage: React.FC<Props> = (props) => {
                                             <TableCell>
                                                 <form onSubmit={handleSetBaseURI}>
                                                     <TextField label="baseURI" variant="outlined" placeholder='ipfs://' size="small" style={{ width: '220px', marginRight: "10px" }} value={baseURI} onChange={handleBaseURIChange} />
-                                                    <Button variant='contained' style={{ textTransform: 'none' }} color="primary" type="submit">Submit</Button>
+                                                    <Button variant='contained' style={{ textTransform: 'none',backgroundColor:'#0666dc',color:'#fff'  }} type="submit">Submit</Button>
                                                 </form>
                                             </TableCell>
                                         </TableRow>
@@ -484,8 +512,8 @@ const DashboardPage: React.FC<Props> = (props) => {
                                             </TableCell>
                                             <TableCell>
                                                 <form onSubmit={handleSetCoverURI}>
-                                                    <TextField label="coverURI" variant="outlined" placeholder='ipfs://' size="small" style={{ width: '220px', marginRight: "10px" }} value={coverURI} onChange={handleCoverURIChange} />
-                                                    <Button variant='contained' color="primary" style={{ textTransform: 'none' }} type="submit">Submit</Button>
+                                                    <TextField label="coverURI" variant="outlined" placeholder='ipfs://' size="small" style={{ width: '220px', marginRight: "10px" }} value={coverURI} onChange={(handleCoverURIChange)} />
+                                                    <Button variant='contained' style={{ textTransform: 'none',backgroundColor:'#0666dc',color:'#fff'  }} type="submit">Submit</Button>
                                                 </form>
                                             </TableCell>
                                         </TableRow>
@@ -496,8 +524,22 @@ const DashboardPage: React.FC<Props> = (props) => {
                                             <TableCell>
                                                 <form onSubmit={handleReserve}>
                                                     <TextField label="reserve" variant="outlined" placeholder='amount' size="small" style={{ width: '220px', marginRight: "10px" }} value={reserveAmount} onChange={handleReserveAmountChange} error={reserveInputError} helperText={reserveInputError ? 'Please enter number' : ""} />
-                                                    <Button variant='contained' color="primary" style={{ textTransform: 'none' }} type="submit">Submit</Button>
+                                                    <Button variant='contained' style={{ textTransform: 'none',backgroundColor:'#0666dc',color:'#fff'  }} type="submit">Submit</Button>
                                                 </form>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>
+                                                <Typography>Special Mint:</Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <form onSubmit={handleSpecialMint}>
+                                                    <TextField label='address' variant='outlined' placeholder='address' size="small" style={{ width: '220px', marginBottom: "10px" }} value={specialMintAddress} onChange={(e)=>{setSpecialMintAddress(e.target.value)}}/>
+                                                    <TextField label="tokenId" variant="outlined" placeholder='tokenId' size="small" style={{ width: '220px', marginRight: "10px" }} value={specialMintId} onChange={handleSpecialMintChange} error={specialMintInputError} helperText={specialMintInputError ? 'Please enter number' : ""} />
+                                                    <Button variant='contained' style={{ textTransform: 'none',backgroundColor:'#0666dc',color:'#fff'  }} type="submit">Mint</Button>
+                                                </form>
+                                                <span style={{ fontStyle: 'italic', fontWeight: 100, fontSize: '10px', marginRight: '15px' }}>You can only mint special tokenId after maxSupply number.</span>
+                                                
                                             </TableCell>
                                         </TableRow>
                                     </TableBody>

@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { GeneratorInterface } from "../hardhat/typechain/GeneratorInterface";
-import { NoobFriendlyTokenAdminContext, ProviderContext, CurrentAddressContext } from "../hardhat/SymfoniContext";
-import { ethers, BigNumberish } from "ethers";
 import { IconButton } from "@material-ui/core";
+import { BigNumberish, ethers } from "ethers";
+import React, { useContext, useEffect, useState } from 'react';
+import { CurrentAddressContext, NoobFriendlyTokenAdminContext, ProviderContext } from "../hardhat/SymfoniContext";
 
 interface Props { }
 

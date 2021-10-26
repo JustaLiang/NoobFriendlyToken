@@ -1,5 +1,6 @@
 import { Box, Button, CircularProgress, Container, Grid, Paper, Step, StepLabel, Stepper, TextField, Typography } from '@material-ui/core';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import { styled } from "@material-ui/styles";
 import { ethers } from "ethers";
 import { create } from 'ipfs-http-client';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -7,6 +8,16 @@ import { useHistory } from "react-router-dom";
 import { NFTBlindboxContext } from '../hardhat/SymfoniContext';
 import { NFTBlindbox } from '../hardhat/typechain/NFTBlindbox';
 import LinearProgressWith from './LinearProgressWithLabel';
+
+const StyledStepLabel = styled(StepLabel)({
+  "& .MuiStepLabel-active": {
+    color: "#0666dc"
+  },
+  "& .MuiStepLabel-completed": {
+    color: "#0666dc"
+  }
+});
+
 interface initStruct {
     baseURI: string
     maxPurchase: string
@@ -200,211 +211,211 @@ const InitStepBlindBox: React.FC<Props> = ({ address }) => {
                 <Box style={{ width: '100%' }}>
                     <Stepper activeStep={activeStep} alternativeLabel>
                         {steps.map((label) => (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
+                            <Step key={label} >
+                                <StyledStepLabel> {label}</StyledStepLabel>
                             </Step>
                         ))}
-                    </Stepper>
-                    <Box style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                        {activeStep === steps.length ? (
-                            <Box>
-                                <Typography >All steps completed</Typography>
+                </Stepper>
+                <Box style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    {activeStep === steps.length ? (
+                        <Box>
+                            <Typography >All steps completed</Typography>
 
-                                <Grid container spacing={10} style={{ padding: '24px' }}>
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3}><Typography>Max Purchase: </Typography></Grid>
-                                    <Grid item md={3}><Typography>{initData?.maxPurchase}</Typography></Grid>
-                                    <Grid item md={3}></Grid>
+                            <Grid container spacing={10} style={{ padding: '24px' }}>
+                                <Grid item md={3}></Grid>
+                                <Grid item md={3}><Typography>Max Purchase: </Typography></Grid>
+                                <Grid item md={3}><Typography>{initData?.maxPurchase}</Typography></Grid>
+                                <Grid item md={3}></Grid>
 
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3}><Typography>Token Price:</Typography> </Grid>
-                                    <Grid item md={3}><Typography>{initData?.tokenPrice}</Typography></Grid>
-                                    <Grid item md={3}></Grid>
+                                <Grid item md={3}></Grid>
+                                <Grid item md={3}><Typography>Token Price:</Typography> </Grid>
+                                <Grid item md={3}><Typography>{initData?.tokenPrice}</Typography></Grid>
+                                <Grid item md={3}></Grid>
 
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3}><Typography>Sale Start Time: </Typography> </Grid>
-                                    <Grid item md={3}><Typography>{initData?.saleStart}</Typography> </Grid>
-                                    <Grid item md={3}></Grid>
+                                <Grid item md={3}></Grid>
+                                <Grid item md={3}><Typography>Sale Start Time: </Typography> </Grid>
+                                <Grid item md={3}><Typography>{initData?.saleStart}</Typography> </Grid>
+                                <Grid item md={3}></Grid>
 
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3}><Typography>Reveal Time: </Typography> </Grid>
-                                    <Grid item md={3}><Typography>{initData?.revealTimeStamp}</Typography> </Grid>
-                                    <Grid item md={3}></Grid>
+                                <Grid item md={3}></Grid>
+                                <Grid item md={3}><Typography>Reveal Time: </Typography> </Grid>
+                                <Grid item md={3}><Typography>{initData?.revealTimeStamp}</Typography> </Grid>
+                                <Grid item md={3}></Grid>
 
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3}><Typography>Base URI:</Typography>  </Grid>
-                                    <Grid item md={3} ><Typography style={{ wordBreak: 'break-word' }}>{initData?.baseURI}</Typography> </Grid>
-                                    <Grid item md={3}></Grid>
+                                <Grid item md={3}></Grid>
+                                <Grid item md={3}><Typography>Base URI:</Typography>  </Grid>
+                                <Grid item md={3} ><Typography style={{ wordBreak: 'break-word' }}>{initData?.baseURI}</Typography> </Grid>
+                                <Grid item md={3}></Grid>
 
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3}></Grid>
-                                    <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-end', gap: '20px' }}>
-                                        <Button onClick={handleReset}>Reset</Button>
-                                        <Button onClick={handleInitConfirm} variant='contained' color="primary" disabled={!initData?.maxPurchase || !initData?.saleStart || !initData?.tokenPrice || !initData?.revealTimeStamp}>Confirm</Button>
-
-
-                                    </Grid>
-                                    <Grid item md={3}></Grid>
+                                <Grid item md={3}></Grid>
+                                <Grid item md={3}></Grid>
+                                <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-end', gap: '20px' }}>
+                                    <Button onClick={handleReset}>Reset</Button>
+                                    <Button onClick={handleInitConfirm} variant='contained' style={{ backgroundColor: '#0666dc', color: '#fff' }} disabled={!initData?.maxPurchase || !initData?.saleStart || !initData?.tokenPrice || !initData?.revealTimeStamp}>Confirm</Button>
 
 
                                 </Grid>
-                            </Box>
-                        ) : (
-                            <>
-                                <Box >
-                                    <Grid container spacing={10} style={{ padding: '24px' }}>
-                                        {
-                                            activeStep === 0 ?
-                                                <>
-                                                    <Grid item md={3}>
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                        <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Max purchase per time</Typography>
-                                                        <TextField name="maxPurchase" value={initData?.maxPurchase} variant="outlined" placeholder="Amount..." style={{ width: '100%' }} error={isNaN(+(initData.maxPurchase))} helperText={isNaN(+(initData.maxPurchase))?"Please enter a number":""} onChange={handleChange} />
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                        <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Token Price</Typography>
-                                                        <TextField name="tokenPrice" value={initData?.tokenPrice} variant="outlined" placeholder="ETH" style={{ width: '100%' }} error={isNaN(+(initData.tokenPrice))} helperText={isNaN(+(initData.tokenPrice))?"Please enter a number":""} onChange={handleChange} />
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                        <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Sale Start Time</Typography>
-                                                        <TextField name="saleStart" value={initData?.saleStart} variant="outlined" type="datetime-local" style={{ width: '100%' }} onChange={handleChange} />
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                        <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Reveal Time</Typography>
-                                                        <TextField name="revealTimeStamp" value={initData?.revealTimeStamp} variant="outlined" type="datetime-local" style={{ width: '100%' }} onChange={handleChange} />
-                                                    </Grid>
-
-                                                </>
-
-                                                :
-                                                <>
-                                                    <Grid item md={3}>
-                                                    </Grid>
-                                                    <Grid item md={3} style={{ textAlign: 'start' }}>
-                                                        <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload Image Folder</Typography>
-                                                        <Typography style={{ display: imageList?.length ? "" : "none" }}>Chosen {imageList?.length} file</Typography>
-                                                        <Button
-                                                            variant="outlined"
-                                                            component="label"
-                                                        >
-                                                            Upload Folder
-                                                            <input
-                                                                type="file"
-                                                                accept="image/*"
-                                                                ref={imageUploader}
-                                                                hidden
-                                                                onChange={handleImageUpload}
-                                                            />
-                                                        </Button>
-                                                    </Grid>
-                                                    <Grid item md={3} style={{ borderLeft: '1px solid #d0caca' }}>
-                                                        <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload BaseURI</Typography>
-                                                        <TextField name="baseURI" value={initData?.baseURI} variant="outlined" style={{ width: '100%' }} placeholder="ipfs://" onChange={handleChange} />
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                    </Grid>
-                                                    <Grid item md={3}>
-                                                    </Grid>
-                                                    <Grid item md={3} style={{ textAlign: 'start' }}>
-                                                        <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload Metadata Folder</Typography>
-                                                        <Typography style={{ display: jsonList?.length ? "" : "none" }}>Chosen {jsonList?.length} file</Typography>
-                                                        <Button
-                                                            variant="outlined"
-                                                            component="label"
-                                                        >
-                                                            Upload Folder
-                                                            <input
-                                                                type="file"
-                                                                accept=".json"
-                                                                ref={jsonUploader}
-                                                                hidden
-                                                                onChange={handleJsonUpload}
-                                                            />
-                                                        </Button>
-                                                    </Grid>
-                                                    <Grid item md={1} style={{ borderLeft: '1px solid #d0caca' }}>
-                                                    </Grid>
-
-                                                </>
+                                <Grid item md={3}></Grid>
 
 
-                                        }
-                                    </Grid>
-                                    {loading ?
-                                        <Grid container style={{ padding: '24px' }}>
-                                            <Grid item md={3}></Grid>
-                                            <Grid item md={6}>
-                                                <LinearProgressWith value={progress} />
-                                            </Grid>
-                                        </Grid> : <></>
-                                    }
+                            </Grid>
+                        </Box>
+                    ) : (
+                        <>
+                            <Box >
+                                <Grid container spacing={10} style={{ padding: '24px' }}>
+                                    {
+                                        activeStep === 0 ?
+                                            <>
+                                                <Grid item md={3}>
+                                                </Grid>
+                                                <Grid item md={3}>
+                                                    <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Max purchase per time</Typography>
+                                                    <TextField name="maxPurchase" value={initData?.maxPurchase} variant="outlined" placeholder="Amount..." style={{ width: '100%' }} error={isNaN(+(initData.maxPurchase))} helperText={isNaN(+(initData.maxPurchase)) ? "Please enter a number" : ""} onChange={handleChange} />
+                                                </Grid>
+                                                <Grid item md={3}>
+                                                    <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Token Price</Typography>
+                                                    <TextField name="tokenPrice" value={initData?.tokenPrice} variant="outlined" placeholder="ETH" style={{ width: '100%' }} error={isNaN(+(initData.tokenPrice))} helperText={isNaN(+(initData.tokenPrice)) ? "Please enter a number" : ""} onChange={handleChange} />
+                                                </Grid>
+                                                <Grid item md={3}>
+                                                </Grid>
+                                                <Grid item md={3}>
+                                                </Grid>
+                                                <Grid item md={3}>
+                                                    <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Sale Start Time</Typography>
+                                                    <TextField name="saleStart" value={initData?.saleStart} variant="outlined" type="datetime-local" style={{ width: '100%' }} onChange={handleChange} />
+                                                </Grid>
+                                                <Grid item md={3}>
+                                                    <Typography style={{ textAlign: 'start', fontWeight: 'bold', marginBottom: 30 }}>Reveal Time</Typography>
+                                                    <TextField name="revealTimeStamp" value={initData?.revealTimeStamp} variant="outlined" type="datetime-local" style={{ width: '100%' }} onChange={handleChange} />
+                                                </Grid>
 
-                                    <Grid container spacing={10} style={{ padding: '24px' }}>
-                                        <Grid item md={3}>
-                                        </Grid>
-                                        <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-start' }}>
-                                            <Button style={{ textTransform: 'none' }} onClick={() => { history.push('/') }}>
-                                                <KeyboardBackspaceIcon style={{ marginRight: '5px' }} /> Home
-                                            </Button>
-                                        </Grid>
-                                        <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-end', gap: '20px' }}>
-                                            <Box>
-                                                {(!imageList?.length || !jsonList?.length) ?
+                                            </>
+
+                                            :
+                                            <>
+                                                <Grid item md={3}>
+                                                </Grid>
+                                                <Grid item md={3} style={{ textAlign: 'start' }}>
+                                                    <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload Image Folder</Typography>
+                                                    <Typography style={{ display: imageList?.length ? "" : "none" }}>Chosen {imageList?.length} file</Typography>
                                                     <Button
-                                                        disabled={activeStep === 0}
-                                                        onClick={handleBack}
+                                                        variant="outlined"
+                                                        component="label"
                                                     >
-                                                        Back
-
-                                                    </Button> :
-                                                    <Button
-                                                        onClick={() => {
-                                                            setImageList([]);
-                                                            setJsonList([])
-                                                            setImageListSize(0)
-                                                        }}
-                                                    >
-                                                        Cancel
-
+                                                        Upload Folder
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            ref={imageUploader}
+                                                            hidden
+                                                            onChange={handleImageUpload}
+                                                        />
                                                     </Button>
+                                                </Grid>
+                                                <Grid item md={3} style={{ borderLeft: '1px solid #d0caca' }}>
+                                                    <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload BaseURI</Typography>
+                                                    <TextField name="baseURI" value={initData?.baseURI} variant="outlined" style={{ width: '100%' }} placeholder="ipfs://" onChange={handleChange} />
+                                                </Grid>
+                                                <Grid item md={3}>
+                                                </Grid>
+                                                <Grid item md={3}>
+                                                </Grid>
+                                                <Grid item md={3} style={{ textAlign: 'start' }}>
+                                                    <Typography style={{ fontWeight: 'bold', marginBottom: 30 }}>Upload Metadata Folder</Typography>
+                                                    <Typography style={{ display: jsonList?.length ? "" : "none" }}>Chosen {jsonList?.length} file</Typography>
+                                                    <Button
+                                                        variant="outlined"
+                                                        component="label"
+                                                    >
+                                                        Upload Folder
+                                                        <input
+                                                            type="file"
+                                                            accept=".json"
+                                                            ref={jsonUploader}
+                                                            hidden
+                                                            onChange={handleJsonUpload}
+                                                        />
+                                                    </Button>
+                                                </Grid>
+                                                <Grid item md={1} style={{ borderLeft: '1px solid #d0caca' }}>
+                                                </Grid>
 
-                                                }
-                                                {
-                                                    activeStep === steps.length - 1 ?
-                                                        ((initData?.baseURI || !imageList?.length || !jsonList?.length) ?
-                                                            <Button variant="contained" color="primary" onClick={handleNext}>
-                                                                Next
-                                                            </Button>
-                                                            :
-                                                            <Button variant="contained" color="primary" disabled={loading} onClick={handleIPFSUpload}>
-                                                                {loading ?
-                                                                    <CircularProgress size={20} /> : <></>
-                                                                }
-                                                                Finish
-                                                            </Button>
-                                                        ) :
-                                                        <Button variant="contained" color="primary" onClick={handleNext}>
+                                            </>
+
+
+                                    }
+                                </Grid>
+                                {loading ?
+                                    <Grid container style={{ padding: '24px' }}>
+                                        <Grid item md={3}></Grid>
+                                        <Grid item md={6}>
+                                            <LinearProgressWith value={progress} />
+                                        </Grid>
+                                    </Grid> : <></>
+                                }
+
+                                <Grid container spacing={10} style={{ padding: '24px' }}>
+                                    <Grid item md={3}>
+                                    </Grid>
+                                    <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-start' }}>
+                                        <Button style={{ textTransform: 'none' }} onClick={() => { history.push('/') }}>
+                                            <KeyboardBackspaceIcon style={{ marginRight: '5px' }} /> Home
+                                        </Button>
+                                    </Grid>
+                                    <Grid item md={3} style={{ display: "flex", justifyContent: 'flex-end', gap: '20px' }}>
+                                        <Box>
+                                            {(!imageList?.length || !jsonList?.length) ?
+                                                <Button
+                                                    disabled={activeStep === 0}
+                                                    onClick={handleBack}
+                                                >
+                                                    Back
+
+                                                </Button> :
+                                                <Button
+                                                    onClick={() => {
+                                                        setImageList([]);
+                                                        setJsonList([])
+                                                        setImageListSize(0)
+                                                    }}
+                                                >
+                                                    Cancel
+
+                                                </Button>
+
+                                            }
+                                            {
+                                                activeStep === steps.length - 1 ?
+                                                    ((initData?.baseURI || !imageList?.length || !jsonList?.length) ?
+                                                        <Button variant="contained" style={{ backgroundColor: '#0666dc', color: '#fff' }} onClick={handleNext}>
                                                             Next
                                                         </Button>
+                                                        :
+                                                        <Button variant="contained" color="primary" disabled={loading} onClick={handleIPFSUpload}>
+                                                            {loading ?
+                                                                <CircularProgress size={20} /> : <></>
+                                                            }
+                                                            Finish
+                                                        </Button>
+                                                    ) :
+                                                    <Button variant="contained" style={{ backgroundColor: '#0666dc', color: '#fff' }} onClick={handleNext}>
+                                                        Next
+                                                    </Button>
 
-                                                }
-                                            </Box>
-                                        </Grid>
-                                        <Grid item md={3}>
-                                        </Grid>
+                                            }
+                                        </Box>
                                     </Grid>
-                                </Box>
-                            </>
-                        )}
-                    </Box>
+                                    <Grid item md={3}>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                        </>
+                    )}
                 </Box>
+            </Box>
 
-            </Paper >
+        </Paper >
         </Container >
     )
 }

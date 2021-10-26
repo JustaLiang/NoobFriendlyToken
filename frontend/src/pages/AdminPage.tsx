@@ -112,10 +112,10 @@ const AdminPage: React.FC<Props> = () => {
         setSplitterCount(splitterCount - 1);
     }
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',marginTop:'30px'  }}>
             <Paper>
                 <Container maxWidth="md">
-                    <Typography variant="h5" style={{padding:'20px'}}>Noob Friendly Token</Typography>
+                    <Typography variant="h5" style={{padding:'20px',fontWeight:'bold'}}>Create Smart Contract</Typography>
                     <form
                         onSubmit={(e: React.SyntheticEvent) => {
                             e.preventDefault()
@@ -152,7 +152,7 @@ const AdminPage: React.FC<Props> = () => {
                                     <TextField value={baseSettings.maxSupply} name="maxSupply" variant="filled" label="max supply" className={classes.filled} onChange={handleChange} />
                                 </Box>
                                 <Box style={{ display: 'flex', justifyContent: 'center' }}>
-                                    <Button variant="contained" color="primary" type="submit">create</Button>
+                                    <Button variant="contained" style={{backgroundColor:'#0666dc',color:'#fff'}} type="submit">create</Button>
                                 </Box>
                             </Box>
                             <Box style={{ display: 'flex', paddingLeft: '10px', paddingBottom: '10px' }}>
