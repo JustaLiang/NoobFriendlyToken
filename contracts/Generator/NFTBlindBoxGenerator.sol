@@ -158,7 +158,14 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
 
         // Just a sanity case in the worst case if this function is called late (EVM only stores last 256 block hashes)
         // blindboxSettings.offsetId = uint32(uint(blockhash(_hashSeed))) % settings.maxSupply;
-        blindboxSettings.offsetId = uint32(uint(blockhash(block.number-(_hashSeed%255))) % uint(settings.maxSupply));
+        console.log( "block.number: ", block.number);
+        if ( block.number > 255 ){
+            blindboxSettings.offsetId = uint32(uint(blockhash( block.number- _hashSeed%256 )) % uint(settings.maxSupply));
+        }
+        else{
+            blindboxSettings.offsetId = uint32(uint(blockhash( block.number- 1)) % uint(settings.maxSupply));
+        }
+        
         console.log( "blindboxSettings.offsetId: ", blindboxSettings.offsetId);
 
         // Prevent default sequence
