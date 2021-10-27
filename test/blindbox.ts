@@ -188,7 +188,7 @@ describe("Blindbox", function () {
     
     await blindbox.reveal();
     const newURI0 = await blindbox.tokenURI(0);
-    // console.log("new URI: ", newURI0);
+    console.log("newURI0: ", newURI0);
   });
 
   it( "NFTBlindbox - tokenURI reveal then mint ", async function(){
@@ -223,7 +223,7 @@ describe("Blindbox", function () {
     .withArgs(owner.address, addr1.address, 1)
     //tokenURI
     const URI0 = await blindbox.tokenURI(0);
-    // console.log("new URI: ", URI0);
+    console.log("URI0: ", URI0);
   });
 
   

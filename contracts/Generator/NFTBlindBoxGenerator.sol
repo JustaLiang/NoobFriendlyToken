@@ -33,7 +33,9 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         ERC721(baseSettings.name, baseSettings.symbol)
         PaymentSplitter(baseSettings.payees, baseSettings.shares)
         NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply)
-    {}
+    {
+        _offsetBlockNumber=1;
+    }
 
     /**
      @notice Initialize the contract details
