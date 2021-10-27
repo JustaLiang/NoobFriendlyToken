@@ -37,6 +37,11 @@ const config: HardhatUserConfig = {
         mnemonic: "test test test test test test test test test test test junk",
       },
     },
+    polygon: {
+      url: `https://polygon-mainnet.infura.io/v3/${process.env.WEB3_INFURA_PROJECT_ID}`,
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
+      // gasPrice: 100000000000,
+    },
   },
   solidity: {
     compilers: [
