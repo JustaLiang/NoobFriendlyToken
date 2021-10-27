@@ -23,8 +23,8 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     /// @notice The baseURI before revealed
     string public coverURI;
 
-    /// @dev Seed to do the hash
-    uint private _hashSeed;
+    /// @dev Offset of block number to do the blockhash
+    uint private _offsetBlockNumber;
 
     /// @dev Setup the template
     constructor(
@@ -71,8 +71,8 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         );
         for (uint i = 0; i < reserveNum; i++) {
             _safeMint(_msgSender(), supply + i);
-            _hashSeed += block.number;
         }
+        _offsetBlockNumber += 1;
         settings.totalSupply += reserveNum;
     }
 
@@ -130,8 +130,8 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         for(uint i = 0; i < numberOfTokens; i++) {
             _safeMint(owner(), _totalSuppy + i);
             _safeTransfer(owner(), _msgSender(), _totalSuppy + i, "");
-            _hashSeed += block.number;
         }
+        _offsetBlockNumber += 1;
 
         settings.totalSupply += numberOfTokens;
     }
@@ -154,7 +154,7 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         );
 
         // Just a sanity case in the worst case if this function is called late (EVM only stores last 256 block hashes)
-        blindboxSettings.offsetId = uint32(uint(blockhash(_hashSeed))) % settings.maxSupply;
+        blindboxSettings.offsetId = uint32(uint(blockhash(block.number-_offsetBlockNumber%256)) % settings.maxSupply);
 
         // Prevent default sequence
         if (blindboxSettings.offsetId == 0) {
