@@ -9,19 +9,19 @@ import { NoobFriendlyTokenAdmin } from "./typechain/NoobFriendlyTokenAdmin";
 import { NoobFriendlyTokenAdmin__factory } from "./typechain/factories/NoobFriendlyTokenAdmin__factory";
 import { NFTBlindbox } from "./typechain/NFTBlindbox";
 import { NFTBlindbox__factory } from "./typechain/factories/NFTBlindbox__factory";
-import { NFTGalleryGenerator } from "./typechain/NFTGalleryGenerator";
-import { NFTGalleryGenerator__factory } from "./typechain/factories/NFTGalleryGenerator__factory";
 import { NFTGallery } from "./typechain/NFTGallery";
 import { NFTGallery__factory } from "./typechain/factories/NFTGallery__factory";
-import { NFTTicketGenerator } from "./typechain/NFTTicketGenerator";
-import { NFTTicketGenerator__factory } from "./typechain/factories/NFTTicketGenerator__factory";
-import { PaymentSplitter } from "./typechain/PaymentSplitter";
-import { PaymentSplitter__factory } from "./typechain/factories/PaymentSplitter__factory";
 import NFTBlindboxGeneratorDeployment from "./deployments/rinkeby/NFTBlindboxGenerator.json";
 import { NFTBlindboxGenerator } from "./typechain/NFTBlindboxGenerator";
 import { NFTBlindboxGenerator__factory } from "./typechain/factories/NFTBlindboxGenerator__factory";
 import { NFTTicket } from "./typechain/NFTTicket";
 import { NFTTicket__factory } from "./typechain/factories/NFTTicket__factory";
+import { NFTGalleryGenerator } from "./typechain/NFTGalleryGenerator";
+import { NFTGalleryGenerator__factory } from "./typechain/factories/NFTGalleryGenerator__factory";
+import { NFTTicketGenerator } from "./typechain/NFTTicketGenerator";
+import { NFTTicketGenerator__factory } from "./typechain/factories/NFTTicketGenerator__factory";
+import { PaymentSplitter } from "./typechain/PaymentSplitter";
+import { PaymentSplitter__factory } from "./typechain/factories/PaymentSplitter__factory";
 import { ERC721 } from "./typechain/ERC721";
 import { ERC721__factory } from "./typechain/factories/ERC721__factory";
 
@@ -45,12 +45,12 @@ const defaultSymfoniContext: SymfoniContextInterface = {
 export const SymfoniContext = React.createContext<SymfoniContextInterface>(defaultSymfoniContext);
 export const NoobFriendlyTokenAdminContext = React.createContext<SymfoniNoobFriendlyTokenAdmin>(emptyContract);
 export const NFTBlindboxContext = React.createContext<SymfoniNFTBlindbox>(emptyContract);
-export const NFTGalleryGeneratorContext = React.createContext<SymfoniNFTGalleryGenerator>(emptyContract);
 export const NFTGalleryContext = React.createContext<SymfoniNFTGallery>(emptyContract);
-export const NFTTicketGeneratorContext = React.createContext<SymfoniNFTTicketGenerator>(emptyContract);
-export const PaymentSplitterContext = React.createContext<SymfoniPaymentSplitter>(emptyContract);
 export const NFTBlindboxGeneratorContext = React.createContext<SymfoniNFTBlindboxGenerator>(emptyContract);
 export const NFTTicketContext = React.createContext<SymfoniNFTTicket>(emptyContract);
+export const NFTGalleryGeneratorContext = React.createContext<SymfoniNFTGalleryGenerator>(emptyContract);
+export const NFTTicketGeneratorContext = React.createContext<SymfoniNFTTicketGenerator>(emptyContract);
+export const PaymentSplitterContext = React.createContext<SymfoniPaymentSplitter>(emptyContract);
 export const ERC721Context = React.createContext<SymfoniERC721>(emptyContract);
 
 export interface SymfoniContextInterface {
@@ -77,24 +77,9 @@ export interface SymfoniNFTBlindbox {
     factory?: NFTBlindbox__factory;
 }
 
-export interface SymfoniNFTGalleryGenerator {
-    instance?: NFTGalleryGenerator;
-    factory?: NFTGalleryGenerator__factory;
-}
-
 export interface SymfoniNFTGallery {
     instance?: NFTGallery;
     factory?: NFTGallery__factory;
-}
-
-export interface SymfoniNFTTicketGenerator {
-    instance?: NFTTicketGenerator;
-    factory?: NFTTicketGenerator__factory;
-}
-
-export interface SymfoniPaymentSplitter {
-    instance?: PaymentSplitter;
-    factory?: PaymentSplitter__factory;
 }
 
 export interface SymfoniNFTBlindboxGenerator {
@@ -105,6 +90,21 @@ export interface SymfoniNFTBlindboxGenerator {
 export interface SymfoniNFTTicket {
     instance?: NFTTicket;
     factory?: NFTTicket__factory;
+}
+
+export interface SymfoniNFTGalleryGenerator {
+    instance?: NFTGalleryGenerator;
+    factory?: NFTGalleryGenerator__factory;
+}
+
+export interface SymfoniNFTTicketGenerator {
+    instance?: NFTTicketGenerator;
+    factory?: NFTTicketGenerator__factory;
+}
+
+export interface SymfoniPaymentSplitter {
+    instance?: PaymentSplitter;
+    factory?: PaymentSplitter__factory;
 }
 
 export interface SymfoniERC721 {
@@ -128,12 +128,12 @@ export const Symfoni: React.FC<SymfoniProps> = ({
     const [providerPriority, setProviderPriority] = useState<string[]>(["web3modal", "hardhat"]);
     const [NoobFriendlyTokenAdmin, setNoobFriendlyTokenAdmin] = useState<SymfoniNoobFriendlyTokenAdmin>(emptyContract);
     const [NFTBlindbox, setNFTBlindbox] = useState<SymfoniNFTBlindbox>(emptyContract);
-    const [NFTGalleryGenerator, setNFTGalleryGenerator] = useState<SymfoniNFTGalleryGenerator>(emptyContract);
     const [NFTGallery, setNFTGallery] = useState<SymfoniNFTGallery>(emptyContract);
-    const [NFTTicketGenerator, setNFTTicketGenerator] = useState<SymfoniNFTTicketGenerator>(emptyContract);
-    const [PaymentSplitter, setPaymentSplitter] = useState<SymfoniPaymentSplitter>(emptyContract);
     const [NFTBlindboxGenerator, setNFTBlindboxGenerator] = useState<SymfoniNFTBlindboxGenerator>(emptyContract);
     const [NFTTicket, setNFTTicket] = useState<SymfoniNFTTicket>(emptyContract);
+    const [NFTGalleryGenerator, setNFTGalleryGenerator] = useState<SymfoniNFTGalleryGenerator>(emptyContract);
+    const [NFTTicketGenerator, setNFTTicketGenerator] = useState<SymfoniNFTTicketGenerator>(emptyContract);
+    const [PaymentSplitter, setPaymentSplitter] = useState<SymfoniPaymentSplitter>(emptyContract);
     const [ERC721, setERC721] = useState<SymfoniERC721>(emptyContract);
     useEffect(() => {
         if (messages.length > 0)
@@ -216,12 +216,12 @@ export const Symfoni: React.FC<SymfoniProps> = ({
             const finishWithContracts = (text: string) => {
                 setNoobFriendlyTokenAdmin(getNoobFriendlyTokenAdmin(_provider, _signer))
                 setNFTBlindbox(getNFTBlindbox(_provider, _signer))
-                setNFTGalleryGenerator(getNFTGalleryGenerator(_provider, _signer))
                 setNFTGallery(getNFTGallery(_provider, _signer))
-                setNFTTicketGenerator(getNFTTicketGenerator(_provider, _signer))
-                setPaymentSplitter(getPaymentSplitter(_provider, _signer))
                 setNFTBlindboxGenerator(getNFTBlindboxGenerator(_provider, _signer))
                 setNFTTicket(getNFTTicket(_provider, _signer))
+                setNFTGalleryGenerator(getNFTGalleryGenerator(_provider, _signer))
+                setNFTTicketGenerator(getNFTTicketGenerator(_provider, _signer))
+                setPaymentSplitter(getPaymentSplitter(_provider, _signer))
                 setERC721(getERC721(_provider, _signer))
                 finish(text)
             }
@@ -271,38 +271,11 @@ export const Symfoni: React.FC<SymfoniProps> = ({
         return contract
     }
         ;
-    const getNFTGalleryGenerator = (_provider: providers.Provider, _signer?: Signer) => {
-        let instance = _signer ? NFTGalleryGenerator__factory.connect(ethers.constants.AddressZero, _signer) : NFTGalleryGenerator__factory.connect(ethers.constants.AddressZero, _provider)
-        const contract: SymfoniNFTGalleryGenerator = {
-            instance: instance,
-            factory: _signer ? new NFTGalleryGenerator__factory(_signer) : undefined,
-        }
-        return contract
-    }
-        ;
     const getNFTGallery = (_provider: providers.Provider, _signer?: Signer) => {
         let instance = _signer ? NFTGallery__factory.connect(ethers.constants.AddressZero, _signer) : NFTGallery__factory.connect(ethers.constants.AddressZero, _provider)
         const contract: SymfoniNFTGallery = {
             instance: instance,
             factory: _signer ? new NFTGallery__factory(_signer) : undefined,
-        }
-        return contract
-    }
-        ;
-    const getNFTTicketGenerator = (_provider: providers.Provider, _signer?: Signer) => {
-        let instance = _signer ? NFTTicketGenerator__factory.connect(ethers.constants.AddressZero, _signer) : NFTTicketGenerator__factory.connect(ethers.constants.AddressZero, _provider)
-        const contract: SymfoniNFTTicketGenerator = {
-            instance: instance,
-            factory: _signer ? new NFTTicketGenerator__factory(_signer) : undefined,
-        }
-        return contract
-    }
-        ;
-    const getPaymentSplitter = (_provider: providers.Provider, _signer?: Signer) => {
-        let instance = _signer ? PaymentSplitter__factory.connect(ethers.constants.AddressZero, _signer) : PaymentSplitter__factory.connect(ethers.constants.AddressZero, _provider)
-        const contract: SymfoniPaymentSplitter = {
-            instance: instance,
-            factory: _signer ? new PaymentSplitter__factory(_signer) : undefined,
         }
         return contract
     }
@@ -323,6 +296,33 @@ export const Symfoni: React.FC<SymfoniProps> = ({
         const contract: SymfoniNFTTicket = {
             instance: instance,
             factory: _signer ? new NFTTicket__factory(_signer) : undefined,
+        }
+        return contract
+    }
+        ;
+    const getNFTGalleryGenerator = (_provider: providers.Provider, _signer?: Signer) => {
+        let instance = _signer ? NFTGalleryGenerator__factory.connect(ethers.constants.AddressZero, _signer) : NFTGalleryGenerator__factory.connect(ethers.constants.AddressZero, _provider)
+        const contract: SymfoniNFTGalleryGenerator = {
+            instance: instance,
+            factory: _signer ? new NFTGalleryGenerator__factory(_signer) : undefined,
+        }
+        return contract
+    }
+        ;
+    const getNFTTicketGenerator = (_provider: providers.Provider, _signer?: Signer) => {
+        let instance = _signer ? NFTTicketGenerator__factory.connect(ethers.constants.AddressZero, _signer) : NFTTicketGenerator__factory.connect(ethers.constants.AddressZero, _provider)
+        const contract: SymfoniNFTTicketGenerator = {
+            instance: instance,
+            factory: _signer ? new NFTTicketGenerator__factory(_signer) : undefined,
+        }
+        return contract
+    }
+        ;
+    const getPaymentSplitter = (_provider: providers.Provider, _signer?: Signer) => {
+        let instance = _signer ? PaymentSplitter__factory.connect(ethers.constants.AddressZero, _signer) : PaymentSplitter__factory.connect(ethers.constants.AddressZero, _provider)
+        const contract: SymfoniPaymentSplitter = {
+            instance: instance,
+            factory: _signer ? new PaymentSplitter__factory(_signer) : undefined,
         }
         return contract
     }
@@ -352,12 +352,12 @@ export const Symfoni: React.FC<SymfoniProps> = ({
                     <CurrentAddressContext.Provider value={[currentAddress, setCurrentAddress]}>
                         <NoobFriendlyTokenAdminContext.Provider value={NoobFriendlyTokenAdmin}>
                             <NFTBlindboxContext.Provider value={NFTBlindbox}>
-                                <NFTGalleryGeneratorContext.Provider value={NFTGalleryGenerator}>
-                                    <NFTGalleryContext.Provider value={NFTGallery}>
-                                        <NFTTicketGeneratorContext.Provider value={NFTTicketGenerator}>
-                                            <PaymentSplitterContext.Provider value={PaymentSplitter}>
-                                                <NFTBlindboxGeneratorContext.Provider value={NFTBlindboxGenerator}>
-                                                    <NFTTicketContext.Provider value={NFTTicket}>
+                                <NFTGalleryContext.Provider value={NFTGallery}>
+                                    <NFTBlindboxGeneratorContext.Provider value={NFTBlindboxGenerator}>
+                                        <NFTTicketContext.Provider value={NFTTicket}>
+                                            <NFTGalleryGeneratorContext.Provider value={NFTGalleryGenerator}>
+                                                <NFTTicketGeneratorContext.Provider value={NFTTicketGenerator}>
+                                                    <PaymentSplitterContext.Provider value={PaymentSplitter}>
                                                         <ERC721Context.Provider value={ERC721}>
                                                             {showLoading && loading ?
                                                                 props.loadingComponent
@@ -370,12 +370,12 @@ export const Symfoni: React.FC<SymfoniProps> = ({
                                                                 : props.children
                                                             }
                                                         </ERC721Context.Provider >
-                                                    </NFTTicketContext.Provider >
-                                                </NFTBlindboxGeneratorContext.Provider >
-                                            </PaymentSplitterContext.Provider >
-                                        </NFTTicketGeneratorContext.Provider >
-                                    </NFTGalleryContext.Provider >
-                                </NFTGalleryGeneratorContext.Provider >
+                                                    </PaymentSplitterContext.Provider >
+                                                </NFTTicketGeneratorContext.Provider >
+                                            </NFTGalleryGeneratorContext.Provider >
+                                        </NFTTicketContext.Provider >
+                                    </NFTBlindboxGeneratorContext.Provider >
+                                </NFTGalleryContext.Provider >
                             </NFTBlindboxContext.Provider >
                         </NoobFriendlyTokenAdminContext.Provider >
                     </CurrentAddressContext.Provider>

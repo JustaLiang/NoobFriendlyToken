@@ -23,8 +23,8 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     /// @notice The baseURI before revealed
     string public coverURI;
 
-    /// @dev Seed to do the blockhash
-    uint private _offsetBlock;
+    /// @dev Offset of block number to do the blockhash
+    uint private _offsetBlockNumber;
 
     /// @dev Setup the template
     constructor(
@@ -33,7 +33,9 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         ERC721(baseSettings.name, baseSettings.symbol)
         PaymentSplitter(baseSettings.payees, baseSettings.shares)
         NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply)
-    {}
+    {
+        _offsetBlockNumber=0;
+    }
 
     /**
      @notice Initialize the contract details
@@ -58,7 +60,6 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         blindboxSettings.offsetId = 0;
         blindboxSettings.tokenPrice = tokenPrice_;
         blindboxSettings.revealTimestamp = revealTimestamp_;
-        _offsetBlock = 0;
     }
 
     /// @notice Reserve NFT by contract owner
@@ -73,6 +74,7 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         for (uint i = 0; i < reserveNum; i++) {
             _safeMint(_msgSender(), supply + i);
         }
+        _offsetBlockNumber += 1;
         settings.totalSupply += reserveNum;
     }
 
@@ -131,7 +133,7 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
             _safeMint(owner(), _totalSuppy + i);
             _safeTransfer(owner(), _msgSender(), _totalSuppy + i, "");
         }
-        _offsetBlock += 1;
+        _offsetBlockNumber += 1;
 
         settings.totalSupply += numberOfTokens;
     }
@@ -153,8 +155,8 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
             "Blindbox: baseURI not set"
         );
 
-        // generate random offset
-        blindboxSettings.offsetId = uint32(uint(blockhash(block.number-_offsetBlock%256)) % settings.maxSupply);
+        // Just a sanity case in the worst case if this function is called late (EVM only stores last 256 block hashes)
+        blindboxSettings.offsetId = uint32(uint(blockhash(block.number-_offsetBlockNumber%256)) % settings.maxSupply);
 
         // prevent default sequence
         if (blindboxSettings.offsetId == 0) {
