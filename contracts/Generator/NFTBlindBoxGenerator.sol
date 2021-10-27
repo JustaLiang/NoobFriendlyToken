@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "../NoobFriendlyTokenGenerator.sol";
+import "hardhat/console.sol";
 
 /**
  @author Chiao-Yu Yang, Justa Liang
@@ -33,7 +34,9 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         ERC721(baseSettings.name, baseSettings.symbol)
         PaymentSplitter(baseSettings.payees, baseSettings.shares)
         NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply)
-    {}
+    {
+        _hashSeed = 0;
+    }
 
     /**
      @notice Initialize the contract details
@@ -154,7 +157,9 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         );
 
         // Just a sanity case in the worst case if this function is called late (EVM only stores last 256 block hashes)
-        blindboxSettings.offsetId = uint32(uint(blockhash(_hashSeed))) % settings.maxSupply;
+        // blindboxSettings.offsetId = uint32(uint(blockhash(_hashSeed))) % settings.maxSupply;
+        blindboxSettings.offsetId = uint32(uint(blockhash(block.number-(_hashSeed%255))) % uint(settings.maxSupply));
+        console.log( "blindboxSettings.offsetId: ", blindboxSettings.offsetId);
 
         // Prevent default sequence
         if (blindboxSettings.offsetId == 0) {
