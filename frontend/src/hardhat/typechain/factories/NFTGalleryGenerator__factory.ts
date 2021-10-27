@@ -18,9 +18,11 @@ export class NFTGalleryGenerator__factory extends ContractFactory {
     slottingFee_: BigNumberish,
     overrides?: Overrides
   ): Promise<NFTGalleryGenerator> {
-    return super.deploy(adminAddr_, slottingFee_, overrides || {}) as Promise<
-      NFTGalleryGenerator
-    >;
+    return super.deploy(
+      adminAddr_,
+      slottingFee_,
+      overrides || {}
+    ) as Promise<NFTGalleryGenerator>;
   }
   getDeployTransaction(
     adminAddr_: string,

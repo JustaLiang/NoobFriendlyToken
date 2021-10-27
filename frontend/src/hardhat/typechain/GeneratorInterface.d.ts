@@ -97,15 +97,11 @@ export class GeneratorInterface extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    slottingFee(
-      overrides?: CallOverrides
-    ): Promise<{
+    slottingFee(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "slottingFee()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "slottingFee()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
   };

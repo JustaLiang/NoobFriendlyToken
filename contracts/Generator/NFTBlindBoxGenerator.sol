@@ -23,8 +23,8 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     /// @notice The baseURI before revealed
     string public coverURI;
 
-    /// @dev Seed to do the hash
-    uint private _hashSeed;
+    /// @dev Seed to do the blockhash
+    uint private _offsetBlock;
 
     /// @dev Setup the template
     constructor(
@@ -58,6 +58,7 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         blindboxSettings.offsetId = 0;
         blindboxSettings.tokenPrice = tokenPrice_;
         blindboxSettings.revealTimestamp = revealTimestamp_;
+        _offsetBlock = 0;
     }
 
     /// @notice Reserve NFT by contract owner
@@ -71,7 +72,6 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         );
         for (uint i = 0; i < reserveNum; i++) {
             _safeMint(_msgSender(), supply + i);
-            _hashSeed += block.number;
         }
         settings.totalSupply += reserveNum;
     }
@@ -130,8 +130,8 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         for(uint i = 0; i < numberOfTokens; i++) {
             _safeMint(owner(), _totalSuppy + i);
             _safeTransfer(owner(), _msgSender(), _totalSuppy + i, "");
-            _hashSeed += block.number;
         }
+        _offsetBlock += 1;
 
         settings.totalSupply += numberOfTokens;
     }
@@ -153,10 +153,10 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
             "Blindbox: baseURI not set"
         );
 
-        // Just a sanity case in the worst case if this function is called late (EVM only stores last 256 block hashes)
-        blindboxSettings.offsetId = uint32(uint(blockhash(_hashSeed))) % settings.maxSupply;
+        // generate random offset
+        blindboxSettings.offsetId = uint32(uint(blockhash(block.number-_offsetBlock%256)) % settings.maxSupply);
 
-        // Prevent default sequence
+        // prevent default sequence
         if (blindboxSettings.offsetId == 0) {
             blindboxSettings.offsetId = 1;
         }

@@ -108,15 +108,11 @@ export class NFTTicketGenerator extends Contract {
   interface: NFTTicketGeneratorInterface;
 
   functions: {
-    adminAddr(
-      overrides?: CallOverrides
-    ): Promise<{
+    adminAddr(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "adminAddr()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "adminAddr()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -146,15 +142,11 @@ export class NFTTicketGenerator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    owner(
-      overrides?: CallOverrides
-    ): Promise<{
+    owner(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "owner()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "owner()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -162,15 +154,11 @@ export class NFTTicketGenerator extends Contract {
 
     "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    slottingFee(
-      overrides?: CallOverrides
-    ): Promise<{
+    slottingFee(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "slottingFee()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "slottingFee()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 

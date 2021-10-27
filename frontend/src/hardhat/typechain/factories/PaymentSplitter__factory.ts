@@ -22,9 +22,11 @@ export class PaymentSplitter__factory extends ContractFactory {
     shares_: BigNumberish[],
     overrides?: PayableOverrides
   ): Promise<PaymentSplitter> {
-    return super.deploy(payees, shares_, overrides || {}) as Promise<
-      PaymentSplitter
-    >;
+    return super.deploy(
+      payees,
+      shares_,
+      overrides || {}
+    ) as Promise<PaymentSplitter>;
   }
   getDeployTransaction(
     payees: string[],

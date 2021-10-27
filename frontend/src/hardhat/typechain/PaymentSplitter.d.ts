@@ -133,27 +133,19 @@ export class PaymentSplitter extends Contract {
       0: BigNumber;
     }>;
 
-    totalReleased(
-      overrides?: CallOverrides
-    ): Promise<{
+    totalReleased(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "totalReleased()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "totalReleased()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    totalShares(
-      overrides?: CallOverrides
-    ): Promise<{
+    totalShares(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "totalShares()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "totalShares()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
   };

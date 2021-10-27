@@ -18,9 +18,11 @@ export class NoobFriendlyTokenAdmin__factory extends ContractFactory {
     shares: BigNumberish[],
     overrides?: Overrides
   ): Promise<NoobFriendlyTokenAdmin> {
-    return super.deploy(payees, shares, overrides || {}) as Promise<
-      NoobFriendlyTokenAdmin
-    >;
+    return super.deploy(
+      payees,
+      shares,
+      overrides || {}
+    ) as Promise<NoobFriendlyTokenAdmin>;
   }
   getDeployTransaction(
     payees: string[],

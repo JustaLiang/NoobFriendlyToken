@@ -192,27 +192,19 @@ export class NoobFriendlyTokenAdmin extends Contract {
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    getContractList(
-      overrides?: CallOverrides
-    ): Promise<{
+    getContractList(overrides?: CallOverrides): Promise<{
       0: string[];
     }>;
 
-    "getContractList()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getContractList()"(overrides?: CallOverrides): Promise<{
       0: string[];
     }>;
 
-    owner(
-      overrides?: CallOverrides
-    ): Promise<{
+    owner(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "owner()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "owner()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -286,27 +278,19 @@ export class NoobFriendlyTokenAdmin extends Contract {
       0: BigNumber;
     }>;
 
-    totalReleased(
-      overrides?: CallOverrides
-    ): Promise<{
+    totalReleased(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "totalReleased()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "totalReleased()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    totalShares(
-      overrides?: CallOverrides
-    ): Promise<{
+    totalShares(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "totalShares()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "totalShares()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 

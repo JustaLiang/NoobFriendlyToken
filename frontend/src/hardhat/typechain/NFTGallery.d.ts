@@ -260,15 +260,11 @@ export class NFTGallery extends Contract {
       0: BigNumber;
     }>;
 
-    baseURI(
-      overrides?: CallOverrides
-    ): Promise<{
+    baseURI(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "baseURI()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "baseURI()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -316,15 +312,11 @@ export class NFTGallery extends Contract {
       0: boolean;
     }>;
 
-    isInit(
-      overrides?: CallOverrides
-    ): Promise<{
+    isInit(overrides?: CallOverrides): Promise<{
       0: boolean;
     }>;
 
-    "isInit()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "isInit()"(overrides?: CallOverrides): Promise<{
       0: boolean;
     }>;
 
@@ -338,27 +330,19 @@ export class NFTGallery extends Contract {
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    name(
-      overrides?: CallOverrides
-    ): Promise<{
+    name(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "name()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "name()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    owner(
-      overrides?: CallOverrides
-    ): Promise<{
+    owner(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "owner()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "owner()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -455,9 +439,7 @@ export class NFTGallery extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    settings(
-      overrides?: CallOverrides
-    ): Promise<{
+    settings(overrides?: CallOverrides): Promise<{
       maxSupply: number;
       totalSupply: number;
       maxPurchase: number;
@@ -470,9 +452,7 @@ export class NFTGallery extends Contract {
       4: BigNumber;
     }>;
 
-    "settings()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "settings()"(overrides?: CallOverrides): Promise<{
       maxSupply: number;
       totalSupply: number;
       maxPurchase: number;
@@ -525,27 +505,19 @@ export class NFTGallery extends Contract {
       0: boolean;
     }>;
 
-    symbol(
-      overrides?: CallOverrides
-    ): Promise<{
+    symbol(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "symbol()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "symbol()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    tokenPrice(
-      overrides?: CallOverrides
-    ): Promise<{
+    tokenPrice(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "tokenPrice()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "tokenPrice()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
@@ -563,27 +535,19 @@ export class NFTGallery extends Contract {
       0: string;
     }>;
 
-    totalReleased(
-      overrides?: CallOverrides
-    ): Promise<{
+    totalReleased(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "totalReleased()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "totalReleased()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    totalShares(
-      overrides?: CallOverrides
-    ): Promise<{
+    totalShares(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "totalShares()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "totalShares()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
@@ -762,9 +726,7 @@ export class NFTGallery extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  settings(
-    overrides?: CallOverrides
-  ): Promise<{
+  settings(overrides?: CallOverrides): Promise<{
     maxSupply: number;
     totalSupply: number;
     maxPurchase: number;
@@ -777,9 +739,7 @@ export class NFTGallery extends Contract {
     4: BigNumber;
   }>;
 
-  "settings()"(
-    overrides?: CallOverrides
-  ): Promise<{
+  "settings()"(overrides?: CallOverrides): Promise<{
     maxSupply: number;
     totalSupply: number;
     maxPurchase: number;
@@ -1019,9 +979,7 @@ export class NFTGallery extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    settings(
-      overrides?: CallOverrides
-    ): Promise<{
+    settings(overrides?: CallOverrides): Promise<{
       maxSupply: number;
       totalSupply: number;
       maxPurchase: number;
@@ -1034,9 +992,7 @@ export class NFTGallery extends Contract {
       4: BigNumber;
     }>;
 
-    "settings()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "settings()"(overrides?: CallOverrides): Promise<{
       maxSupply: number;
       totalSupply: number;
       maxPurchase: number;

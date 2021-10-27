@@ -18,9 +18,11 @@ export class NFTTicketGenerator__factory extends ContractFactory {
     slottingFee_: BigNumberish,
     overrides?: Overrides
   ): Promise<NFTTicketGenerator> {
-    return super.deploy(adminAddr_, slottingFee_, overrides || {}) as Promise<
-      NFTTicketGenerator
-    >;
+    return super.deploy(
+      adminAddr_,
+      slottingFee_,
+      overrides || {}
+    ) as Promise<NFTTicketGenerator>;
   }
   getDeployTransaction(
     adminAddr_: string,
