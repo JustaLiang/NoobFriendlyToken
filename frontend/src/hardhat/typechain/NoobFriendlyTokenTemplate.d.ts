@@ -26,7 +26,6 @@ interface NoobFriendlyTokenTemplateInterface extends ethers.utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "baseURI()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getBaseSettings()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "isInit()": FunctionFragment;
     "name()": FunctionFragment;
@@ -40,14 +39,12 @@ interface NoobFriendlyTokenTemplateInterface extends ethers.utils.Interface {
     "setApprovalForAll(address,bool)": FunctionFragment;
     "settings()": FunctionFragment;
     "shares(address)": FunctionFragment;
+    "specialMint(address,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
-    "tokenByIndex(uint256)": FunctionFragment;
-    "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "totalReleased()": FunctionFragment;
     "totalShares()": FunctionFragment;
-    "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
@@ -61,10 +58,6 @@ interface NoobFriendlyTokenTemplateInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBaseSettings",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -95,18 +88,14 @@ interface NoobFriendlyTokenTemplateInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "settings", values?: undefined): string;
   encodeFunctionData(functionFragment: "shares", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "specialMint",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "tokenByIndex",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenOfOwnerByIndex",
-    values: [string, BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "tokenURI",
     values: [BigNumberish]
@@ -117,10 +106,6 @@ interface NoobFriendlyTokenTemplateInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "totalShares",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalSupply",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -137,10 +122,6 @@ interface NoobFriendlyTokenTemplateInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "baseURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBaseSettings",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -169,18 +150,14 @@ interface NoobFriendlyTokenTemplateInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "settings", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "shares", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "specialMint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenOfOwnerByIndex",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalReleased",
@@ -188,10 +165,6 @@ interface NoobFriendlyTokenTemplateInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "totalShares",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "totalSupply",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -286,36 +259,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: string;
-    }>;
-
-    getBaseSettings(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: {
-        name: string;
-        symbol: string;
-        typeOfNFT: number;
-        maxSupply: number;
-        0: string;
-        1: string;
-        2: number;
-        3: number;
-      };
-    }>;
-
-    "getBaseSettings()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: {
-        name: string;
-        symbol: string;
-        typeOfNFT: number;
-        maxSupply: number;
-        0: string;
-        1: string;
-        2: number;
-        3: number;
-      };
     }>;
 
     isApprovedForAll(
@@ -457,26 +400,30 @@ export class NoobFriendlyTokenTemplate extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       maxSupply: number;
+      totalSupply: number;
       maxPurchase: number;
       typeOfNFT: number;
       startTimestamp: BigNumber;
       0: number;
       1: number;
       2: number;
-      3: BigNumber;
+      3: number;
+      4: BigNumber;
     }>;
 
     "settings()"(
       overrides?: CallOverrides
     ): Promise<{
       maxSupply: number;
+      totalSupply: number;
       maxPurchase: number;
       typeOfNFT: number;
       startTimestamp: BigNumber;
       0: number;
       1: number;
       2: number;
-      3: BigNumber;
+      3: number;
+      4: BigNumber;
     }>;
 
     shares(
@@ -492,6 +439,18 @@ export class NoobFriendlyTokenTemplate extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
+
+    specialMint(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "specialMint(address,uint256)"(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -517,36 +476,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: string;
-    }>;
-
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "tokenByIndex(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "tokenOfOwnerByIndex(address,uint256)"(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
     }>;
 
     tokenURI(
@@ -582,18 +511,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
     }>;
 
     "totalShares()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    totalSupply(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "totalSupply()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -656,32 +573,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
-
-  getBaseSettings(
-    overrides?: CallOverrides
-  ): Promise<{
-    name: string;
-    symbol: string;
-    typeOfNFT: number;
-    maxSupply: number;
-    0: string;
-    1: string;
-    2: number;
-    3: number;
-  }>;
-
-  "getBaseSettings()"(
-    overrides?: CallOverrides
-  ): Promise<{
-    name: string;
-    symbol: string;
-    typeOfNFT: number;
-    maxSupply: number;
-    0: string;
-    1: string;
-    2: number;
-    3: number;
-  }>;
 
   isApprovedForAll(
     owner: string,
@@ -770,26 +661,30 @@ export class NoobFriendlyTokenTemplate extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     maxSupply: number;
+    totalSupply: number;
     maxPurchase: number;
     typeOfNFT: number;
     startTimestamp: BigNumber;
     0: number;
     1: number;
     2: number;
-    3: BigNumber;
+    3: number;
+    4: BigNumber;
   }>;
 
   "settings()"(
     overrides?: CallOverrides
   ): Promise<{
     maxSupply: number;
+    totalSupply: number;
     maxPurchase: number;
     typeOfNFT: number;
     startTimestamp: BigNumber;
     0: number;
     1: number;
     2: number;
-    3: BigNumber;
+    3: number;
+    4: BigNumber;
   }>;
 
   shares(account: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -798,6 +693,18 @@ export class NoobFriendlyTokenTemplate extends Contract {
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  specialMint(
+    recevier: string,
+    tokenId: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "specialMint(address,uint256)"(
+    recevier: string,
+    tokenId: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   supportsInterface(
     interfaceId: BytesLike,
@@ -813,28 +720,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
 
   "symbol()"(overrides?: CallOverrides): Promise<string>;
 
-  tokenByIndex(
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "tokenByIndex(uint256)"(
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  tokenOfOwnerByIndex(
-    owner: string,
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "tokenOfOwnerByIndex(address,uint256)"(
-    owner: string,
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   "tokenURI(uint256)"(
@@ -849,10 +734,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
   totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
   "totalShares()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferFrom(
     from: string,
@@ -911,32 +792,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
-
-    getBaseSettings(
-      overrides?: CallOverrides
-    ): Promise<{
-      name: string;
-      symbol: string;
-      typeOfNFT: number;
-      maxSupply: number;
-      0: string;
-      1: string;
-      2: number;
-      3: number;
-    }>;
-
-    "getBaseSettings()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      name: string;
-      symbol: string;
-      typeOfNFT: number;
-      maxSupply: number;
-      0: string;
-      1: string;
-      2: number;
-      3: number;
-    }>;
 
     isApprovedForAll(
       owner: string,
@@ -1025,26 +880,30 @@ export class NoobFriendlyTokenTemplate extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       maxSupply: number;
+      totalSupply: number;
       maxPurchase: number;
       typeOfNFT: number;
       startTimestamp: BigNumber;
       0: number;
       1: number;
       2: number;
-      3: BigNumber;
+      3: number;
+      4: BigNumber;
     }>;
 
     "settings()"(
       overrides?: CallOverrides
     ): Promise<{
       maxSupply: number;
+      totalSupply: number;
       maxPurchase: number;
       typeOfNFT: number;
       startTimestamp: BigNumber;
       0: number;
       1: number;
       2: number;
-      3: BigNumber;
+      3: number;
+      4: BigNumber;
     }>;
 
     shares(account: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -1053,6 +912,18 @@ export class NoobFriendlyTokenTemplate extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    specialMint(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "specialMint(address,uint256)"(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -1068,28 +939,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
 
     "symbol()"(overrides?: CallOverrides): Promise<string>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenByIndex(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenOfOwnerByIndex(address,uint256)"(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     "tokenURI(uint256)"(
@@ -1104,10 +953,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
     totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalShares()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -1198,10 +1043,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    getBaseSettings(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getBaseSettings()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedForAll(
       owner: string,
@@ -1300,6 +1141,18 @@ export class NoobFriendlyTokenTemplate extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    specialMint(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "specialMint(address,uint256)"(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1313,28 +1166,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenByIndex(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenOfOwnerByIndex(address,uint256)"(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     tokenURI(
       tokenId: BigNumberish,
@@ -1353,10 +1184,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
     totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalShares()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -1417,12 +1244,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
 
     "getApproved(uint256)"(
       tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getBaseSettings(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getBaseSettings()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1535,6 +1356,18 @@ export class NoobFriendlyTokenTemplate extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    specialMint(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "specialMint(address,uint256)"(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1548,28 +1381,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tokenByIndex(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tokenOfOwnerByIndex(address,uint256)"(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     tokenURI(
       tokenId: BigNumberish,
@@ -1588,10 +1399,6 @@ export class NoobFriendlyTokenTemplate extends Contract {
     totalShares(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "totalShares()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "totalSupply()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferFrom(
       from: string,

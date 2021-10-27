@@ -242,41 +242,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getBaseSettings",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "string",
-            name: "name",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "symbol",
-            type: "string",
-          },
-          {
-            internalType: "uint32",
-            name: "typeOfNFT",
-            type: "uint32",
-          },
-          {
-            internalType: "uint32",
-            name: "maxSupply",
-            type: "uint32",
-          },
-        ],
-        internalType: "struct BaseSettingsInfo",
-        name: "",
-        type: "tuple",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -496,6 +461,11 @@ const _abi = [
       },
       {
         internalType: "uint32",
+        name: "totalSupply",
+        type: "uint32",
+      },
+      {
+        internalType: "uint32",
         name: "maxPurchase",
         type: "uint32",
       },
@@ -505,9 +475,9 @@ const _abi = [
         type: "uint32",
       },
       {
-        internalType: "uint160",
+        internalType: "uint128",
         name: "startTimestamp",
-        type: "uint160",
+        type: "uint128",
       },
     ],
     stateMutability: "view",
@@ -530,6 +500,24 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "recevier",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "specialMint",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -559,49 +547,6 @@ const _abi = [
         internalType: "string",
         name: "",
         type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
-    ],
-    name: "tokenByIndex",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
-    ],
-    name: "tokenOfOwnerByIndex",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -642,19 +587,6 @@ const _abi = [
   {
     inputs: [],
     name: "totalShares",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "totalSupply",
     outputs: [
       {
         internalType: "uint256",

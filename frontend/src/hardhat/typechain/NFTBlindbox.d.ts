@@ -26,40 +26,35 @@ interface NFTBlindboxInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "baseURI()": FunctionFragment;
+    "blindboxSettings()": FunctionFragment;
     "coverURI()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getBaseSettings()": FunctionFragment;
-    "initialize(string,uint32,uint256,uint160,uint160)": FunctionFragment;
+    "initialize(string,uint32,uint96,uint128,uint128)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "isInit()": FunctionFragment;
-    "mintToken(uint256)": FunctionFragment;
+    "mintToken(uint32)": FunctionFragment;
     "name()": FunctionFragment;
-    "offsetId()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "payee(uint256)": FunctionFragment;
     "release(address)": FunctionFragment;
     "released(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "reserveNFT(uint256)": FunctionFragment;
+    "reserveNFT(uint32)": FunctionFragment;
     "reveal()": FunctionFragment;
-    "revealTimestamp()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setBaseURI(string)": FunctionFragment;
     "setCoverURI(string)": FunctionFragment;
-    "setTokenPrice(uint256)": FunctionFragment;
+    "setTokenPrice(uint96)": FunctionFragment;
     "settings()": FunctionFragment;
     "shares(address)": FunctionFragment;
+    "specialMint(address,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
-    "tokenByIndex(uint256)": FunctionFragment;
-    "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
-    "tokenPrice()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "totalReleased()": FunctionFragment;
     "totalShares()": FunctionFragment;
-    "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
@@ -70,14 +65,14 @@ interface NFTBlindboxInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "baseURI", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "blindboxSettings",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "coverURI", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBaseSettings",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
@@ -93,7 +88,6 @@ interface NFTBlindboxInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "offsetId", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
@@ -112,10 +106,6 @@ interface NFTBlindboxInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "reveal", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "revealTimestamp",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish]
   ): string;
@@ -132,22 +122,14 @@ interface NFTBlindboxInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "settings", values?: undefined): string;
   encodeFunctionData(functionFragment: "shares", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "specialMint",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "tokenByIndex",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenOfOwnerByIndex",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenPrice",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "tokenURI",
     values: [BigNumberish]
@@ -158,10 +140,6 @@ interface NFTBlindboxInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "totalShares",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalSupply",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -176,13 +154,13 @@ interface NFTBlindboxInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "baseURI", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "blindboxSettings",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "coverURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBaseSettings",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
@@ -193,7 +171,6 @@ interface NFTBlindboxInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "isInit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mintToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "offsetId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "payee", data: BytesLike): Result;
@@ -205,10 +182,6 @@ interface NFTBlindboxInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "reserveNFT", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "reveal", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "revealTimestamp",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
@@ -229,19 +202,14 @@ interface NFTBlindboxInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "settings", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "shares", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "specialMint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenOfOwnerByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "tokenPrice", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalReleased",
@@ -249,10 +217,6 @@ interface NFTBlindboxInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "totalShares",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "totalSupply",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -335,6 +299,28 @@ export class NFTBlindbox extends Contract {
       0: string;
     }>;
 
+    blindboxSettings(
+      overrides?: CallOverrides
+    ): Promise<{
+      offsetId: number;
+      revealTimestamp: BigNumber;
+      tokenPrice: BigNumber;
+      0: number;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
+    "blindboxSettings()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      offsetId: number;
+      revealTimestamp: BigNumber;
+      tokenPrice: BigNumber;
+      0: number;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
     coverURI(
       overrides?: CallOverrides
     ): Promise<{
@@ -361,36 +347,6 @@ export class NFTBlindbox extends Contract {
       0: string;
     }>;
 
-    getBaseSettings(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: {
-        name: string;
-        symbol: string;
-        typeOfNFT: number;
-        maxSupply: number;
-        0: string;
-        1: string;
-        2: number;
-        3: number;
-      };
-    }>;
-
-    "getBaseSettings()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: {
-        name: string;
-        symbol: string;
-        typeOfNFT: number;
-        maxSupply: number;
-        0: string;
-        1: string;
-        2: number;
-        3: number;
-      };
-    }>;
-
     initialize(
       baseURI_: string,
       maxPurchase_: BigNumberish,
@@ -400,7 +356,7 @@ export class NFTBlindbox extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(string,uint32,uint256,uint160,uint160)"(
+    "initialize(string,uint32,uint96,uint128,uint128)"(
       baseURI_: string,
       maxPurchase_: BigNumberish,
       tokenPrice_: BigNumberish,
@@ -442,7 +398,7 @@ export class NFTBlindbox extends Contract {
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    "mintToken(uint256)"(
+    "mintToken(uint32)"(
       numberOfTokens: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
@@ -457,18 +413,6 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: string;
-    }>;
-
-    offsetId(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "offsetId()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
     }>;
 
     owner(
@@ -544,7 +488,7 @@ export class NFTBlindbox extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "reserveNFT(uint256)"(
+    "reserveNFT(uint32)"(
       reserveNum: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -552,18 +496,6 @@ export class NFTBlindbox extends Contract {
     reveal(overrides?: Overrides): Promise<ContractTransaction>;
 
     "reveal()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-    revealTimestamp(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "revealTimestamp()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -617,7 +549,7 @@ export class NFTBlindbox extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "setTokenPrice(uint256)"(
+    "setTokenPrice(uint96)"(
       newTokenPrice: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -626,26 +558,30 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       maxSupply: number;
+      totalSupply: number;
       maxPurchase: number;
       typeOfNFT: number;
       startTimestamp: BigNumber;
       0: number;
       1: number;
       2: number;
-      3: BigNumber;
+      3: number;
+      4: BigNumber;
     }>;
 
     "settings()"(
       overrides?: CallOverrides
     ): Promise<{
       maxSupply: number;
+      totalSupply: number;
       maxPurchase: number;
       typeOfNFT: number;
       startTimestamp: BigNumber;
       0: number;
       1: number;
       2: number;
-      3: BigNumber;
+      3: number;
+      4: BigNumber;
     }>;
 
     shares(
@@ -661,6 +597,18 @@ export class NFTBlindbox extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
+
+    specialMint(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "specialMint(address,uint256)"(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -686,48 +634,6 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: string;
-    }>;
-
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "tokenByIndex(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "tokenOfOwnerByIndex(address,uint256)"(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    tokenPrice(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "tokenPrice()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
     }>;
 
     tokenURI(
@@ -763,18 +669,6 @@ export class NFTBlindbox extends Contract {
     }>;
 
     "totalShares()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    totalSupply(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "totalSupply()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -828,6 +722,28 @@ export class NFTBlindbox extends Contract {
 
   "baseURI()"(overrides?: CallOverrides): Promise<string>;
 
+  blindboxSettings(
+    overrides?: CallOverrides
+  ): Promise<{
+    offsetId: number;
+    revealTimestamp: BigNumber;
+    tokenPrice: BigNumber;
+    0: number;
+    1: BigNumber;
+    2: BigNumber;
+  }>;
+
+  "blindboxSettings()"(
+    overrides?: CallOverrides
+  ): Promise<{
+    offsetId: number;
+    revealTimestamp: BigNumber;
+    tokenPrice: BigNumber;
+    0: number;
+    1: BigNumber;
+    2: BigNumber;
+  }>;
+
   coverURI(overrides?: CallOverrides): Promise<string>;
 
   "coverURI()"(overrides?: CallOverrides): Promise<string>;
@@ -842,32 +758,6 @@ export class NFTBlindbox extends Contract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getBaseSettings(
-    overrides?: CallOverrides
-  ): Promise<{
-    name: string;
-    symbol: string;
-    typeOfNFT: number;
-    maxSupply: number;
-    0: string;
-    1: string;
-    2: number;
-    3: number;
-  }>;
-
-  "getBaseSettings()"(
-    overrides?: CallOverrides
-  ): Promise<{
-    name: string;
-    symbol: string;
-    typeOfNFT: number;
-    maxSupply: number;
-    0: string;
-    1: string;
-    2: number;
-    3: number;
-  }>;
-
   initialize(
     baseURI_: string,
     maxPurchase_: BigNumberish,
@@ -877,7 +767,7 @@ export class NFTBlindbox extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(string,uint32,uint256,uint160,uint160)"(
+  "initialize(string,uint32,uint96,uint128,uint128)"(
     baseURI_: string,
     maxPurchase_: BigNumberish,
     tokenPrice_: BigNumberish,
@@ -907,7 +797,7 @@ export class NFTBlindbox extends Contract {
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "mintToken(uint256)"(
+  "mintToken(uint32)"(
     numberOfTokens: BigNumberish,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
@@ -915,10 +805,6 @@ export class NFTBlindbox extends Contract {
   name(overrides?: CallOverrides): Promise<string>;
 
   "name()"(overrides?: CallOverrides): Promise<string>;
-
-  offsetId(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "offsetId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -961,7 +847,7 @@ export class NFTBlindbox extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "reserveNFT(uint256)"(
+  "reserveNFT(uint32)"(
     reserveNum: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -969,10 +855,6 @@ export class NFTBlindbox extends Contract {
   reveal(overrides?: Overrides): Promise<ContractTransaction>;
 
   "reveal()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-  revealTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "revealTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   "safeTransferFrom(address,address,uint256)"(
     from: string,
@@ -1026,7 +908,7 @@ export class NFTBlindbox extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "setTokenPrice(uint256)"(
+  "setTokenPrice(uint96)"(
     newTokenPrice: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1035,26 +917,30 @@ export class NFTBlindbox extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     maxSupply: number;
+    totalSupply: number;
     maxPurchase: number;
     typeOfNFT: number;
     startTimestamp: BigNumber;
     0: number;
     1: number;
     2: number;
-    3: BigNumber;
+    3: number;
+    4: BigNumber;
   }>;
 
   "settings()"(
     overrides?: CallOverrides
   ): Promise<{
     maxSupply: number;
+    totalSupply: number;
     maxPurchase: number;
     typeOfNFT: number;
     startTimestamp: BigNumber;
     0: number;
     1: number;
     2: number;
-    3: BigNumber;
+    3: number;
+    4: BigNumber;
   }>;
 
   shares(account: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -1063,6 +949,18 @@ export class NFTBlindbox extends Contract {
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  specialMint(
+    recevier: string,
+    tokenId: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "specialMint(address,uint256)"(
+    recevier: string,
+    tokenId: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   supportsInterface(
     interfaceId: BytesLike,
@@ -1078,32 +976,6 @@ export class NFTBlindbox extends Contract {
 
   "symbol()"(overrides?: CallOverrides): Promise<string>;
 
-  tokenByIndex(
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "tokenByIndex(uint256)"(
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  tokenOfOwnerByIndex(
-    owner: string,
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "tokenOfOwnerByIndex(address,uint256)"(
-    owner: string,
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  tokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "tokenPrice()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   "tokenURI(uint256)"(
@@ -1118,10 +990,6 @@ export class NFTBlindbox extends Contract {
   totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
   "totalShares()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferFrom(
     from: string,
@@ -1171,6 +1039,28 @@ export class NFTBlindbox extends Contract {
 
     "baseURI()"(overrides?: CallOverrides): Promise<string>;
 
+    blindboxSettings(
+      overrides?: CallOverrides
+    ): Promise<{
+      offsetId: number;
+      revealTimestamp: BigNumber;
+      tokenPrice: BigNumber;
+      0: number;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
+    "blindboxSettings()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      offsetId: number;
+      revealTimestamp: BigNumber;
+      tokenPrice: BigNumber;
+      0: number;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
     coverURI(overrides?: CallOverrides): Promise<string>;
 
     "coverURI()"(overrides?: CallOverrides): Promise<string>;
@@ -1185,32 +1075,6 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getBaseSettings(
-      overrides?: CallOverrides
-    ): Promise<{
-      name: string;
-      symbol: string;
-      typeOfNFT: number;
-      maxSupply: number;
-      0: string;
-      1: string;
-      2: number;
-      3: number;
-    }>;
-
-    "getBaseSettings()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      name: string;
-      symbol: string;
-      typeOfNFT: number;
-      maxSupply: number;
-      0: string;
-      1: string;
-      2: number;
-      3: number;
-    }>;
-
     initialize(
       baseURI_: string,
       maxPurchase_: BigNumberish,
@@ -1220,7 +1084,7 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(string,uint32,uint256,uint160,uint160)"(
+    "initialize(string,uint32,uint96,uint128,uint128)"(
       baseURI_: string,
       maxPurchase_: BigNumberish,
       tokenPrice_: BigNumberish,
@@ -1250,7 +1114,7 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "mintToken(uint256)"(
+    "mintToken(uint32)"(
       numberOfTokens: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1258,10 +1122,6 @@ export class NFTBlindbox extends Contract {
     name(overrides?: CallOverrides): Promise<string>;
 
     "name()"(overrides?: CallOverrides): Promise<string>;
-
-    offsetId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "offsetId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -1304,7 +1164,7 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "reserveNFT(uint256)"(
+    "reserveNFT(uint32)"(
       reserveNum: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1312,10 +1172,6 @@ export class NFTBlindbox extends Contract {
     reveal(overrides?: CallOverrides): Promise<void>;
 
     "reveal()"(overrides?: CallOverrides): Promise<void>;
-
-    revealTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "revealTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -1363,7 +1219,7 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setTokenPrice(uint256)"(
+    "setTokenPrice(uint96)"(
       newTokenPrice: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1372,26 +1228,30 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       maxSupply: number;
+      totalSupply: number;
       maxPurchase: number;
       typeOfNFT: number;
       startTimestamp: BigNumber;
       0: number;
       1: number;
       2: number;
-      3: BigNumber;
+      3: number;
+      4: BigNumber;
     }>;
 
     "settings()"(
       overrides?: CallOverrides
     ): Promise<{
       maxSupply: number;
+      totalSupply: number;
       maxPurchase: number;
       typeOfNFT: number;
       startTimestamp: BigNumber;
       0: number;
       1: number;
       2: number;
-      3: BigNumber;
+      3: number;
+      4: BigNumber;
     }>;
 
     shares(account: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -1400,6 +1260,18 @@ export class NFTBlindbox extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    specialMint(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "specialMint(address,uint256)"(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -1415,32 +1287,6 @@ export class NFTBlindbox extends Contract {
 
     "symbol()"(overrides?: CallOverrides): Promise<string>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenByIndex(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenOfOwnerByIndex(address,uint256)"(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokenPrice()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     "tokenURI(uint256)"(
@@ -1455,10 +1301,6 @@ export class NFTBlindbox extends Contract {
     totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalShares()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -1540,6 +1382,10 @@ export class NFTBlindbox extends Contract {
 
     "baseURI()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    blindboxSettings(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "blindboxSettings()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     coverURI(overrides?: CallOverrides): Promise<BigNumber>;
 
     "coverURI()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1554,10 +1400,6 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getBaseSettings(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getBaseSettings()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     initialize(
       baseURI_: string,
       maxPurchase_: BigNumberish,
@@ -1567,7 +1409,7 @@ export class NFTBlindbox extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(string,uint32,uint256,uint160,uint160)"(
+    "initialize(string,uint32,uint96,uint128,uint128)"(
       baseURI_: string,
       maxPurchase_: BigNumberish,
       tokenPrice_: BigNumberish,
@@ -1597,7 +1439,7 @@ export class NFTBlindbox extends Contract {
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "mintToken(uint256)"(
+    "mintToken(uint32)"(
       numberOfTokens: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
@@ -1605,10 +1447,6 @@ export class NFTBlindbox extends Contract {
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     "name()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    offsetId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "offsetId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1654,7 +1492,7 @@ export class NFTBlindbox extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "reserveNFT(uint256)"(
+    "reserveNFT(uint32)"(
       reserveNum: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -1662,10 +1500,6 @@ export class NFTBlindbox extends Contract {
     reveal(overrides?: Overrides): Promise<BigNumber>;
 
     "reveal()"(overrides?: Overrides): Promise<BigNumber>;
-
-    revealTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "revealTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -1713,7 +1547,7 @@ export class NFTBlindbox extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "setTokenPrice(uint256)"(
+    "setTokenPrice(uint96)"(
       newTokenPrice: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -1729,6 +1563,18 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    specialMint(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "specialMint(address,uint256)"(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1742,32 +1588,6 @@ export class NFTBlindbox extends Contract {
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenByIndex(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenOfOwnerByIndex(address,uint256)"(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokenPrice()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     tokenURI(
       tokenId: BigNumberish,
@@ -1786,10 +1606,6 @@ export class NFTBlindbox extends Contract {
     totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalShares()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -1843,6 +1659,12 @@ export class NFTBlindbox extends Contract {
 
     "baseURI()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    blindboxSettings(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "blindboxSettings()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     coverURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "coverURI()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1857,12 +1679,6 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getBaseSettings(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getBaseSettings()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     initialize(
       baseURI_: string,
       maxPurchase_: BigNumberish,
@@ -1872,7 +1688,7 @@ export class NFTBlindbox extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(string,uint32,uint256,uint160,uint160)"(
+    "initialize(string,uint32,uint96,uint128,uint128)"(
       baseURI_: string,
       maxPurchase_: BigNumberish,
       tokenPrice_: BigNumberish,
@@ -1902,7 +1718,7 @@ export class NFTBlindbox extends Contract {
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "mintToken(uint256)"(
+    "mintToken(uint32)"(
       numberOfTokens: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
@@ -1910,10 +1726,6 @@ export class NFTBlindbox extends Contract {
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "name()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    offsetId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "offsetId()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1968,7 +1780,7 @@ export class NFTBlindbox extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "reserveNFT(uint256)"(
+    "reserveNFT(uint32)"(
       reserveNum: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -1976,12 +1788,6 @@ export class NFTBlindbox extends Contract {
     reveal(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "reveal()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    revealTimestamp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "revealTimestamp()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -2035,7 +1841,7 @@ export class NFTBlindbox extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "setTokenPrice(uint256)"(
+    "setTokenPrice(uint96)"(
       newTokenPrice: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -2054,6 +1860,18 @@ export class NFTBlindbox extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    specialMint(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "specialMint(address,uint256)"(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -2067,32 +1885,6 @@ export class NFTBlindbox extends Contract {
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tokenByIndex(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tokenOfOwnerByIndex(address,uint256)"(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tokenPrice()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     tokenURI(
       tokenId: BigNumberish,
@@ -2111,10 +1903,6 @@ export class NFTBlindbox extends Contract {
     totalShares(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "totalShares()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "totalSupply()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferFrom(
       from: string,

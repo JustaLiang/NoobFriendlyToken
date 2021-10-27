@@ -27,8 +27,7 @@ interface NFTGalleryInterface extends ethers.utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "baseURI()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getBaseSettings()": FunctionFragment;
-    "initialize(string,uint256,uint160)": FunctionFragment;
+    "initialize(string,uint256,uint128)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "isInit()": FunctionFragment;
     "mintToken(uint256[])": FunctionFragment;
@@ -44,15 +43,13 @@ interface NFTGalleryInterface extends ethers.utils.Interface {
     "setApprovalForAll(address,bool)": FunctionFragment;
     "settings()": FunctionFragment;
     "shares(address)": FunctionFragment;
+    "specialMint(address,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
-    "tokenByIndex(uint256)": FunctionFragment;
-    "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenPrice()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "totalReleased()": FunctionFragment;
     "totalShares()": FunctionFragment;
-    "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
@@ -66,10 +63,6 @@ interface NFTGalleryInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBaseSettings",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
@@ -112,18 +105,14 @@ interface NFTGalleryInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "settings", values?: undefined): string;
   encodeFunctionData(functionFragment: "shares", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "specialMint",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "tokenByIndex",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenOfOwnerByIndex",
-    values: [string, BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "tokenPrice",
     values?: undefined
@@ -141,10 +130,6 @@ interface NFTGalleryInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "totalSupply",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
@@ -158,10 +143,6 @@ interface NFTGalleryInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "baseURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBaseSettings",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
@@ -193,18 +174,14 @@ interface NFTGalleryInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "settings", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "shares", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "specialMint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenOfOwnerByIndex",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "tokenPrice", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
   decodeFunctionResult(
@@ -213,10 +190,6 @@ interface NFTGalleryInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "totalShares",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "totalSupply",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -313,36 +286,6 @@ export class NFTGallery extends Contract {
       0: string;
     }>;
 
-    getBaseSettings(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: {
-        name: string;
-        symbol: string;
-        typeOfNFT: number;
-        maxSupply: number;
-        0: string;
-        1: string;
-        2: number;
-        3: number;
-      };
-    }>;
-
-    "getBaseSettings()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: {
-        name: string;
-        symbol: string;
-        typeOfNFT: number;
-        maxSupply: number;
-        0: string;
-        1: string;
-        2: number;
-        3: number;
-      };
-    }>;
-
     initialize(
       baseURI_: string,
       tokenPrice_: BigNumberish,
@@ -350,7 +293,7 @@ export class NFTGallery extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(string,uint256,uint160)"(
+    "initialize(string,uint256,uint128)"(
       baseURI_: string,
       tokenPrice_: BigNumberish,
       startTimestamp_: BigNumberish,
@@ -516,26 +459,30 @@ export class NFTGallery extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       maxSupply: number;
+      totalSupply: number;
       maxPurchase: number;
       typeOfNFT: number;
       startTimestamp: BigNumber;
       0: number;
       1: number;
       2: number;
-      3: BigNumber;
+      3: number;
+      4: BigNumber;
     }>;
 
     "settings()"(
       overrides?: CallOverrides
     ): Promise<{
       maxSupply: number;
+      totalSupply: number;
       maxPurchase: number;
       typeOfNFT: number;
       startTimestamp: BigNumber;
       0: number;
       1: number;
       2: number;
-      3: BigNumber;
+      3: number;
+      4: BigNumber;
     }>;
 
     shares(
@@ -551,6 +498,18 @@ export class NFTGallery extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
+
+    specialMint(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "specialMint(address,uint256)"(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -576,36 +535,6 @@ export class NFTGallery extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: string;
-    }>;
-
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "tokenByIndex(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "tokenOfOwnerByIndex(address,uint256)"(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
     }>;
 
     tokenPrice(
@@ -653,18 +582,6 @@ export class NFTGallery extends Contract {
     }>;
 
     "totalShares()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    totalSupply(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "totalSupply()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -728,32 +645,6 @@ export class NFTGallery extends Contract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getBaseSettings(
-    overrides?: CallOverrides
-  ): Promise<{
-    name: string;
-    symbol: string;
-    typeOfNFT: number;
-    maxSupply: number;
-    0: string;
-    1: string;
-    2: number;
-    3: number;
-  }>;
-
-  "getBaseSettings()"(
-    overrides?: CallOverrides
-  ): Promise<{
-    name: string;
-    symbol: string;
-    typeOfNFT: number;
-    maxSupply: number;
-    0: string;
-    1: string;
-    2: number;
-    3: number;
-  }>;
-
   initialize(
     baseURI_: string,
     tokenPrice_: BigNumberish,
@@ -761,7 +652,7 @@ export class NFTGallery extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(string,uint256,uint160)"(
+  "initialize(string,uint256,uint128)"(
     baseURI_: string,
     tokenPrice_: BigNumberish,
     startTimestamp_: BigNumberish,
@@ -875,26 +766,30 @@ export class NFTGallery extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     maxSupply: number;
+    totalSupply: number;
     maxPurchase: number;
     typeOfNFT: number;
     startTimestamp: BigNumber;
     0: number;
     1: number;
     2: number;
-    3: BigNumber;
+    3: number;
+    4: BigNumber;
   }>;
 
   "settings()"(
     overrides?: CallOverrides
   ): Promise<{
     maxSupply: number;
+    totalSupply: number;
     maxPurchase: number;
     typeOfNFT: number;
     startTimestamp: BigNumber;
     0: number;
     1: number;
     2: number;
-    3: BigNumber;
+    3: number;
+    4: BigNumber;
   }>;
 
   shares(account: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -903,6 +798,18 @@ export class NFTGallery extends Contract {
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  specialMint(
+    recevier: string,
+    tokenId: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "specialMint(address,uint256)"(
+    recevier: string,
+    tokenId: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   supportsInterface(
     interfaceId: BytesLike,
@@ -917,28 +824,6 @@ export class NFTGallery extends Contract {
   symbol(overrides?: CallOverrides): Promise<string>;
 
   "symbol()"(overrides?: CallOverrides): Promise<string>;
-
-  tokenByIndex(
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "tokenByIndex(uint256)"(
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  tokenOfOwnerByIndex(
-    owner: string,
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "tokenOfOwnerByIndex(address,uint256)"(
-    owner: string,
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   tokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -958,10 +843,6 @@ export class NFTGallery extends Contract {
   totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
   "totalShares()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferFrom(
     from: string,
@@ -1021,32 +902,6 @@ export class NFTGallery extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getBaseSettings(
-      overrides?: CallOverrides
-    ): Promise<{
-      name: string;
-      symbol: string;
-      typeOfNFT: number;
-      maxSupply: number;
-      0: string;
-      1: string;
-      2: number;
-      3: number;
-    }>;
-
-    "getBaseSettings()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      name: string;
-      symbol: string;
-      typeOfNFT: number;
-      maxSupply: number;
-      0: string;
-      1: string;
-      2: number;
-      3: number;
-    }>;
-
     initialize(
       baseURI_: string,
       tokenPrice_: BigNumberish,
@@ -1054,7 +909,7 @@ export class NFTGallery extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(string,uint256,uint160)"(
+    "initialize(string,uint256,uint128)"(
       baseURI_: string,
       tokenPrice_: BigNumberish,
       startTimestamp_: BigNumberish,
@@ -1168,26 +1023,30 @@ export class NFTGallery extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       maxSupply: number;
+      totalSupply: number;
       maxPurchase: number;
       typeOfNFT: number;
       startTimestamp: BigNumber;
       0: number;
       1: number;
       2: number;
-      3: BigNumber;
+      3: number;
+      4: BigNumber;
     }>;
 
     "settings()"(
       overrides?: CallOverrides
     ): Promise<{
       maxSupply: number;
+      totalSupply: number;
       maxPurchase: number;
       typeOfNFT: number;
       startTimestamp: BigNumber;
       0: number;
       1: number;
       2: number;
-      3: BigNumber;
+      3: number;
+      4: BigNumber;
     }>;
 
     shares(account: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -1196,6 +1055,18 @@ export class NFTGallery extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    specialMint(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "specialMint(address,uint256)"(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -1210,28 +1081,6 @@ export class NFTGallery extends Contract {
     symbol(overrides?: CallOverrides): Promise<string>;
 
     "symbol()"(overrides?: CallOverrides): Promise<string>;
-
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenByIndex(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenOfOwnerByIndex(address,uint256)"(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     tokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1251,10 +1100,6 @@ export class NFTGallery extends Contract {
     totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalShares()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -1346,10 +1191,6 @@ export class NFTGallery extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getBaseSettings(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getBaseSettings()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     initialize(
       baseURI_: string,
       tokenPrice_: BigNumberish,
@@ -1357,7 +1198,7 @@ export class NFTGallery extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(string,uint256,uint160)"(
+    "initialize(string,uint256,uint128)"(
       baseURI_: string,
       tokenPrice_: BigNumberish,
       startTimestamp_: BigNumberish,
@@ -1481,6 +1322,18 @@ export class NFTGallery extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    specialMint(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "specialMint(address,uint256)"(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1494,28 +1347,6 @@ export class NFTGallery extends Contract {
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenByIndex(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenOfOwnerByIndex(address,uint256)"(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     tokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1538,10 +1369,6 @@ export class NFTGallery extends Contract {
     totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalShares()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -1605,12 +1432,6 @@ export class NFTGallery extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getBaseSettings(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getBaseSettings()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     initialize(
       baseURI_: string,
       tokenPrice_: BigNumberish,
@@ -1618,7 +1439,7 @@ export class NFTGallery extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(string,uint256,uint160)"(
+    "initialize(string,uint256,uint128)"(
       baseURI_: string,
       tokenPrice_: BigNumberish,
       startTimestamp_: BigNumberish,
@@ -1754,6 +1575,18 @@ export class NFTGallery extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    specialMint(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "specialMint(address,uint256)"(
+      recevier: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1767,28 +1600,6 @@ export class NFTGallery extends Contract {
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tokenByIndex(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tokenOfOwnerByIndex(address,uint256)"(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     tokenPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1811,10 +1622,6 @@ export class NFTGallery extends Contract {
     totalShares(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "totalShares()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "totalSupply()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferFrom(
       from: string,
