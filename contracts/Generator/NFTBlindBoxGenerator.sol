@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
 import "../NoobFriendlyTokenGenerator.sol";
 
 /**
@@ -12,20 +11,20 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
 
     using Strings for uint;
 
-    /// @notice Price of token
-    uint public tokenPrice;
+    struct BlindboxSettings {
+        uint32 offsetId;
+        uint128 revealTimestamp;
+        uint96 tokenPrice;
+    }
 
-    /// @notice Time to reveal the NFT
-    uint public revealTimestamp;
-
-    /// @notice Offset of the token ID after revealed
-    uint public offsetId;
+    /// @notice Detailed settings of blindbox
+    BlindboxSettings public blindboxSettings;
 
     /// @notice The baseURI before revealed
     string public coverURI;
 
-    /// @dev Seed to do the hash
-    uint private _hashSeed;
+    /// @dev Offset of block number to do the blockhash
+    uint private _offsetBlockNumber;
 
     /// @dev Setup the template
     constructor(
@@ -34,7 +33,9 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         ERC721(baseSettings.name, baseSettings.symbol)
         PaymentSplitter(baseSettings.payees, baseSettings.shares)
         NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply)
-    {}
+    {
+        _offsetBlockNumber=0;
+    }
 
     /**
      @notice Initialize the contract details
@@ -47,32 +48,34 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
     function initialize(
         string calldata baseURI_,
         uint32 maxPurchase_,
-        uint tokenPrice_,
-        uint160 startTimestamp_,
-        uint160 revealTimestamp_
+        uint96 tokenPrice_,
+        uint128 startTimestamp_,
+        uint128 revealTimestamp_
     ) external onlyOwner onlyOnce {
         baseURI = baseURI_;
-        settings.maxPurchase = maxPurchase_;
-        tokenPrice = tokenPrice_;
-        settings.startTimestamp = startTimestamp_;
-        revealTimestamp = revealTimestamp_;
         coverURI = "";
-        offsetId = 0;
+        settings.maxPurchase = maxPurchase_;
+        settings.startTimestamp = startTimestamp_;
+        settings.totalSupply = 0;
+        blindboxSettings.offsetId = 0;
+        blindboxSettings.tokenPrice = tokenPrice_;
+        blindboxSettings.revealTimestamp = revealTimestamp_;
     }
 
     /// @notice Reserve NFT by contract owner
     function reserveNFT(
-        uint reserveNum
+        uint32 reserveNum
     ) public onlyOwner {   
-        uint supply = totalSupply();
+        uint32 supply = settings.totalSupply;
         require(
-            supply + reserveNum < settings.maxSupply,
+            supply + reserveNum <= settings.maxSupply,
             "Blindbox: exceed max supply"
         );
         for (uint i = 0; i < reserveNum; i++) {
             _safeMint(_msgSender(), supply + i);
-            _hashSeed += block.number;
         }
+        _offsetBlockNumber += 1;
+        settings.totalSupply += reserveNum;
     }
 
     /// @notice Set the after-revealed URI 
@@ -91,9 +94,9 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
 
     /// @notice Change token price
     function setTokenPrice(
-        uint newTokenPrice
+        uint96 newTokenPrice
     ) external onlyOwner {
-        tokenPrice = newTokenPrice;
+        blindboxSettings.tokenPrice = newTokenPrice;
     }
 
     /**
@@ -101,10 +104,10 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
      @param  numberOfTokens Number of token to mint (buy)
      */
     function mintToken(
-        uint numberOfTokens
+        uint32 numberOfTokens
     ) external payable {
         uint _maxSupply = settings.maxSupply;
-        uint _totalSuppy = totalSupply();
+        uint _totalSuppy = settings.totalSupply;
         require(
             isInit,
             "BlindBox: not initialized"
@@ -122,25 +125,29 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
             "BlindBox: exceed max supply"
         );
         require(
-            msg.value >= tokenPrice*numberOfTokens,
+            msg.value >= blindboxSettings.tokenPrice*numberOfTokens,
             "BlindBox: payment not enough"
         );
 
         for(uint i = 0; i < numberOfTokens; i++) {
             _safeMint(owner(), _totalSuppy + i);
             _safeTransfer(owner(), _msgSender(), _totalSuppy + i, "");
-            _hashSeed += block.number;
         }
+        _offsetBlockNumber += 1;
+
+        settings.totalSupply += numberOfTokens;
     }
 
     /// @notice Reveal NFT and shuffle token ID 
     function reveal() external {
+        uint totalSupply = settings.totalSupply;
         require(
-            offsetId == 0, 
+            blindboxSettings.offsetId == 0, 
             "BlindBox: already revealed"
         );
         require(
-            totalSupply() == settings.maxSupply || block.timestamp >= revealTimestamp,
+            totalSupply == settings.maxSupply ||
+            block.timestamp >= blindboxSettings.revealTimestamp,
             "BlindBox: not allowed to reveal"
         );
         require(
@@ -149,16 +156,11 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
         );
 
         // Just a sanity case in the worst case if this function is called late (EVM only stores last 256 block hashes)
-        if (block.number > _hashSeed && block.number - _hashSeed > 255) {
-            offsetId = uint(blockhash(block.number - 1)) % settings.maxSupply;
-        }
-        else {
-            offsetId = uint(blockhash(_hashSeed)) % settings.maxSupply;
-        }
+        blindboxSettings.offsetId = uint32(uint(blockhash(block.number-_offsetBlockNumber%256)) % settings.maxSupply);
 
         // Prevent default sequence
-        if (offsetId == 0) {
-            offsetId = 1;
+        if (blindboxSettings.offsetId == 0) {
+            blindboxSettings.offsetId = 1;
         }
     }
 
@@ -170,10 +172,12 @@ contract NFTBlindbox is NoobFriendlyTokenTemplate {
             _exists(tokenId),
              "ERC721Metadata: URI query for nonexistent token"
         );
-        
-        if (offsetId > 0) {
+        uint offsetId = blindboxSettings.offsetId;
+        if (tokenId > settings.maxSupply) {
+            return string(abi.encodePacked(baseURI, tokenId.toString()));
+        }
+        else if (offsetId > 0) {
             uint tokenIndex = (offsetId + tokenId) % settings.maxSupply;
-            console.log( "tokenIndex is ", tokenIndex);
             return string(abi.encodePacked(baseURI, tokenIndex.toString()));
         }
         else {

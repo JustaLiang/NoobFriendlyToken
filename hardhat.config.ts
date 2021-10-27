@@ -8,6 +8,7 @@ import "hardhat-typechain";
 import "@typechain/ethers-v5";
 import "dotenv/config";
 import "solidity-coverage";
+import "hardhat-gas-reporter";
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -56,6 +57,11 @@ const config: HardhatUserConfig = {
         },
       },
     ],
+  },
+  gasReporter: {
+    currency: 'USD',
+    gasPrice: 100,
+    enabled: true,
   },
 };
 export default config;

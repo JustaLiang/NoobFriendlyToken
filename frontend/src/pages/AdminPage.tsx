@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { CurrentAddressContext, NoobFriendlyTokenAdminContext } from "../hardhat/SymfoniContext";
-import { NFTTemplateCard } from "../components/NFTTemplateCard";
-import { TextField, Button, Box, InputLabel, Select, FormControl, Paper, Typography, MenuItem, Checkbox, IconButton, Grid, Container } from "@material-ui/core";
+import { Box, Button, Checkbox, Container, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, TextField, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from '@material-ui/icons/Add';
 import ClearIcon from '@material-ui/icons/Clear';
-import { makeStyles } from "@material-ui/core/styles";
-import { NFTTypeArray } from "../components/NFTTypeArray";
+import React, { useContext, useEffect, useState } from 'react';
+import { NFTTemplateCard } from "../components/NFTTemplateCard";
+import { CurrentAddressContext, NoobFriendlyTokenAdminContext } from "../hardhat/SymfoniContext";
 const useStyles = makeStyles((theme) => ({
     filled: {
         borderRadius: 5,
@@ -14,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
         height: 50,
         paddingBottom: 10,
     }
-    
+
 }));
 
 interface Props { }
@@ -113,10 +112,10 @@ const AdminPage: React.FC<Props> = () => {
         setSplitterCount(splitterCount - 1);
     }
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',marginTop:'30px'  }}>
             <Paper>
                 <Container maxWidth="md">
-                    <Typography variant="h5">Noob Friendly Token</Typography>
+                    <Typography variant="h5" style={{padding:'20px',fontWeight:'bold'}}>Create Smart Contract</Typography>
                     <form
                         onSubmit={(e: React.SyntheticEvent) => {
                             e.preventDefault()
@@ -141,10 +140,11 @@ const AdminPage: React.FC<Props> = () => {
                                             value={baseSettings.typeOfNFT}
                                             onChange={handleSelectChange}
                                         >
-                                            <MenuItem aria-label="None" value='' />
-                                            {NFTTypeArray.map((typeName, idx) =>
+                                            {/* <MenuItem aria-label="None" value='' /> */}
+                                            {/* {NFTTypeArray.map((typeName, idx) =>
                                                 <MenuItem key={idx} value={idx}>{typeName}</MenuItem>
-                                            )}
+                                            )} */}
+                                            <MenuItem key={1} value={1}>Blindbox</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Box>
@@ -152,7 +152,7 @@ const AdminPage: React.FC<Props> = () => {
                                     <TextField value={baseSettings.maxSupply} name="maxSupply" variant="filled" label="max supply" className={classes.filled} onChange={handleChange} />
                                 </Box>
                                 <Box style={{ display: 'flex', justifyContent: 'center' }}>
-                                    <Button variant="contained" color="primary" type="submit">create</Button>
+                                    <Button variant="contained" style={{backgroundColor:'#0666dc',color:'#fff'}} type="submit">create</Button>
                                 </Box>
                             </Box>
                             <Box style={{ display: 'flex', paddingLeft: '10px', paddingBottom: '10px' }}>
@@ -184,7 +184,7 @@ const AdminPage: React.FC<Props> = () => {
                             }
                         </Box>
                     </form>
-                    <Grid container spacing={3} style={{marginBottom:'30px',padding:'20px'}}>
+                    <Grid container spacing={3} style={{ marginBottom: '30px', padding: '20px' }}>
                         {contractList.map((addr) => (
                             <Grid item md={4}>
                                 <NFTTemplateCard

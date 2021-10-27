@@ -6,6 +6,17 @@ import { ProviderContext, SignerContext } from "../hardhat/SymfoniContext";
 import { NoobFriendlyTokenTemplate__factory } from "../hardhat/typechain/factories/NoobFriendlyTokenTemplate__factory";
 import { NoobFriendlyTokenTemplate } from "../hardhat/typechain/NoobFriendlyTokenTemplate";
 import { NFTTypeArray } from "./NFTTypeArray";
+
+const GATEWAY = new URL('https://dweb.link/')
+
+const toGatewayURL = (url: any, options: any = {}) => {
+    const gateway = options.gateway || GATEWAY
+    url = new URL(String(url))
+    return url.protocol === 'ipfs:'
+      ? new URL(`/ipfs/${url.href.slice('ipfs://'.length)}`, gateway)
+      : url
+}
+
 const useStyles = makeStyles((theme) => ({
     media: {
         objectFit: 'contain',
@@ -69,13 +80,13 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
         const updateImageURI = async () => {
             const baseURI = await template?.baseURI();
             if (baseURI) {
-                fetch(`https://ipfs.io/ipfs/${baseURI?.slice(7)}0`)
+                fetch(toGatewayURL(baseURI).toString()+'0')
                     .then((res) => {
                         if (res.status === 404) throw Error("URI error: 404");
                         return res.json();
                     })
                     .then((metadata) => {
-                        const imgURI = "https://ipfs.io/ipfs/" + metadata.image.slice(7);
+                        const imgURI = toGatewayURL(metadata.image).toString();
                         setImageURI(imgURI);
                     })
                     .catch((err) => {
@@ -106,8 +117,13 @@ export const NFTTemplateCard: React.FC<Props> = (props) => {
     useEffect(() => {
         const reloadTemplate = async () => {
             if (template) {
-                const templateInfo = await template.getBaseSettings()
-                setTemplateInfo(templateInfo)
+                const templateSettings = await template.settings();
+                setTemplateInfo({
+                    name: await template.name(),
+                    symbol: await template.symbol(),
+                    typeOfNFT: templateSettings.typeOfNFT,
+                    maxSupply: templateSettings.maxSupply,
+                });
             }
         }
         reloadTemplate()

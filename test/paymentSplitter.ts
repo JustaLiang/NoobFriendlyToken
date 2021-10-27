@@ -4,7 +4,7 @@ import { utils } from "ethers";
 
 const slottingFee = utils.parseEther("0.3");
 
-describe("Blindbox", function () {
+describe("Payment Splitter", function () {
 
   let owner, addr1;
   let tokenAdmin, blindboxGenerator;
@@ -79,8 +79,8 @@ describe("Blindbox", function () {
     const _blindboxSettings = await blindbox.blindboxSettings()
     const _maxPurchase = _baseSettings.maxPurchase
     const _timestampBefore = _baseSettings.startTimestamp
-    const _tokenPrice = await _blindboxSettings.tokenPrice
-    const _timestampEnd = await _blindboxSettings.revealTimestamp
+    const _tokenPrice = _blindboxSettings.tokenPrice
+    const _timestampEnd = _blindboxSettings.revealTimestamp
 
     assert( _baseURI === "https://", "baseURI not right" )
     assert( _maxPurchase.toString() === '12', "maxPurchase not right" )
@@ -188,7 +188,7 @@ describe("Blindbox", function () {
     
     await blindbox.reveal();
     const newURI0 = await blindbox.tokenURI(0);
-    console.log("newURI0: ", newURI0);
+    // console.log("new URI: ", newURI0);
   });
 
   it( "NFTBlindbox - tokenURI reveal then mint ", async function(){
@@ -223,7 +223,7 @@ describe("Blindbox", function () {
     .withArgs(owner.address, addr1.address, 1)
     //tokenURI
     const URI0 = await blindbox.tokenURI(0);
-    console.log("URI0: ", URI0);
+    // console.log("new URI: ", URI0);
   });
 
   

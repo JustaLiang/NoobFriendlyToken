@@ -25,7 +25,7 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
 
     function initialize(
         string calldata baseURI_,
-        uint160 startTimestamp_,
+        uint128 startTimestamp_,
         uint48[] calldata ticketAmounts_,
         uint160[] calldata ticketPrices_
     ) external onlyOwner onlyOnce {
@@ -89,7 +89,6 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
                 uint48 newTicketId = _ticketState.current[level];
                 _ticketState.current[level] += 1;
                 _safeMint(_msgSender(), uint(newTicketId));
-                console.log( "Ticket: mint ID: newTicketId");
             }
         }
     }
