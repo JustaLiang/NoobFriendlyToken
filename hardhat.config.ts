@@ -37,6 +37,11 @@ const config: HardhatUserConfig = {
         mnemonic: "test test test test test test test test test test test junk",
       },
     },
+    mumbai: {
+      url: "https://rpc-mumbai.maticvigil.com/",
+      gasPrice: 1100000000,
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
+    },
     polygon: {
       url: `https://polygon-mainnet.infura.io/v3/${process.env.WEB3_INFURA_PROJECT_ID}`,
       accounts: [`0x${process.env.PRIVATE_KEY}`],
