@@ -3,6 +3,10 @@ pragma solidity ^0.8.0;
 
 import "../NoobFriendlyTokenGenerator.sol";
 
+/**
+ @author Chiao-Yu Yang, Justa Liang, Jeffrey lin
+ @notice Ticket: NFT for different levels
+ */
 contract NFTTicket is NoobFriendlyTokenTemplate {
 
     using Strings for uint8;
@@ -13,8 +17,10 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
         uint160[] prices;
     }
 
+    /// @notice Detailed settings of TicketState
     TicketState private _ticketState;
 
+    /// @dev Setup the template
     constructor(
         BaseSettings memory baseSettings
     )
@@ -23,6 +29,14 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
         NoobFriendlyTokenTemplate(baseSettings.typeOfNFT, baseSettings.maxSupply)
     {}
 
+
+    /**
+     @notice Initialize the contract details
+     @param baseURI_ Base URI of NFT tickets
+     @param startTimestamp_ Time to start sale
+     @param ticketPrices_ ticket Price per each level
+     @param ticketAmounts_ ticket amount per each level
+     */
     function initialize(
         string calldata baseURI_,
         uint128 startTimestamp_,
@@ -49,7 +63,8 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
         settings.startTimestamp = startTimestamp_;
     }
 
-    function mintToken(uint8[] calldata levels, uint[] calldata ticketNum) external payable {
+    
+    function mintToken(uint8 level, uint ticketNum) external payable {
         require(
             isInit,
             "Ticket: not initialized"
@@ -58,38 +73,19 @@ contract NFTTicket is NoobFriendlyTokenTemplate {
             block.timestamp > settings.startTimestamp,
             "Ticket: sale not start"
         );
-
-        uint totalPayable = 0;
-
-        for( uint8 i = 0; i < levels.length; i++){
-
-            uint8 level = levels[i];
-
-            require(
-                level < _ticketState.prices.length,
-                "Ticket: no such level");
-            uint256 newTicketId = _ticketState.current[level] + ticketNum[i] - 1;
-            require(
-                newTicketId < _ticketState.soldout[level],
-                "Ticket: sold out at this level"  
-            );
-
-            totalPayable += _ticketState.prices[level]*ticketNum[i];
-            require(
-                msg.value >= totalPayable,
-                "Ticket: not enough for ticket price"    
-            );
-        }
-
-        for( uint i = 0; i < levels.length; i++){
-            
-            uint level = levels[i];
-
-            for( uint j = 0; j < ticketNum[i]; j++){
-                uint48 newTicketId = _ticketState.current[level];
-                _ticketState.current[level] += 1;
-                _safeMint(_msgSender(), uint(newTicketId));
-            }
+        require(
+            _ticketState.current[level] + ticketNum < _ticketState.soldout[level],
+            "Ticket: sold out at this level"
+        );
+        require(
+            msg.value >= _ticketState.prices[level]*ticketNum,
+            "Ticket: not enough for ticket price"    
+        );
+        for( uint i = 0; i < ticketNum; i++){
+            uint newTicketId = _ticketState.current[level];
+            _ticketState.current[level] += 1;
+            _safeMint(owner(), newTicketId);
+            _safeTransfer(owner(), _msgSender(), newTicketId, "");
         }
     }
 
