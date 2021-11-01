@@ -80,13 +80,13 @@ const GeneratorCard: React.FC<Props> = (props) => {
             <Typography variant='h6' align='left'>
                 slotting fee: {utils.formatEther(slottingFee)}
             </Typography>
-            <Button onClick={onChangeSlottingFee}>
-                change
-            </Button>
             <input
                 type="text"
                 onChange={onInputSlottingFee}
             />
+            <Button onClick={onChangeSlottingFee}>
+                change
+            </Button>
         </CardContent>
     </Card>
 }
